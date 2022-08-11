@@ -16,32 +16,37 @@ class Dashboard extends StatelessWidget {
     final width = MediaQuery.of(context).size.width;
     final height = MediaQuery.of(context).size.height;
     return SafeArea(
-      child: Column(
-        children: [
-          Obx(() => Center(
-                  child: Text(
-                tabController.title.value,
-                style: Theme.of(context).textTheme.headline1,
-              ))),
-          TabBar(
-            width: width,
-            tabController: tabController,
+      child: SingleChildScrollView(
+        child: GestureDetector(
+          onTap: () => FocusScope.of(context).unfocus(),
+          child: Column(
+            children: [
+              Obx(() => Center(
+                      child: Text(
+                    tabController.title.value,
+                    style: Theme.of(context).textTheme.headline1,
+                  ))),
+              TabBar(
+                width: width,
+                tabController: tabController,
+              ),
+              Obx(() => Container(
+                    color: Colors.white38,
+                    child: IndexedStack(
+                        index: tabController.index.value,
+                        children: const [
+                          Profile(),
+                          Messages(),
+                          Resources(),
+                          Discussion(),
+                          // Returns(),
+                          // Profile(),
+                        ]),
+                    //show screen according to index
+                  )),
+            ],
           ),
-          Obx(() => Container(
-                color: Colors.black12,
-                child: IndexedStack(
-                    index: tabController.index.value,
-                    children: const [
-                      Profile(),
-                      Messages(),
-                      Resources(),
-                      Discussion(),
-                      // Returns(),
-                      // Profile(),
-                    ]),
-                //show screen according to index
-              )),
-        ],
+        ),
       ),
     );
   }
@@ -68,8 +73,8 @@ class TabBar extends StatelessWidget {
           GestureDetector(
             onTap: () {},
             child: Container(
-              padding: EdgeInsets.all(2),
-              margin: EdgeInsets.all(2),
+              padding: const EdgeInsets.all(2),
+              margin: const EdgeInsets.all(2),
               decoration: BoxDecoration(
                   color: Colors.white,
                   border: Border.all(),

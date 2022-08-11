@@ -11,7 +11,7 @@ class LoginScreen extends StatelessWidget {
       child: SingleChildScrollView(
         child: GestureDetector(
           onTap: () => FocusScope.of(context).unfocus(),
-          child: Container(
+          child: SizedBox(
             height: height,
             width: width,
             child: Column(
@@ -55,7 +55,7 @@ class LoginScreen extends StatelessWidget {
                       color: Colors.black12,
                       width: 260,
                       child: TextFormField(
-                        decoration: InputDecoration(
+                        decoration: const InputDecoration(
                           labelText: "Telefon",
                         ),
                       ),
@@ -65,7 +65,7 @@ class LoginScreen extends StatelessWidget {
                 const SizedBox(
                   height: 25,
                 ),
-                Container(
+                SizedBox(
                   width: width * 0.9,
                   child: Row(
                     children: [

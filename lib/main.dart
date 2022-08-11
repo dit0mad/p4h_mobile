@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:p4h_mobile/view/dashboard.dart';
-import 'package:p4h_mobile/view/login.dart';
 
 void main() {
   runApp(const MyApp());
