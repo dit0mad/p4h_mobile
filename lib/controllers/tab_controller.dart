@@ -1,8 +1,11 @@
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class TabController extends GetxController {
   RxInt index = 0.obs;
   RxString title = 'Mwen Profil'.obs;
+
+  Rx<Color> color = Colors.grey.obs;
 
   void changeIndex(int index) {
     this.index.value = index;
@@ -13,6 +16,7 @@ class TabController extends GetxController {
     switch (index) {
       case 0:
         title.value = 'Mwen Profil';
+
         break;
       case 1:
         title.value = 'Pale';

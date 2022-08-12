@@ -20,6 +20,7 @@ class Dashboard extends StatelessWidget {
         child: GestureDetector(
           onTap: () => FocusScope.of(context).unfocus(),
           child: Column(
+            mainAxisSize: MainAxisSize.min,
             children: [
               Obx(() => Center(
                       child: Text(
@@ -31,7 +32,6 @@ class Dashboard extends StatelessWidget {
                 tabController: tabController,
               ),
               Obx(() => Container(
-                    color: Colors.white38,
                     child: IndexedStack(
                         index: tabController.index.value,
                         children: const [
@@ -65,7 +65,7 @@ class TabBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: Colors.red,
+      color: Colors.red[800],
       height: 45,
       width: width,
       child: Row(
@@ -112,10 +112,9 @@ class TabBar extends StatelessWidget {
   }
 }
 
-class BuildTabButton extends StatelessWidget {
+class BuildTabButton extends StatefulWidget {
   const BuildTabButton({
     Key? key,
-    Icon? icon,
     required this.tabController,
     required this.title,
     required this.index,
@@ -126,23 +125,29 @@ class BuildTabButton extends StatelessWidget {
   final int index;
 
   @override
+  State<BuildTabButton> createState() => _BuildTabButtonState();
+}
+
+class _BuildTabButtonState extends State<BuildTabButton> {
+  @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(2.0),
-      child: ElevatedButton(
-        style: ButtonStyle(
-          backgroundColor: MaterialStateProperty.all(
-            Colors.white,
+    return Obx(() => Padding(
+          padding: const EdgeInsets.all(2.0),
+          child: ElevatedButton(
+            style: ButtonStyle(
+              backgroundColor: MaterialStateProperty.all(
+                  widget.tabController.index.value == widget.index
+                      ? widget.tabController.color.value
+                      : Colors.white),
+              foregroundColor: MaterialStateProperty.all(
+                Colors.black,
+              ),
+            ),
+            onPressed: () {
+              widget.tabController.changeIndex(widget.index);
+            },
+            child: Text(widget.title),
           ),
-          foregroundColor: MaterialStateProperty.all(
-            Colors.black,
-          ),
-        ),
-        onPressed: () {
-          tabController.changeIndex(index);
-        },
-        child: Text(title),
-      ),
-    );
+        ));
   }
 }

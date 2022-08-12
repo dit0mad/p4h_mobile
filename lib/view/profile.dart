@@ -160,7 +160,9 @@ class Profile extends StatelessWidget {
                 ),
               ),
             ),
-            const Searchbar(),
+            Searchbar(
+              size: 180,
+            ),
           ],
         ),
         const Divider(
@@ -207,15 +209,15 @@ class Profile extends StatelessWidget {
               ),
               const Text('Felisitasyon soti P4H'),
               //TODO: implement collapsible comment
-              Container(
-                child: Row(
-                  children: [
-                    ElevatedButton(
+              Row(
+                children: [
+                  Container(
+                    child: ElevatedButton(
                       style: ButtonStyle(
                         backgroundColor:
                             MaterialStateProperty.resolveWith<Color>(
                           (Set<MaterialState> states) {
-                            if (states.contains(MaterialState.pressed)) {
+                            if (states.contains(MaterialState.hovered)) {
                               return Colors.green;
                             }
 
@@ -224,14 +226,10 @@ class Profile extends StatelessWidget {
                         ),
                       ),
                       onPressed: () {},
-                      child: const Text('Commment'),
+                      child: const Text('Comment'),
                     ),
-                    const Divider(
-                      thickness: 1,
-                      color: Colors.black,
-                    ),
-                  ],
-                ),
+                  ),
+                ],
               ),
             ],
           ),
@@ -245,17 +243,17 @@ class Searchbar extends StatelessWidget {
   //TODO: implement searchbar
   const Searchbar({
     Key? key,
-    //required this.controller,
+    required this.size,
   }) : super(key: key);
 
-  // final ProductController controller;
+  final double size;
 
   @override
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.only(left: 100.0),
       child: Container(
-        width: 200,
+        width: size,
         color: Colors.white,
         //margin: const EdgeInsets.only(top: 90),
         child: TextField(
