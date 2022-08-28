@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:p4h_mobile/controllers/tab_controller.dart' as controller;
-import 'package:p4h_mobile/view/discussion.dart';
-import 'package:p4h_mobile/view/messages.dart';
-import 'package:p4h_mobile/view/profile.dart';
-import 'package:p4h_mobile/view/resources.dart';
+import 'package:p4h_mobile/screens/discussion.dart';
+import 'package:p4h_mobile/screens/messages.dart';
+import 'package:p4h_mobile/screens/profile.dart';
+import 'package:p4h_mobile/screens/resource_screens/resource_screen.dart';
 
 class Dashboard extends StatelessWidget {
+  static const routeName = 'DashBoard Screen';
   const Dashboard({Key? key}) : super(key: key);
 
   @override
@@ -37,8 +38,8 @@ class Dashboard extends StatelessWidget {
                         children: const [
                           Profile(),
                           Messages(),
-                          Resources(),
-                          Discussion(),
+                          ResourceScreen(),
+                          DiscussionScreen(),
                           // Returns(),
                           // Profile(),
                         ]),
