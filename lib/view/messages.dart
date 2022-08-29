@@ -7,6 +7,7 @@ class Messages extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Column(
+      
       children: [
         Searchbar(
           size: 500,
@@ -26,6 +27,7 @@ class MessageCardWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Row(
+      mainAxisSize: MainAxisSize.min,
       children: [
         Expanded(
           child: Container(

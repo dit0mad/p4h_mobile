@@ -31,19 +31,19 @@ class Dashboard extends StatelessWidget {
                 width: width,
                 tabController: tabController,
               ),
-              Obx(() => Container(
-                    child: IndexedStack(
-                        index: tabController.index.value,
-                        children: const [
-                          Profile(),
-                          Messages(),
-                          Resources(),
-                          Discussion(),
-                          // Returns(),
-                          // Profile(),
-                        ]),
-                    //show screen according to index
-                  )),
+              Obx(
+                () => IndexedStack(
+                    index: tabController.index.value,
+                    children: const [
+                      Profile(),
+                      Messages(),
+                      Resources(),
+                      Discussion(),
+                      // Returns(),
+                      // Profile(),
+                    ]),
+                //show screen according to index
+              ),
             ],
           ),
         ),
