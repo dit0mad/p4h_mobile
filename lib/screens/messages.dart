@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:p4h_mobile/view/profile.dart';
+import 'package:p4h_mobile/screens/profile.dart';
 
 class Messages extends StatelessWidget {
   const Messages({super.key});
