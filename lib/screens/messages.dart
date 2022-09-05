@@ -7,15 +7,30 @@ class Messages extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Column(
-      
-      children: [
+      children: const [
         Searchbar(
           size: 500,
         ),
         MessageCardWidget(),
+        Divider(
+          height: 1,
+          thickness: 4,
+        ),
         MessageCardWidget(),
+        Divider(
+          height: 1,
+          thickness: 4,
+        ),
         MessageCardWidget(),
+        Divider(
+          height: 1,
+          thickness: 4,
+        ),
         MessageCardWidget(),
+        Divider(
+          height: 1,
+          thickness: 4,
+        ),
       ],
     );
   }
@@ -27,27 +42,23 @@ class MessageCardWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Row(
-      mainAxisSize: MainAxisSize.min,
       children: [
         Expanded(
-          child: Container(
+          child: SizedBox(
             width: 400,
             child: Column(
               children: [
                 Row(
                   children: [
-                    Container(
-                      child: Padding(
-                        padding: const EdgeInsets.only(left: 5),
-                        child: CircleAvatar(
-                          backgroundColor: Colors.greenAccent[400],
-                          radius: 40,
-                          backgroundImage: const NetworkImage(
-                              'https://lh3.googleusercontent.com/a-/AAuE7mChgTiAe-N8ibcM3fB_qvGdl2vQ9jvjYv0iOOjB=s96-c'),
-                        ),
+                    Padding(
+                      padding: const EdgeInsets.only(left: 5, top: 5),
+                      child: CircleAvatar(
+                        backgroundColor: Colors.greenAccent[400],
+                        radius: 40,
+                        backgroundImage: const NetworkImage(
+                            'https://lh3.googleusercontent.com/a-/AAuE7mChgTiAe-N8ibcM3fB_qvGdl2vQ9jvjYv0iOOjB=s96-c'),
                       ),
-                    ), //C
-
+                    ),
                     Expanded(
                       child: Padding(
                         padding: const EdgeInsets.only(left: 8.0, top: 5),
@@ -74,12 +85,13 @@ class MessageCardWidget extends StatelessWidget {
           ),
         ),
         Row(
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Container(
-              padding: EdgeInsets.only(top: 20),
+              padding: const EdgeInsets.only(top: 20),
               height: 60,
               width: 80,
-              color: Color.fromARGB(255, 219, 39, 39),
+              color: const Color.fromARGB(255, 219, 39, 39),
               child: Text(
                 textAlign: TextAlign.center,
                 'Messaj',
@@ -90,7 +102,7 @@ class MessageCardWidget extends StatelessWidget {
               padding: EdgeInsets.only(top: 20),
               height: 60,
               width: 80,
-              color: Color.fromARGB(255, 13, 55, 103),
+              color: const Color.fromARGB(255, 13, 55, 103),
               child: Text(
                 textAlign: TextAlign.center,
                 'Rele',

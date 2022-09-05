@@ -1,13 +1,24 @@
 import 'package:flutter/material.dart';
 
-class Profile extends StatelessWidget {
+class Profile extends StatefulWidget {
   const Profile({Key? key}) : super(key: key);
 
+  @override
+  State<Profile> createState() => _ProfileState();
+}
+
+@override
+void initState() {
+  //super.initState();
+  print('building');
+}
+
+class _ProfileState extends State<Profile> {
   @override
   Widget build(BuildContext context) {
     return Column(
       children: [
-        Container(
+        SizedBox(
           height: 100,
           child: Padding(
             padding: const EdgeInsets.only(top: 10.0, bottom: 8),
@@ -72,16 +83,14 @@ class Profile extends StatelessWidget {
             ),
           ),
         ),
-        Container(
+        SizedBox(
           height: 100,
           width: MediaQuery.of(context).size.width,
           child: Row(
             children: [
               Expanded(
                 child: GestureDetector(
-                  onTap: () {
-                    print('touched');
-                  },
+                  onTap: () {},
                   child: Container(
                     margin: const EdgeInsets.only(left: 2),
                     decoration: BoxDecoration(
@@ -160,7 +169,7 @@ class Profile extends StatelessWidget {
                 ),
               ),
             ),
-            Searchbar(
+            const Searchbar(
               size: 180,
             ),
           ],
@@ -169,78 +178,89 @@ class Profile extends StatelessWidget {
           color: Colors.black,
           thickness: 1,
         ),
-        Container(
-          padding: EdgeInsets.only(left: 5),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.only(left: 5),
-                    child: CircleAvatar(
-                      backgroundColor: Colors.greenAccent[400],
-                      radius: 40,
-                      backgroundImage: const NetworkImage(
-                          'https://lh3.googleusercontent.com/a-/AAuE7mChgTiAe-N8ibcM3fB_qvGdl2vQ9jvjYv0iOOjB=s96-c'),
-                    ),
-                  ), //C
-
-                  Expanded(
-                    child: Padding(
-                      padding: const EdgeInsets.only(left: 8.0, top: 5),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: const [
-                          Text(
-                            '2:11',
-                            style: TextStyle(fontSize: 17),
-                          ),
-                          Text(
-                            '03/07/2019',
-                            style: TextStyle(fontSize: 14),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-              const Text('Felisitasyon soti P4H'),
-              //TODO: implement collapsible comment
-              Row(
-                children: [
-                  Container(
-                    child: ElevatedButton(
-                      style: ButtonStyle(
-                        backgroundColor:
-                            MaterialStateProperty.resolveWith<Color>(
-                          (Set<MaterialState> states) {
-                            if (states.contains(MaterialState.hovered)) {
-                              return Colors.green;
-                            }
-
-                            return Colors.red; // Use the component's default.
-                          },
-                        ),
-                      ),
-                      onPressed: () {},
-                      child: const Text('Comment'),
-                    ),
-                  ),
-                ],
-              ),
-            ],
-          ),
-        ),
+        const CommentWidget(),
+        const CommentWidget(),
       ],
     );
   }
 }
 
+class CommentWidget extends StatelessWidget {
+  const CommentWidget({
+    Key? key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.only(left: 5),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Padding(
+                padding: const EdgeInsets.only(left: 5),
+                child: CircleAvatar(
+                  backgroundColor: Colors.greenAccent[400],
+                  radius: 40,
+                  backgroundImage: const NetworkImage(
+                      'https://lh3.googleusercontent.com/a-/AAuE7mChgTiAe-N8ibcM3fB_qvGdl2vQ9jvjYv0iOOjB=s96-c'),
+                ),
+              ), //C
+
+              Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.only(left: 8.0, top: 5),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: const [
+                      Text(
+                        '2:11',
+                        style: TextStyle(fontSize: 17),
+                      ),
+                      Text(
+                        '03/07/2019',
+                        style: TextStyle(fontSize: 14),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ),
+          const Text('Felisitasyon soti P4H'),
+          //TODO: implement collapsible comment
+          Row(
+            children: [
+              ElevatedButton(
+                style: ButtonStyle(
+                  backgroundColor: MaterialStateProperty.resolveWith<Color>(
+                    (Set<MaterialState> states) {
+                      if (states.contains(MaterialState.hovered)) {
+                        return Colors.green;
+                      }
+
+                      return Colors.red; // Use the component's default.
+                    },
+                  ),
+                ),
+                onPressed: () {},
+                child: const Text('Comment'),
+              ),
+            ],
+          ),
+          Divider(
+            thickness: 5,
+          )
+        ],
+      ),
+    );
+  }
+}
+
 class Searchbar extends StatelessWidget {
-  //TODO: implement searchbar
   const Searchbar({
     Key? key,
     required this.size,
@@ -250,6 +270,8 @@ class Searchbar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final TextEditingController controller = TextEditingController();
+
     return Padding(
       padding: const EdgeInsets.only(left: 100.0),
       child: Container(
@@ -257,9 +279,9 @@ class Searchbar extends StatelessWidget {
         color: Colors.white,
         //margin: const EdgeInsets.only(top: 90),
         child: TextField(
-          // onChanged: (value) => controller.searchProduct(value),
+          //onChanged: (value) => controller.,
           textAlignVertical: TextAlignVertical.center,
-          //  controller: controller.searchhController.value,
+          controller: controller,
           textAlign: TextAlign.center,
           textInputAction: TextInputAction.search,
           decoration: InputDecoration(
@@ -290,7 +312,7 @@ class Searchbar extends StatelessWidget {
                 Icons.clear,
               ),
               onPressed: () {
-                // controller.searchProduct('');
+                controller.clear();
                 // controller.searchhController.value.clear();
               },
             ),

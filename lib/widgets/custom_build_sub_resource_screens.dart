@@ -65,7 +65,7 @@ class SubResourceScreens extends StatelessWidget {
                   ),
                   Container(
                     height: 70,
-                    width: 70,
+                    width: 100,
                     color: const Color(0XFF153760),
                     child: const Padding(
                       padding:

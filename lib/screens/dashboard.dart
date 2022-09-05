@@ -15,7 +15,7 @@ class Dashboard extends StatelessWidget {
     final controller.TabController tabController =
         Get.put(controller.TabController());
     final width = MediaQuery.of(context).size.width;
-    final height = MediaQuery.of(context).size.height;
+    // final height = MediaQuery.of(context).size.height;
     return SafeArea(
       child: SingleChildScrollView(
         child: GestureDetector(
@@ -32,14 +32,14 @@ class Dashboard extends StatelessWidget {
                 width: width,
                 tabController: tabController,
               ),
-              Obx(() => Container(
+              Obx(() => SizedBox(
                     child: IndexedStack(
                         index: tabController.index.value,
                         children: const [
                           Profile(),
                           Messages(),
-                          Resources(),
-                          Discussion(),
+                          ResourceScreen(),
+                          DiscussionScreen()
                           // Returns(),
                           // Profile(),
                         ]),

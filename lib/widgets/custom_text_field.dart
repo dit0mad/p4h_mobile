@@ -15,10 +15,10 @@ class CustomTextField extends StatelessWidget {
               prefixIcon: const Icon(Icons.search),
               filled: true,
               fillColor: mainFillColor,
+              hintText: 'Search Resous',
               enabledBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(15),
                   borderSide: BorderSide.none),
-              labelText: 'Search Resous',
               hintStyle: Theme.of(context).textTheme.subtitle1),
         ),
       ),

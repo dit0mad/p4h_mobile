@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 Color mainAppColor = const Color(0XFFB82A2C);
 Color mainIconColor = const Color(0XFFAE241A);

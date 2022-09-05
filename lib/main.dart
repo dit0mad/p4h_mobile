@@ -48,7 +48,7 @@ class MyApp extends StatelessWidget {
           ),
         ),
         home: const Scaffold(
-          body: ResourceScreen(),
+          body: Dashboard(),
         ),
         routes: {
           Dashboard.routeName: (ctx) => const Dashboard(),

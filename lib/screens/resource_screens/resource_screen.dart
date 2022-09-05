@@ -13,45 +13,42 @@ class ResourceScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 40),
-        child: Container(
-          margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 30),
-          child: Column(
-            children: [
-              const CustomTextField(),
-              BuildCard(
-                icon: FontAwesomeIcons.book,
-                titleText: 'Lesson Plans',
-                subTitleText: 'Documents to help everyday teaching.',
-                onPressed: () {
-                  Navigator.pushNamed(context,LessonPlanScreen.routeName);
-                },
-                iconColor: mainIconColor,
-              ),
-              const BuildDivider(),
-              BuildCard(
-                icon: FontAwesomeIcons.video,
-                titleText: 'Videyo',
-                subTitleText: 'Instructional Videos.',
-                onPressed: () {
-                   Navigator.pushNamed(context,VideoScreen.routeName);
-                },
-                iconColor: mainIconColor,
-              ),
-              const BuildDivider(),
-              BuildCard(
-                icon: FontAwesomeIcons.camera,
-                titleText: 'Foto',
-                subTitleText: 'Instructional Videos.',
-                onPressed: () {
-                   Navigator.pushNamed(context,PhotoScreen.routeName);
-                },
-                iconColor: mainIconColor,
-              ),
-            ],
-          ),
+    return Padding(
+      padding: const EdgeInsets.only(top: 1),
+      child: Container(
+        child: Column(
+          children: [
+            const CustomTextField(),
+            BuildCard(
+              icon: FontAwesomeIcons.book,
+              titleText: 'Lesson Plans',
+              subTitleText: 'Documents to help everyday teaching.',
+              onPressed: () {
+                Navigator.pushNamed(context, LessonPlanScreen.routeName);
+              },
+              iconColor: mainIconColor,
+            ),
+            const BuildDivider(),
+            BuildCard(
+              icon: FontAwesomeIcons.video,
+              titleText: 'Videyo',
+              subTitleText: 'Instructional Videos.',
+              onPressed: () {
+                Navigator.pushNamed(context, VideoScreen.routeName);
+              },
+              iconColor: mainIconColor,
+            ),
+            const BuildDivider(),
+            BuildCard(
+              icon: FontAwesomeIcons.camera,
+              titleText: 'Foto',
+              subTitleText: 'Instructional Videos.',
+              onPressed: () {
+                Navigator.pushNamed(context, PhotoScreen.routeName);
+              },
+              iconColor: mainIconColor,
+            ),
+          ],
         ),
       ),
     );
@@ -67,7 +64,7 @@ class CustomTextField extends StatelessWidget {
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
-      child: Container(
+      child: SizedBox(
         height: 40,
         child: TextFormField(
           decoration: InputDecoration(
@@ -77,7 +74,7 @@ class CustomTextField extends StatelessWidget {
             enabledBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(15),
                 borderSide: BorderSide.none),
-            labelText: 'Search Resous',
+            hintText: 'Search Resous',
           ),
         ),
       ),
