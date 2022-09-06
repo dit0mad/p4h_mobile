@@ -169,8 +169,11 @@ class _ProfileState extends State<Profile> {
                 ),
               ),
             ),
-            const Searchbar(
-              size: 180,
+            const Padding(
+              padding: EdgeInsets.only(left: 8.0),
+              child: Searchbar(
+                size: 230,
+              ),
             ),
           ],
         ),
@@ -272,50 +275,47 @@ class Searchbar extends StatelessWidget {
   Widget build(BuildContext context) {
     final TextEditingController controller = TextEditingController();
 
-    return Padding(
-      padding: const EdgeInsets.only(left: 100.0),
-      child: Container(
-        width: size,
-        color: Colors.white,
-        //margin: const EdgeInsets.only(top: 90),
-        child: TextField(
-          //onChanged: (value) => controller.,
-          textAlignVertical: TextAlignVertical.center,
-          controller: controller,
-          textAlign: TextAlign.center,
-          textInputAction: TextInputAction.search,
-          decoration: InputDecoration(
-            border: const OutlineInputBorder(
-                borderRadius: BorderRadius.all(Radius.circular(
-              10.0,
-            ))),
-            isDense: true,
-            contentPadding: EdgeInsets.zero,
-            prefixIconConstraints: const BoxConstraints(
-              minHeight: 30,
-            ),
-            prefixIcon: const Icon(
-              Icons.search,
-            ),
-            hintText: "Search Prowfil",
-            suffixIconConstraints: const BoxConstraints(
+    return Ink(
+      width: size,
+      color: Colors.white,
+      //margin: const EdgeInsets.only(top: 90),
+      child: TextField(
+        //onChanged: (value) => controller.,
+        textAlignVertical: TextAlignVertical.center,
+        controller: controller,
+        textAlign: TextAlign.center,
+        textInputAction: TextInputAction.search,
+        decoration: InputDecoration(
+          border: const OutlineInputBorder(
+              borderRadius: BorderRadius.all(Radius.circular(
+            10.0,
+          ))),
+          isDense: true,
+          contentPadding: EdgeInsets.zero,
+          prefixIconConstraints: const BoxConstraints(
+            minHeight: 30,
+          ),
+          prefixIcon: const Icon(
+            Icons.search,
+          ),
+          hintText: "Search Prowfil",
+          suffixIconConstraints: const BoxConstraints(
+            minHeight: 36,
+            minWidth: 36,
+          ),
+          suffixIcon: IconButton(
+            constraints: const BoxConstraints(
               minHeight: 36,
               minWidth: 36,
             ),
-            suffixIcon: IconButton(
-              constraints: const BoxConstraints(
-                minHeight: 36,
-                minWidth: 36,
-              ),
-              splashRadius: 24,
-              icon: const Icon(
-                Icons.clear,
-              ),
-              onPressed: () {
-                controller.clear();
-                // controller.searchhController.value.clear();
-              },
+            splashRadius: 24,
+            icon: const Icon(
+              Icons.clear,
             ),
+            onPressed: () {
+              controller.clear();
+              // controller.searchhController.value.clear();
+            },
           ),
         ),
       ),
