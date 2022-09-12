@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:p4h_mobile/constants.dart';
-import '../widgets/custom_build_card.dart';
-import '../widgets/custom_build_divider.dart';
-import '../widgets/custom_text_field.dart';
+import 'build_card.dart';
+import 'build_divider.dart';
+import 'text_field.dart';
 
 class SubResourceScreens extends StatelessWidget {
   final String text1;
@@ -25,10 +25,14 @@ class SubResourceScreens extends StatelessWidget {
           margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 30),
           child: Column(
             children: [
-              const CustomTextField(),
+              const CustomTextField(
+                hintText: 'Search Resous',
+                fieldSize: 40,
+              ),
               Row(
                 children: [
                   Expanded(
+                    flex: 4,
                     child: BuildCard(
                       icon: Icons.download,
                       fillColor: mainFillColor,
@@ -36,17 +40,19 @@ class SubResourceScreens extends StatelessWidget {
                       onPressed: () {},
                     ),
                   ),
-                  Container(
-                    height: 70,
-                    width: 70,
-                    color: const Color(0XFF153760),
-                    child: const Padding(
-                      padding:
-                          EdgeInsets.symmetric(horizontal: 15, vertical: 20),
-                      child: Text(
-                        'View',
-                        textAlign: TextAlign.center,
-                        style: TextStyle(color: Colors.white, fontSize: 18),
+                  Expanded(
+                    flex: 1,
+                    child: Container(
+                      height: 70,
+                      color: mainAppColor2,
+                      child: const Padding(
+                        padding:
+                            EdgeInsets.symmetric(horizontal: 15, vertical: 20),
+                        child: Text(
+                          'View',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(color: Colors.white, fontSize: 18),
+                        ),
                       ),
                     ),
                   ),
@@ -56,6 +62,7 @@ class SubResourceScreens extends StatelessWidget {
               Row(
                 children: [
                   Expanded(
+                    flex: 4,
                     child: BuildCard(
                       icon: Icons.download,
                       fillColor: mainFillColor,
@@ -63,17 +70,19 @@ class SubResourceScreens extends StatelessWidget {
                       onPressed: () {},
                     ),
                   ),
-                  Container(
-                    height: 70,
-                    width: 100,
-                    color: const Color(0XFF153760),
-                    child: const Padding(
-                      padding:
-                          EdgeInsets.symmetric(horizontal: 15, vertical: 20),
-                      child: Text(
-                        'View',
-                        textAlign: TextAlign.center,
-                        style: TextStyle(color: Colors.white, fontSize: 18),
+                  Expanded(
+                    flex: 1,
+                    child: Container(
+                      height: 70,
+                      color: const Color(0XFF153760),
+                      child: const Padding(
+                        padding:
+                            EdgeInsets.symmetric(horizontal: 15, vertical: 20),
+                        child: Text(
+                          'View',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(color: Colors.white, fontSize: 18),
+                        ),
                       ),
                     ),
                   ),
@@ -83,6 +92,7 @@ class SubResourceScreens extends StatelessWidget {
               Row(
                 children: [
                   Expanded(
+                    flex: 4,
                     child: BuildCard(
                       icon: Icons.download,
                       fillColor: mainFillColor,
@@ -90,17 +100,19 @@ class SubResourceScreens extends StatelessWidget {
                       onPressed: () {},
                     ),
                   ),
-                  Container(
-                    height: 70,
-                    width: 70,
-                    color: const Color(0XFF153760),
-                    child: const Padding(
-                      padding:
-                          EdgeInsets.symmetric(horizontal: 15, vertical: 20),
-                      child: Text(
-                        'View',
-                        textAlign: TextAlign.center,
-                        style: TextStyle(color: Colors.white, fontSize: 18),
+                  Expanded(
+                    flex: 1,
+                    child: Container(
+                      height: 70,
+                      color: const Color(0XFF153760),
+                      child: const Padding(
+                        padding:
+                            EdgeInsets.symmetric(horizontal: 15, vertical: 20),
+                        child: Text(
+                          'View',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(color: Colors.white, fontSize: 18),
+                        ),
                       ),
                     ),
                   ),

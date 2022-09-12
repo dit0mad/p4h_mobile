@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:p4h_mobile/constants.dart';
 import 'package:p4h_mobile/controllers/tab_controller.dart' as controller;
 import 'package:p4h_mobile/screens/discussion.dart';
 import 'package:p4h_mobile/screens/messages.dart';
 import 'package:p4h_mobile/screens/profile.dart';
 import 'package:p4h_mobile/screens/resource_screens/resource_screen.dart';
+
+
 
 class Dashboard extends StatelessWidget {
   static const routeName = 'DashBoard Screen';
@@ -26,11 +29,11 @@ class Dashboard extends StatelessWidget {
               Obx(() => Center(
                       child: Text(
                     tabController.title.value,
-                    style: Theme.of(context).textTheme.headline1,
+                    style: headlineStyle1,
                   ))),
               TabBar(
                 width: width,
-                tabController: tabController,
+                tabController: tabController, 
               ),
               Obx(() => SizedBox(
                     child: IndexedStack(
@@ -152,3 +155,5 @@ class _BuildTabButtonState extends State<BuildTabButton> {
         ));
   }
 }
+
+

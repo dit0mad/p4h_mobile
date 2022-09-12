@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:p4h_mobile/constants.dart';
+import 'package:p4h_mobile/widgets/text_field.dart';
 
 class Profile extends StatefulWidget {
   const Profile({Key? key}) : super(key: key);
@@ -61,18 +64,8 @@ class _ProfileState extends State<Profile> {
                   child: Padding(
                     padding: const EdgeInsets.only(left: 10.0, right: 10),
                     child: ElevatedButton(
-                      style: ButtonStyle(
-                        backgroundColor:
-                            MaterialStateProperty.resolveWith<Color>(
-                          (Set<MaterialState> states) {
-                            if (states.contains(MaterialState.pressed)) {
-                              return Colors.green;
-                            }
+                      style: ElevatedButton.styleFrom(primary: mainAppColor1),
 
-                            return Colors.red; // Use the component's default.
-                          },
-                        ),
-                      ),
                       // style: ,
                       child: const Text('pwogre mwen'),
                       onPressed: () {},
@@ -99,10 +92,10 @@ class _ProfileState extends State<Profile> {
                     child: Padding(
                       padding: const EdgeInsets.all(10.0),
                       child: Row(
-                        children: const [
+                        children: [
                           Icon(
-                            (Icons.camera_alt),
-                            color: Colors.black,
+                            FontAwesomeIcons.camera,
+                            color: mainAppColor1,
                             size: 50,
                           ),
                           Padding(
@@ -130,13 +123,13 @@ class _ProfileState extends State<Profile> {
                     child: Padding(
                       padding: const EdgeInsets.all(10.0),
                       child: Row(
-                        children: const [
+                        children: [
                           Icon(
                             (Icons.contact_page),
-                            color: Colors.black,
+                            color: mainAppColor1,
                             size: 50,
                           ),
-                          Padding(
+                          const Padding(
                             padding: EdgeInsets.all(8.0),
                             child: Text(
                               'Mwen \n Dokiman',
@@ -156,25 +149,26 @@ class _ProfileState extends State<Profile> {
         Row(
           crossAxisAlignment: CrossAxisAlignment.end,
           children: [
-            Padding(
-              padding: const EdgeInsets.only(bottom: 1.0, left: 4),
-              child: Container(
-                margin: const EdgeInsets.only(top: 15),
-                child: const Text(
-                  'Prowfil Pos',
-                  style: TextStyle(
-                      fontSize: 15,
-                      color: Colors.red,
-                      fontWeight: FontWeight.w700),
+            Expanded(
+              flex: 2,
+              child: Padding(
+                padding: const EdgeInsets.only(bottom: 1.0, left: 4),
+                child: Container(
+                  margin: const EdgeInsets.only(top: 15),
+                  child: const Text(
+                    'Prowfil Pos',
+                    style: TextStyle(
+                        fontSize: 15,
+                        color: Colors.red,
+                        fontWeight: FontWeight.w700),
+                  ),
                 ),
               ),
             ),
-            const Padding(
-              padding: EdgeInsets.only(left: 8.0),
-              child: Searchbar(
-                size: 230,
-              ),
-            ),
+            Expanded(
+                flex: 3,
+                child:
+                    CustomTextField(hintText: 'Search Prowfil', fieldSize: 30))
           ],
         ),
         const Divider(
@@ -238,86 +232,16 @@ class CommentWidget extends StatelessWidget {
           Row(
             children: [
               ElevatedButton(
-                style: ButtonStyle(
-                  backgroundColor: MaterialStateProperty.resolveWith<Color>(
-                    (Set<MaterialState> states) {
-                      if (states.contains(MaterialState.hovered)) {
-                        return Colors.green;
-                      }
-
-                      return Colors.red; // Use the component's default.
-                    },
-                  ),
-                ),
+                style: ElevatedButton.styleFrom(primary: mainAppColor1),
                 onPressed: () {},
                 child: const Text('Comment'),
               ),
             ],
           ),
-          Divider(
+          const Divider(
             thickness: 5,
           )
         ],
-      ),
-    );
-  }
-}
-
-class Searchbar extends StatelessWidget {
-  const Searchbar({
-    Key? key,
-    required this.size,
-  }) : super(key: key);
-
-  final double size;
-
-  @override
-  Widget build(BuildContext context) {
-    final TextEditingController controller = TextEditingController();
-
-    return Ink(
-      width: size,
-      color: Colors.white,
-      //margin: const EdgeInsets.only(top: 90),
-      child: TextField(
-        //onChanged: (value) => controller.,
-        textAlignVertical: TextAlignVertical.center,
-        controller: controller,
-        textAlign: TextAlign.center,
-        textInputAction: TextInputAction.search,
-        decoration: InputDecoration(
-          border: const OutlineInputBorder(
-              borderRadius: BorderRadius.all(Radius.circular(
-            10.0,
-          ))),
-          isDense: true,
-          contentPadding: EdgeInsets.zero,
-          prefixIconConstraints: const BoxConstraints(
-            minHeight: 30,
-          ),
-          prefixIcon: const Icon(
-            Icons.search,
-          ),
-          hintText: "Search Prowfil",
-          suffixIconConstraints: const BoxConstraints(
-            minHeight: 36,
-            minWidth: 36,
-          ),
-          suffixIcon: IconButton(
-            constraints: const BoxConstraints(
-              minHeight: 36,
-              minWidth: 36,
-            ),
-            splashRadius: 24,
-            icon: const Icon(
-              Icons.clear,
-            ),
-            onPressed: () {
-              controller.clear();
-              // controller.searchhController.value.clear();
-            },
-          ),
-        ),
       ),
     );
   }
