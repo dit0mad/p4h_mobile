@@ -57,20 +57,20 @@ class MessageCardWidget extends StatelessWidget {
               height: 60,
               width: 80,
               color: mainAppColor1,
-              child:  Text(
-                textAlign: TextAlign.center,
+              child: const Text(
                 'Messaj',
+                textAlign: TextAlign.center,
                 style: TextStyle(fontSize: 16, color: Colors.white),
               ),
             ),
             Container(
-              padding: EdgeInsets.only(top: 20),
+              padding: const EdgeInsets.only(top: 20),
               height: 60,
               width: 80,
               color: mainAppColor2,
-              child:  Text(
-                textAlign: TextAlign.center,
+              child: const Text(
                 'Rele',
+                textAlign: TextAlign.center,
                 style: TextStyle(fontSize: 16, color: Colors.white),
               ),
             )

@@ -11,6 +11,8 @@ class DiscussionScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+        final TextEditingController controller = TextEditingController();
+    
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -20,36 +22,57 @@ class DiscussionScreen extends StatelessWidget {
           child: Row(
             children: const [
               Expanded(
-                flex: 4,
                 child: CustomTextField(
                   hintText: 'Search Diskisyon',
-                  fieldSize: 30,
+                  fieldSize: 40,
                 ),
               ),
-              Expanded(
-                  flex: 1,
-                  child: SizedBox(
-                    height: 10,
-                  ))
             ],
           ),
         ),
-        Container(
-          margin: EdgeInsets.zero,
-          child: Row(
-            children: [
-              const Expanded(
-                flex: 4,
-                child: CustomTextField(
-                  hintText: 'Diskisyon Pos',
-                  fieldSize: 30,
+        Row(
+          children: [
+            Expanded(
+              flex: 3,
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: SizedBox(
+                  height: 25,
+                  child: TextField(
+                    controller: controller,
+                    decoration: InputDecoration(
+                        border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(30),
+                            borderSide: const BorderSide(
+                              color: Colors.black,
+                            )),
+                        hintText: 'Diskisyon Pos',
+                        contentPadding:
+                            const EdgeInsets.symmetric(horizontal: 10,vertical: 1),
+                        hintStyle: const TextStyle(
+                            fontSize: 12,
+                            color: Colors.black87,
+                            fontWeight: FontWeight.w600)),
+                  ),
                 ),
               ),
-              Expanded(
-                  flex: 1,
-                  child: Icon(FontAwesomeIcons.globe,size: 20, color: mainAppColor1),)
-            ],
-          ),
+            ),
+            Container(
+              height: 20,
+              width: 50,
+              margin: const EdgeInsets.symmetric(vertical: 5, horizontal: 2),
+              decoration: BoxDecoration(
+                  color: Colors.white,
+                  border: Border.all(color: mainAppColor1),
+                  borderRadius: BorderRadius.circular(15)),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: [
+                  Icon(FontAwesomeIcons.globe, size: 15, color: mainAppColor1),
+                ],
+              ),
+            )
+          ],
         ),
         Container(
           padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 5),
@@ -126,16 +149,17 @@ class DiscussionScreen extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const Expanded(child: CommentWidget()),
-               Icon(FontAwesomeIcons.globe,color: mainAppColor1,size: 20,)
-
+              Icon(
+                FontAwesomeIcons.globe,
+                color: mainAppColor1,
+                size: 20,
+              )
             ],
-             
           ),
-          
         ),
         const Divider(
-            thickness: 5,
-          )
+          thickness: 5,
+        )
       ],
     );
   }

@@ -98,7 +98,7 @@ class _ProfileState extends State<Profile> {
                             color: mainAppColor1,
                             size: 50,
                           ),
-                          Padding(
+                          const Padding(
                             padding: EdgeInsets.all(8.0),
                             child: Text(
                               'Mwen Foto \n or Videyo',
@@ -165,7 +165,7 @@ class _ProfileState extends State<Profile> {
                 ),
               ),
             ),
-            Expanded(
+            const Expanded(
                 flex: 3,
                 child:
                     CustomTextField(hintText: 'Search Prowfil', fieldSize: 30))

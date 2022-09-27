@@ -7,8 +7,6 @@ import 'package:p4h_mobile/screens/messages.dart';
 import 'package:p4h_mobile/screens/profile.dart';
 import 'package:p4h_mobile/screens/resource_screens/resource_screen.dart';
 
-
-
 class Dashboard extends StatelessWidget {
   static const routeName = 'DashBoard Screen';
   const Dashboard({Key? key}) : super(key: key);
@@ -33,7 +31,7 @@ class Dashboard extends StatelessWidget {
                   ))),
               TabBar(
                 width: width,
-                tabController: tabController, 
+                tabController: tabController,
               ),
               Obx(() => SizedBox(
                     child: IndexedStack(
@@ -110,6 +108,16 @@ class TabBar extends StatelessWidget {
             title: 'Diskisyon',
             index: 3,
           ),
+          Container(
+            height: 90,
+            width: 30,
+            margin: const EdgeInsets.symmetric(vertical: 5, horizontal: 2),
+            decoration: BoxDecoration(
+                color: Colors.white,
+                border: Border.all(),
+                borderRadius: BorderRadius.circular(5)),
+            child: const DropdownList(),
+          )
         ],
       ),
     );
@@ -156,4 +164,49 @@ class _BuildTabButtonState extends State<BuildTabButton> {
   }
 }
 
+class DropdownList extends StatefulWidget {
+  const DropdownList({Key? key}) : super(key: key);
 
+  @override
+  State<DropdownList> createState() => _DropdownListState();
+}
+
+class _DropdownListState extends State<DropdownList> {
+  List<String> list = <String>[
+    'Opyson #1',
+    'Opyson #2',
+    'Opyson #3',
+    'Opyson #4',
+    'Opyson #5',
+    'Opyson #6',
+  ];
+  @override
+  Widget build(BuildContext context) {
+    return DropdownButtonHideUnderline(
+      child: ButtonTheme(
+        child: DropdownButton<String>(
+          icon: const Padding(
+            padding: EdgeInsets.only(right: 2),
+            child: Icon(Icons.menu),
+          ),
+          elevation: 16,
+          isExpanded: true,
+          onChanged: (value) {
+            // This is called when the user selects an item.
+            setState(() {});
+          },
+          items: list.map<DropdownMenuItem<String>>((String value) {
+            return DropdownMenuItem<String>(
+              value: value,
+              child: FittedBox(
+                  child: Text(
+                value,
+                style: headlineStyle2,
+              )),
+            );
+          }).toList(),
+        ),
+      ),
+    );
+  }
+}

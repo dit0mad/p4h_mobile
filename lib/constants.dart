@@ -7,6 +7,7 @@ Color subIconColor = const Color(0XFF010101);
 Color mainFillColor = const Color(0XFFE4E4E5);
 Color searchBarColor = Colors.grey.shade300;
 
+
 TextStyle get headlineStyle1 {
   return const TextStyle(
     color: Color(0XFF183763),
