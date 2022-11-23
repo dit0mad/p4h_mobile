@@ -19,7 +19,6 @@ class CustomTextField extends StatelessWidget {
     final TextEditingController controller = TextEditingController();
     return GestureDetector(
       onTap: () {
-        //here
         FocusScope.of(context).unfocus();
       },
       child: Padding(

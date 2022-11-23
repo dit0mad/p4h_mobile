@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:p4h_mobile/constants.dart';
+import 'package:p4h_mobile/services/database.dart';
 import 'package:p4h_mobile/widgets/text_field.dart';
 
 class Profile extends StatefulWidget {
@@ -23,7 +24,7 @@ class _ProfileState extends State<Profile> {
       onTap: () {
         //here
         FocusScope.of(context).unfocus();
-        new TextEditingController().clear();
+        TextEditingController().clear();
       },
       child: Column(
         children: [
@@ -48,10 +49,13 @@ class _ProfileState extends State<Profile> {
                       padding: const EdgeInsets.only(left: 8.0, top: 5),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
-                        children: const [
-                          Text(
-                            'Berthrude Albert',
-                            style: TextStyle(fontSize: 17),
+                        children: [
+                          InkWell(
+                            onTap: () {},
+                            child: Text(
+                              'Berthrude Albert',
+                              style: TextStyle(fontSize: 17),
+                            ),
                           ),
                           Text(
                             'Admin',
@@ -239,7 +243,7 @@ class CommentWidget extends StatelessWidget {
           Row(
             children: [
               ElevatedButton(
-                style: ElevatedButton.styleFrom(primary: mainAppColor1),
+                style: ElevatedButton.styleFrom(backgroundColor: mainAppColor1),
                 onPressed: () {},
                 child: const Text('Comment'),
               ),

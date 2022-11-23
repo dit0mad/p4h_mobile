@@ -1,12 +1,34 @@
 import 'package:flutter/material.dart';
+import 'package:p4h_mobile/appstate/user_state.dart';
+import 'package:provider/provider.dart';
 
-class LoginScreen extends StatelessWidget {
+class LoginScreen extends StatefulWidget {
   const LoginScreen({Key? key}) : super(key: key);
+  static const routeName = 'Discussion Screen';
+
+  @override
+  State<LoginScreen> createState() => _LoginScreenState();
+}
+
+class _LoginScreenState extends State<LoginScreen> {
+  final userNameController = TextEditingController();
+  final passWordController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
     final width = MediaQuery.of(context).size.width;
     final height = MediaQuery.of(context).size.height;
+
+    final userProvider = Provider.of<UserStateProvider>(context);
+
+    // final name = userProvider.user!.userName;
+
+    // if (userProvider.user!.userName != null) {
+    //   return Ink(
+    //     child: Text(name),
+    //   );
+    // }
+
     return SafeArea(
       child: SingleChildScrollView(
         child: GestureDetector(
@@ -42,10 +64,11 @@ class LoginScreen extends StatelessWidget {
                         border: Border.all(width: 0.5, color: Colors.black38),
                       ),
                       width: 260,
-                      child: const TextField(
-                        decoration: InputDecoration(
+                      child: TextField(
+                        decoration: const InputDecoration(
                           labelText: "Non",
                         ),
+                        controller: userNameController,
                       ),
                     ),
                     const SizedBox(
@@ -58,6 +81,7 @@ class LoginScreen extends StatelessWidget {
                         decoration: const InputDecoration(
                           labelText: "Telefon",
                         ),
+                        controller: passWordController,
                       ),
                     ),
                   ],
@@ -71,7 +95,11 @@ class LoginScreen extends StatelessWidget {
                     children: [
                       Expanded(
                           child: ElevatedButton(
-                              onPressed: () {}, child: const Text('Kontinye'))),
+                              onPressed: () {
+                                userProvider.login(userNameController.text,
+                                    passWordController.text);
+                              },
+                              child: const Text('Kontinye'))),
                     ],
                   ),
                 ),

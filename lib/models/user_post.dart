@@ -1,5 +1,3 @@
-import 'package:get/get_connect/http/src/utils/utils.dart';
-
 class UserPost {
   final double? id;
   final String? userName;
@@ -19,11 +17,11 @@ class UserPost {
 
   factory UserPost.fromJson(Map<String, dynamic> data) {
     final id = data['id'];
-    final userName = data['id'];
-    final title = data['id'];
-    final postedAt = data['id'];
-    final comments = data['id'];
-    final files = data['id'];
+    final userName = data['userName'];
+    final title = data['title'];
+    final postedAt = data['postedAt'];
+    final comments = data['comments'];
+    final files = data['files'];
 
     return UserPost(
         id: id,
