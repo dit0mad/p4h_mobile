@@ -1,53 +1,61 @@
-import 'package:p4h_mobile/appstate/user_state.dart';
+
+
+import 'package:p4h_mobile/appstate/user/user_state.dart';
 
 class SessionUser extends UserStatus {
-  final String uuid;
-  final String canvasId;
-  final bool isAuthenticated;
-  final bool isActive;
-  final bool isAnonymous;
+  final int id;
+  final String username;
+  final int canvasId;
+  final String email;
+  final String name;
+  final String school;
+  final String phone;
 
   const SessionUser(
-      {required this.uuid,
+      {required this.id,
+      required this.username,
       required this.canvasId,
-      required this.isAuthenticated,
-      required this.isActive,
-      required this.isAnonymous});
+      required this.email,
+      required this.name,
+      required this.phone,
+      required this.school});
 
   factory SessionUser.fromJson(Map<String, dynamic> data) {
-    final uuid = data['uuid'];
-    final canvasId = data['canvasId'];
-    final isAuthenticated = data['isAuthenticated'];
-    final isActive = data['isActive'];
-    final isAnonymous = data['isAnonymous'];
-
+    final id = data['id'] ?? 'empty';
+    final username = data['username'] ?? 'username';
+    final canvasId = data['canvasId'] ?? 'canvasId';
+    final email = data['email'] ?? 'email';
+    final phone = data['phone'] ?? 'phone';
+    final name = data['name'] ?? 'name';
+    final school = data['school'] ?? 'school';
     return SessionUser(
-      uuid: uuid,
-      canvasId: canvasId,
-      isAuthenticated: isAuthenticated,
-      isActive: isActive,
-      isAnonymous: isAnonymous,
-    );
+        id: id,
+        username: username,
+        canvasId: canvasId,
+        email: email,
+        phone: phone,
+        name: name,
+        school: school);
   }
 
-  SessionUser copyWith(
-          {required final canvasId,
-          required final isActive,
-          required final isAnonymous,
-          required final isAuthenticated,
-          required final uuid}) =>
+  SessionUser copyWith({
+    required final canvasId,
+    required final isActive,
+    required final isAnonymous,
+    required final isAuthenticated,
+    required final uuid,
+  }) =>
       SessionUser(
-          uuid: uuid,
+          id: id,
+          username: username,
           canvasId: canvasId,
-          isAuthenticated: isAuthenticated,
-          isActive: isActive,
-          isAnonymous: isAnonymous);
+          email: email,
+          phone: phone,
+          name: name,
+          school: school);
 
-  Map<String, dynamic> toJson() => {
-        'uuid': uuid,
-        'canvasId': canvasId,
-        'isAuthenticated': isAuthenticated,
-        'isActive': isActive,
-        'isAnonymous': isAnonymous,
-      };
+  // Map<String, dynamic> toJson() => {
+  //      'id':id,
+  //      'use'
+  //     };
 }

@@ -1,5 +1,5 @@
 class UserPost {
-  final double? id;
+  final String? id;
   final String? userName;
   final String? title;
   final DateTime? postedAt;
@@ -14,6 +14,24 @@ class UserPost {
     this.comments,
     this.files,
   });
+
+  UserPost copyWith({
+    final String? id,
+    final String? userName,
+    final String? title,
+    final DateTime? postedAt,
+    final List<UserPost>? comments,
+    final List? files,
+  }) {
+    return UserPost(
+      comments: comments ?? this.comments,
+      files: files ?? this.files,
+      id: id ?? this.id,
+      postedAt: postedAt ?? this.postedAt,
+      title: title ?? this.title,
+      userName: userName ?? this.userName,
+    );
+  }
 
   factory UserPost.fromJson(Map<String, dynamic> data) {
     final id = data['id'];
