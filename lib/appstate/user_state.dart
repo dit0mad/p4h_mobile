@@ -38,10 +38,17 @@ class UserStateProvider extends ChangeNotifier {
   });
 
   void login(String username, String password) async {
-    final userResponse = await Database().login(username, password);
+    try{
+      final userResponse = await Database().login(username, password);
+      
 
     if (userResponse is UserFetchSuccess) {}
+    
   }
+  catch (error) {
+      throw error;
+    }
+    }
 }
 
 abstract class UserStatus {
