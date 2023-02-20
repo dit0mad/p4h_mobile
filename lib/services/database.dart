@@ -36,6 +36,7 @@ class Database {
       // UserFetchSuccess(user: user);
 
       print(response.body);
+       print(jsonDecode(response.body));
     }
 
     print(response.statusCode);

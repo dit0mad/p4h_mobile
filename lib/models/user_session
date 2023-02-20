@@ -1,0 +1,49 @@
+// To parse this JSON data, do
+//
+//     final userSession = userSessionFromJson(jsonString);
+
+import 'dart:convert';
+
+UserSession userSessionFromJson(String str) => UserSession.fromJson(json.decode(str));
+
+String userSessionToJson(UserSession data) => json.encode(data.toJson());
+
+class UserSession {
+    UserSession({
+        required this.canvasId,
+        required this.school,
+        required this.phone,
+        required this.name,
+        required this.id,
+        required this.email,
+        required this.username,
+    });
+
+    int canvasId;
+    String school;
+    String phone;
+    String name;
+    int id;
+    String email;
+    String username;
+
+    factory UserSession.fromJson(Map<String, dynamic> json) => UserSession(
+        canvasId: json["canvasId"],
+        school: json["school"],
+        phone: json["phone"],
+        name: json["name"],
+        id: json["id"],
+        email: json["email"],
+        username: json["username"],
+    );
+
+    Map<String, dynamic> toJson() => {
+        "canvasId": canvasId,
+        "school": school,
+        "phone": phone,
+        "name": name,
+        "id": id,
+        "email": email,
+        "username": username,
+    };
+}
