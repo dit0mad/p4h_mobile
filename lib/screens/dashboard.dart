@@ -20,33 +20,38 @@ class Dashboard extends StatelessWidget {
     return MaterialApp(
       home: Scaffold(
         body: SafeArea(
-          child: SingleChildScrollView(
-            child: GestureDetector(
-              onTap: () => FocusScope.of(context).unfocus(),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Obx(() => Center(
-                          child: Text(
+          child: Material(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Obx(
+                  () => Material(
+                    child: Center(
+                      child: Text(
                         tabController.title.value,
                         style: headlineStyle1,
-                      ))),
-                  TabBar(
+                      ),
+                    ),
+                  ),
+                ),
+                Flexible(
+                  flex: 0,
+                  child: TabBar(
                     width: width,
                     tabController: tabController,
                   ),
-                  Obx(() => SizedBox(
-                        child: IndexedStack(
-                            index: tabController.index.value,
-                            children: const [
-                              ProfileState(),
-                              Messages(),
-                              ResourceScreen(),
-                              DiscussionScreen()
-                            ]),
-                      )),
-                ],
-              ),
+                ),
+                Expanded(
+                  child: Obx(() => IndexedStack(
+                          index: tabController.index.value,
+                          children: const [
+                            Flexible(child: ProfileState()),
+                            Flexible(child: Messages()),
+                            Flexible(child: ResourceScreen()),
+                            Flexible(child: DiscussionScreen())
+                          ])),
+                ),
+              ],
             ),
           ),
         ),

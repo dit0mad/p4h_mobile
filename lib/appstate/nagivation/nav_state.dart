@@ -21,6 +21,12 @@ class NavgiationState extends ChangeNotifier {
     );
   }
 
+  void pushPageRoute(MaterialPage page) {
+    mainStack = [...mainStack, page];
+
+    notifyListeners();
+  }
+
   void pushReplacementRoute(MaterialPage page) {
     mainStack = [
       ...mainStack.sublist(1, mainStack.length - 1),

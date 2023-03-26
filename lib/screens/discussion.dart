@@ -148,7 +148,7 @@ class DiscussionScreen extends StatelessWidget {
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Expanded(child: CommentWidget()),
+              // const Expanded(child: CommentWidget()),
               Icon(
                 FontAwesomeIcons.globe,
                 color: mainAppColor1,

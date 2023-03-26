@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:p4h_mobile/appstate/user/user_state.dart';
-import 'package:p4h_mobile/screens/dashboard.dart';
 import 'package:provider/provider.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -22,7 +21,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
     final userProvider = Provider.of<UserStateProvider>(context);
 
-    final username = userProvider.user?.userName;
+    final username = userProvider.user?.name;
 
     return SafeArea(
       child: GestureDetector(
@@ -35,7 +34,7 @@ class _LoginScreenState extends State<LoginScreen> {
               Center(
                   child: Text(
                 'P4H Chat',
-                style: Theme.of(context).textTheme.headline1,
+                style: Theme.of(context).textTheme.displayLarge,
               )),
               const SizedBox(
                 height: 15,
@@ -44,7 +43,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   child: Text(
                 textAlign: TextAlign.center,
                 'Ouvri sesyon an',
-                style: Theme.of(context).textTheme.bodyText1,
+                style: Theme.of(context).textTheme.bodyLarge,
               )),
               const SizedBox(
                 height: 15,
@@ -88,7 +87,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   children: [
                     Expanded(
                       child: ElevatedButton(
-                        onPressed: ()  {
+                        onPressed: () {
                           userProvider.login(
                               userNameController.text, passWordController.text);
                         },
