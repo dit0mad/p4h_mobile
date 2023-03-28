@@ -85,10 +85,12 @@ class UserStateProvider extends ChangeNotifier {
 
   User? user;
   List<UserPost> _userPost;
+  List<UserPost> _announcements;
   final NavgiationState navstate;
   final bool userPostLoading = true;
 
   Iterable<UserPost> get getUserposts => _userPost.reversed;
+  Iterable<UserPost> get getAnnouncements => _announcements;
 
 //initial state emptyUser;
 
@@ -96,7 +98,9 @@ class UserStateProvider extends ChangeNotifier {
     required this.navstate,
     this.user,
     List<UserPost> userPost = const [],
-  }) : _userPost = userPost;
+    List<UserPost> announcements = const [],
+  })  : _userPost = userPost,
+        _announcements = announcements;
 
   UserStateProvider copyWith({
     final User? user,
@@ -114,11 +118,15 @@ class UserStateProvider extends ChangeNotifier {
 
   Future getPosts() async {
     final postResponse = await HttpService().getPosts();
+    final ann = await HttpService().getAnnouncements();
 
     if (postResponse is UserPostSuccess) {
       _userPost = postResponse.userPosts;
       notifyListeners();
     }
+
+    _announcements = ann.userPosts;
+    notifyListeners();
   }
 
   void login(String username, String password) async {

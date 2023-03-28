@@ -19,6 +19,7 @@ void main() {
               navstate: value,
               user: previous?.user,
               userPost: previous!.getUserposts.toList(),
+              announcements: previous.getAnnouncements.toList(),
             );
           },
           child: const MyApp(),

@@ -12,6 +12,29 @@ const session =
     'session=.eJwdzjEOwzAIQNG7MGcwNhjIZSIbg9o1aaaqd2_V-UtP_w1HnnE9YH-dd2xwPBfsoM042bVG5d6J-iKalJWzLVnWYlAjn51rwWk0foELmaIkC5OyKCZKmW2mZV3C6pilNxSbOqqTLuPhXeKn6KDe2D2ISrVcHLDBfcX5n8HPF6nTLXc.ZB3qFA.prGRL8PcsqLxbmMZbCub2FOOaeU; Path=/; HttpOnly';
 
 class HttpService {
+  Future<UserPostSuccess> getAnnouncements() async {
+    final resolveUri = Uri.parse('https://p4hteach.org/api/announcements');
+
+    try {
+      final response = await http.get(
+        headers: {
+          'Content-Type': 'application/json',
+          'Cookie': session,
+        },
+        resolveUri,
+      );
+
+      final List<dynamic> result = json.decode(response.body);
+
+      final resolvedPost =
+          result.map((final e) => UserPost.fromJson(e)).toList();
+
+      return UserPostSuccess(userPosts: resolvedPost);
+    } catch (e) {
+      throw EmptyUserError(e: e.toString());
+    }
+  }
+
   Future deletePost(int postID) async {
     final resolveUri = Uri.parse('https://p4hteach.org/api/post/$postID');
 
@@ -75,8 +98,6 @@ class HttpService {
     } catch (e) {
       throw EmptyUserError(e: e.toString());
     }
-
-    return const UserPostFailedResponse();
   }
 
   void getResources() async {

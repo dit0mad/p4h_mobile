@@ -42,14 +42,16 @@ class Dashboard extends StatelessWidget {
                   ),
                 ),
                 Expanded(
-                  child: Obx(() => IndexedStack(
-                          index: tabController.index.value,
-                          children: const [
-                            Flexible(child: ProfileState()),
-                            Flexible(child: Messages()),
-                            Flexible(child: ResourceScreen()),
-                            Flexible(child: DiscussionScreen())
-                          ])),
+                  child: Ink(
+                    child: Obx(() => IndexedStack(
+                            index: tabController.index.value,
+                            children: const [
+                              Flexible(child: ProfileState()),
+                              Flexible(child: Messages()),
+                              Flexible(child: ResourceScreen()),
+                              Flexible(child: DiscussionScreen())
+                            ])),
+                  ),
                 ),
               ],
             ),

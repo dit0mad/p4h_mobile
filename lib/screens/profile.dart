@@ -71,7 +71,7 @@ class _ProfileStateState extends State<ProfileState> {
                               foregroundColor: mainAppColor1),
                           child: const Text('pwogre mwen'),
                           onPressed: () {
-                            userProvider.getPosts();
+                            HttpService().getAnnouncements();
                           },
                         ),
                       ),
