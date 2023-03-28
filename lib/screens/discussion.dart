@@ -11,8 +11,8 @@ class DiscussionScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-        final TextEditingController controller = TextEditingController();
-    
+    final TextEditingController controller = TextEditingController();
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -47,8 +47,8 @@ class DiscussionScreen extends StatelessWidget {
                               color: Colors.black,
                             )),
                         hintText: 'Diskisyon Pos',
-                        contentPadding:
-                            const EdgeInsets.symmetric(horizontal: 10,vertical: 1),
+                        contentPadding: const EdgeInsets.symmetric(
+                            horizontal: 10, vertical: 1),
                         hintStyle: const TextStyle(
                             fontSize: 12,
                             color: Colors.black87,
@@ -148,7 +148,7 @@ class DiscussionScreen extends StatelessWidget {
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Expanded(child: CommentWidget()),
+              // const Expanded(child: CommentWidget()),
               Icon(
                 FontAwesomeIcons.globe,
                 color: mainAppColor1,

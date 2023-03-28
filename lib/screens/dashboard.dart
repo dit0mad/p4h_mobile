@@ -17,36 +17,44 @@ class Dashboard extends StatelessWidget {
         Get.put(controller.TabController());
     final width = MediaQuery.of(context).size.width;
     // final height = MediaQuery.of(context).size.height;
-    return SafeArea(
-      child: SingleChildScrollView(
-        child: GestureDetector(
-          onTap: () => FocusScope.of(context).unfocus(),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Obx(() => Center(
+    return MaterialApp(
+      home: Scaffold(
+        body: SafeArea(
+          child: Material(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Obx(
+                  () => Material(
+                    child: Center(
                       child: Text(
-                    tabController.title.value,
-                    style: headlineStyle1,
-                  ))),
-              TabBar(
-                width: width,
-                tabController: tabController,
-              ),
-              Obx(() => SizedBox(
-                    child: IndexedStack(
-                        index: tabController.index.value,
-                        children: const [
-                          Profile(),
-                          Messages(),
-                          ResourceScreen(),
-                          DiscussionScreen()
-                          // Returns(),
-                          // Profile(),
-                        ]),
-                    //show screen according to index
-                  )),
-            ],
+                        tabController.title.value,
+                        style: headlineStyle1,
+                      ),
+                    ),
+                  ),
+                ),
+                Flexible(
+                  flex: 0,
+                  child: TabBar(
+                    width: width,
+                    tabController: tabController,
+                  ),
+                ),
+                Expanded(
+                  child: Ink(
+                    child: Obx(() => IndexedStack(
+                            index: tabController.index.value,
+                            children: const [
+                              Flexible(child: ProfileState()),
+                              Flexible(child: Messages()),
+                              Flexible(child: ResourceScreen()),
+                              Flexible(child: DiscussionScreen())
+                            ])),
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),
@@ -184,27 +192,29 @@ class _DropdownListState extends State<DropdownList> {
   Widget build(BuildContext context) {
     return DropdownButtonHideUnderline(
       child: ButtonTheme(
-        child: DropdownButton<String>(
-          icon: const Padding(
-            padding: EdgeInsets.only(right: 2),
-            child: Icon(Icons.menu),
+        child: Material(
+          child: DropdownButton<String>(
+            icon: const Padding(
+              padding: EdgeInsets.only(right: 2),
+              child: Icon(Icons.menu),
+            ),
+            elevation: 16,
+            isExpanded: true,
+            onChanged: (value) {
+              // This is called when the user selects an item.
+              setState(() {});
+            },
+            items: list.map<DropdownMenuItem<String>>((String value) {
+              return DropdownMenuItem<String>(
+                value: value,
+                child: FittedBox(
+                    child: Text(
+                  value,
+                  style: headlineStyle2,
+                )),
+              );
+            }).toList(),
           ),
-          elevation: 16,
-          isExpanded: true,
-          onChanged: (value) {
-            // This is called when the user selects an item.
-            setState(() {});
-          },
-          items: list.map<DropdownMenuItem<String>>((String value) {
-            return DropdownMenuItem<String>(
-              value: value,
-              child: FittedBox(
-                  child: Text(
-                value,
-                style: headlineStyle2,
-              )),
-            );
-          }).toList(),
         ),
       ),
     );
