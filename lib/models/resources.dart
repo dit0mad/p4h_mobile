@@ -10,14 +10,14 @@ class Resources {
     if (json['folders'] != null) {
       folders = <Folders>[];
       json['folders'].forEach((v) {
-        folders!.add(new Folders.fromJson(v));
+        folders!.add(Folders.fromJson(v));
       });
     }
     icons = json['icons'].cast<String>();
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
+    final Map<String, dynamic> data = Map<String, dynamic>();
     if (this.folders != null) {
       data['folders'] = this.folders!.map((v) => v.toJson()).toList();
     }
@@ -40,10 +40,10 @@ class Folders {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['updated_at'] = this.updatedAt;
-    data['name'] = this.name;
-    data['id'] = this.id;
+    final Map<String, dynamic> data =  Map<String, dynamic>();
+    data['updated_at'] = updatedAt;
+    data['name'] = name;
+    data['id'] = id;
     return data;
   }
 }
