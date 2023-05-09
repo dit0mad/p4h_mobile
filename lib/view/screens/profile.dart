@@ -171,7 +171,7 @@ class _ProfileStateState extends State<ProfileState> {
                               userProvider.addPost(postController.text);
                               postController.clear();
                             },
-                            child: Text('POST')))
+                            child: const Text('POST')))
                   ],
                 ),
               ),
@@ -265,10 +265,10 @@ class PostWidget extends StatelessWidget {
                         children: [
                           Row(
                             children: [
-                              Icon(Icons.timer),
+                              const Icon(Icons.timer),
                               Text(
                                 userPost.postedAt.toString(),
-                                style: TextStyle(fontSize: 17),
+                                style: const TextStyle(fontSize: 17),
                               ),
                             ],
                           ),
@@ -300,8 +300,8 @@ class PostWidget extends StatelessWidget {
                   ),
                   ElevatedButton.icon(
                       onPressed: () => userProvider.delete(userPost.id!),
-                      icon: Icon(Icons.delete),
-                      label: Text('Delete'))
+                      icon: const Icon(Icons.delete),
+                      label: const Text('Delete'))
                 ],
               ),
             ),

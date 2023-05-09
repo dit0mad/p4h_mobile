@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:p4h_mobile/screens/login_screen.dart';
+import 'package:p4h_mobile/view/screens/login_screen.dart';
 
 class NavgiationState extends ChangeNotifier {
   //list of a stack with navs on it.

@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:p4h_mobile/constants.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:p4h_mobile/screens/resource_screens/lesson_plan_screen.dart';
-import 'package:p4h_mobile/screens/resource_screens/photo_screen.dart';
-import 'package:p4h_mobile/screens/resource_screens/video_screen.dart';
-import '../../widgets/build_card.dart';
-import '../../widgets/build_divider.dart';
-import '../../widgets/text_field.dart';
+import 'package:p4h_mobile/view/screens/resource_screens/lesson_plan_screen.dart';
+import 'package:p4h_mobile/view/screens/resource_screens/photo_screen.dart';
+import 'package:p4h_mobile/view/screens/resource_screens/video_screen.dart';
+import '../../../widgets/build_card.dart';
+import '../../../widgets/build_divider.dart';
+import '../../../widgets/text_field.dart';
 
 class ResourceScreen extends StatelessWidget {
   static const routeName = 'Resource Screen';

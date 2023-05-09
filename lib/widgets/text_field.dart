@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 
 import 'package:p4h_mobile/constants.dart';
 
-import '../constants.dart';
 
 class CustomTextField extends StatelessWidget {
   final String hintText;

@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:p4h_mobile/appstate/user/user_state.dart';
-import 'package:p4h_mobile/widgets/build_divider.dart';
 import 'package:provider/provider.dart';
-import '../widgets/message_card.dart';
-import '../widgets/text_field.dart';
+import '../../widgets/text_field.dart';
 
 class Messages extends StatelessWidget {
   const Messages({super.key});
@@ -15,7 +13,7 @@ class Messages extends StatelessWidget {
     print('printing from message :(');
     return Column(
       children: [
-        CustomTextField(
+        const CustomTextField(
           hintText: 'Search',
           fieldSize: 40,
         ),

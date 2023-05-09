@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:p4h_mobile/constants.dart';
-import 'package:p4h_mobile/screens/profile.dart';
 import 'package:p4h_mobile/widgets/build_divider.dart';
-import '../widgets/text_field.dart';
+import '../../widgets/text_field.dart';
 
 class DiscussionScreen extends StatelessWidget {
   static const routeName = 'Discussion Screen';

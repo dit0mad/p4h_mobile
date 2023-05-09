@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:p4h_mobile/appstate/user/user_state.dart';
+import 'package:p4h_mobile/constants.dart';
+
 import 'package:provider/provider.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -31,11 +33,7 @@ class _LoginScreenState extends State<LoginScreen> {
           width: width,
           child: Column(
             children: [
-              Center(
-                  child: Text(
-                'P4H Chat',
-                style: Theme.of(context).textTheme.displayLarge,
-              )),
+              Center(child: Text('P4H Chat', style: headlineStyle1)),
               const SizedBox(
                 height: 15,
               ),
@@ -43,55 +41,57 @@ class _LoginScreenState extends State<LoginScreen> {
                   child: Text(
                 textAlign: TextAlign.center,
                 'Ouvri sesyon an',
-                style: Theme.of(context).textTheme.bodyLarge,
+                style: bodyText1,
               )),
               const SizedBox(
-                height: 15,
+                height: 35,
               ),
               Column(
                 children: [
                   Container(
-                    decoration: BoxDecoration(
-                      color: Colors.black12,
-                      border: Border.all(width: 0.5, color: Colors.black38),
-                    ),
-                    width: 260,
+                    margin: const EdgeInsets.symmetric(horizontal: 25),
+                    padding: const EdgeInsets.symmetric(horizontal: 5,vertical: 5),
                     child: TextField(
-                      decoration: const InputDecoration(
-                        labelText: "Non",
-                      ),
+                      decoration:
+                          kInputTextFieldDecoration.copyWith(labelText: 'Non'),
                       controller: userNameController,
                     ),
                   ),
-                  const SizedBox(
-                    height: 10,
-                  ),
+                 
                   Container(
-                    color: Colors.black12,
-                    width: 260,
+                    margin: const EdgeInsets.symmetric(horizontal: 25),
+                    padding: const EdgeInsets.symmetric(horizontal: 5,vertical: 5),
                     child: TextFormField(
-                      decoration: const InputDecoration(
-                        labelText: "Telefon",
-                      ),
+                      decoration: kInputTextFieldDecoration.copyWith(
+                          labelText: 'Telefon'),
                       controller: passWordController,
                     ),
                   ),
                 ],
               ),
               const SizedBox(
-                height: 25,
+                height: 15,
               ),
               SizedBox(
                 width: width * 0.9,
                 child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Expanded(
-                      child: ElevatedButton(
-                        onPressed: () {
-                          userProvider.login(
-                              userNameController.text, passWordController.text);
-                        },
-                        child: const Text('Kontinye'),
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 12),
+                        child: SizedBox(
+                          height: 40,
+                          child: ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                                backgroundColor: mainAppColor2, elevation: 10),
+                            onPressed: () {
+                              userProvider.login(
+                                  userNameController.text, passWordController.text);
+                            },
+                            child: Text('Kontinye',style: buttonTitle,),
+                          ),
+                        ),
                       ),
                     ),
                   ],
@@ -105,8 +105,8 @@ class _LoginScreenState extends State<LoginScreen> {
                   Center(
                       child: Text(
                     textAlign: TextAlign.center,
-                    'Enformaysyon sou \n Profile',
-                    style: Theme.of(context).textTheme.bodyText1,
+                    'Enformaysyon sou Profile',
+                    style: bodyText1,
                   )),
                   const SizedBox(
                     height: 15,
@@ -114,18 +114,20 @@ class _LoginScreenState extends State<LoginScreen> {
                   Center(
                       child: Text(
                     'Mete non ak telefon ou anwo a',
-                    style: Theme.of(context).textTheme.bodyText2,
+                    style: bodyText2,
                   )),
                 ],
               ),
               const SizedBox(
-                height: 25,
+                height: 20,
               ),
               ElevatedButton(
+                 style: ElevatedButton.styleFrom(
+                            backgroundColor: mainAppColor2, elevation: 10),
                 onPressed: () {},
-                child: const Text('testdata'),
+                child:  Text('Testdata',style: buttonTitle,),
               ),
-              username != null ? Text(username) : const Text('data'),
+              username != null ? Text(username) : Text('Data',style: bodyText2,),
             ],
           ),
         ),

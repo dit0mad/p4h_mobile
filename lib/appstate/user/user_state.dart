@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:p4h_mobile/appstate/nagivation/nav_state.dart';
 import 'package:p4h_mobile/models/user_post.dart';
-import 'package:p4h_mobile/screens/dashboard.dart';
+import 'package:p4h_mobile/view/screens/dashboard.dart';
 import 'package:p4h_mobile/services/http_service.dart';
 
 class User extends UserStatus {

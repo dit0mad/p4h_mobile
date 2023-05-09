@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:p4h_mobile/constants.dart';
 import 'package:p4h_mobile/controllers/tab_controller.dart' as controller;
-import 'package:p4h_mobile/screens/discussion.dart';
-import 'package:p4h_mobile/screens/messages.dart';
-import 'package:p4h_mobile/screens/profile.dart';
-import 'package:p4h_mobile/screens/resource_screens/resource_screen.dart';
+import 'package:p4h_mobile/view/screens/discussion.dart';
+import 'package:p4h_mobile/view/screens/messages.dart';
+import 'package:p4h_mobile/view/screens/profile.dart';
+import 'package:p4h_mobile/view/screens/resource_screens/resource_screen.dart';
 
 
 
@@ -31,7 +31,7 @@ class Dashboard extends StatelessWidget {
                     child: Center(
                       child: Text(
                         tabController.title.value,
-                        style: headlineStyle1,
+                        
                       ),
                     ),
                   ),
