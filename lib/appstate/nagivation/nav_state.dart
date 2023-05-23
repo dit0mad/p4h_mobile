@@ -1,27 +1,33 @@
 import 'package:flutter/material.dart';
+import 'package:p4h_mobile/appstate/nagivation/actions.dart';
+import 'package:p4h_mobile/appstate/nagivation/nav_reducer.dart';
 import 'package:p4h_mobile/screens/login_screen.dart';
 
-class NavgiationState extends ChangeNotifier {
+class NavigationStateProvider extends ChangeNotifier {
   //list of a stack with navs on it.
   //can be mnultiple list of stacks.
 
   //take list of route info and call method.
 
   List<MaterialPage> mainStack;
+  List<MaterialPage> loggedIn;
 
-  NavgiationState({
-    this.mainStack = const [...pages],
+  NavigationStateProvider({
+    this.mainStack = const [...mainStackPages],
+    this.loggedIn = const [],
   });
 
-  NavgiationState copyWith({
+  NavigationStateProvider copyWith({
     final List<MaterialPage>? mainStack,
   }) {
-    return NavgiationState(
+    return NavigationStateProvider(
       mainStack: mainStack ?? this.mainStack,
     );
   }
 
   void pushPageRoute(MaterialPage page) {
+    final action = PushPageRoute(target: Target.loggedIn, page: page);
+    // final nextState = reducer(action, state, target)
     mainStack = [...mainStack, page];
 
     notifyListeners();
@@ -46,7 +52,19 @@ class EmptyPage extends StatelessWidget {
   }
 }
 
-const pages = [
+const mainStackPages = [
+  MaterialPage(
+      child: Material(
+    child: EmptyPage(),
+  )),
+  MaterialPage(
+    child: Material(
+      child: LoginScreen(),
+    ),
+  ),
+];
+
+const loggedInPages = [
   MaterialPage(
       child: Material(
     child: EmptyPage(),

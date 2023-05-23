@@ -294,7 +294,7 @@ class PostWidget extends StatelessWidget {
                     style: ElevatedButton.styleFrom(
                         backgroundColor: mainAppColor1),
                     onPressed: () {
-                      HttpService().getPosts();
+                      userProvider.addComment('test cimment', userPost.id!);
                     },
                     child: const Text('Comment'),
                   ),

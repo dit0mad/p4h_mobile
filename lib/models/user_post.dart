@@ -1,4 +1,5 @@
-import 'package:p4h_mobile/appstate/user/user_state.dart';
+import 'package:p4h_mobile/models/comment.dart';
+import 'package:p4h_mobile/models/user.dart';
 
 abstract class UserPostResponse {
   const UserPostResponse();
@@ -40,7 +41,7 @@ class UserPost extends UserPostResponse {
     final String? postedAt,
     final List<Comment>? comments,
     final List? files,
-    final String message = '',
+    final String? message,
   }) {
     return UserPost(
       comments: comments ?? this.comments,
@@ -49,7 +50,7 @@ class UserPost extends UserPostResponse {
       postedAt: postedAt ?? this.postedAt,
       title: title ?? this.title,
       user: user ?? this.user,
-      message: message,
+      message: message ?? this.message,
     );
   }
 
@@ -63,7 +64,7 @@ class UserPost extends UserPostResponse {
     final List commentValue = commentParent.entries.first.value;
 
     final id = data['id'];
-    final user = User.fromJson(data['user']);
+    final user = User.fromJson(data['profileUser']);
     final title = data['title'];
     final postedAt = data['posted_at'];
     final comments =
@@ -90,35 +91,4 @@ class UserPost extends UserPostResponse {
         'comments': comments,
         'files': files,
       };
-}
-
-class Comment {
-  int id;
-  String message;
-  String name;
-  User user;
-
-  Comment(
-      {required this.id,
-      required this.message,
-      required this.name,
-      required this.user});
-
-  factory Comment.fromJson(Map<String, dynamic>? data) {
-    if (data == null) {
-      throw UnimplementedError('userpost from json error');
-    }
-
-    final id = data['id'];
-    final message = data['message'];
-    final name = data['name'];
-    final user = User.fromJson(data['author']);
-
-    return Comment(
-      id: id,
-      user: user,
-      message: message,
-      name: name,
-    );
-  }
 }

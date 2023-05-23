@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:p4h_mobile/appstate/nagivation/nav_state.dart';
 import 'package:p4h_mobile/constants.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:p4h_mobile/screens/resource_screens/lesson_plan_screen.dart';
 import 'package:p4h_mobile/screens/resource_screens/photo_screen.dart';
 import 'package:p4h_mobile/screens/resource_screens/video_screen.dart';
+import 'package:provider/provider.dart';
 import '../../widgets/build_card.dart';
 import '../../widgets/build_divider.dart';
 import '../../widgets/text_field.dart';
@@ -14,18 +16,24 @@ class ResourceScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final navStateProvider = Provider.of<NavigationStateProvider>(context);
+    final navState = navStateProvider;
+
     return Padding(
       padding: const EdgeInsets.only(top: 1),
       child: Column(
         children: [
-          const CustomTextField(hintText: 'Search Resous',fieldSize: 40,),
-        
+          const CustomTextField(
+            hintText: 'Search Resous',
+            fieldSize: 40,
+          ),
           BuildCard(
             icon: FontAwesomeIcons.book,
             titleText: 'Lesson Plans',
             subTitleText: 'Documents to help everyday teaching.',
             onPressed: () {
-              Navigator.pushNamed(context, LessonPlanScreen.routeName);
+              navState.pushPageRoute(const MaterialPage(
+                  child: Material(child: LessonPlanScreen())));
             },
             iconColor: mainIconColor,
           ),
@@ -34,8 +42,7 @@ class ResourceScreen extends StatelessWidget {
             child: BuildDivider(),
           ),
           BuildCard(
-            icon: FontAwesomeIcons.video
-            ,
+            icon: FontAwesomeIcons.video,
             titleText: 'Videyo',
             subTitleText: 'Instructional Videos.',
             onPressed: () {
@@ -43,12 +50,12 @@ class ResourceScreen extends StatelessWidget {
             },
             iconColor: mainIconColor,
           ),
-         const Padding(
+          const Padding(
             padding: EdgeInsets.symmetric(horizontal: 8),
             child: BuildDivider(),
           ),
           BuildCard(
-            icon:  FontAwesomeIcons.camera,
+            icon: FontAwesomeIcons.camera,
             titleText: 'Foto',
             subTitleText: 'Instructional Videos.',
             onPressed: () {
@@ -61,5 +68,3 @@ class ResourceScreen extends StatelessWidget {
     );
   }
 }
-
-

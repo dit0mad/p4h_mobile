@@ -1,92 +1,47 @@
 import 'package:flutter/material.dart';
 import 'package:p4h_mobile/appstate/nagivation/nav_state.dart';
+import 'package:p4h_mobile/appstate/user/reducer.dart';
+import 'package:p4h_mobile/models/comment.dart';
+import 'package:p4h_mobile/models/user.dart';
 import 'package:p4h_mobile/models/user_post.dart';
 import 'package:p4h_mobile/screens/dashboard.dart';
 import 'package:p4h_mobile/services/http_service.dart';
 
-class User extends UserStatus {
-  factory User.fromJson(Map<String, dynamic> json) {
-    return User(
-      canvasID: json["canvasId"],
-      bio: json['bio'],
-      email: json['email'],
-      id: json['id'],
-      name: json['name'],
-      username: json['name'],
-      location: json['location'],
-      school: json['school'],
-      phone: json['phone'],
-    );
-  }
-
-  final String? bio;
-  final int canvasID;
-  final String email;
-  final int id;
-  final String? location;
-  final String name;
-  final String? phone;
-  final String? school;
-  final String username;
-
-  final bool loggedIn;
-
-  const User({
-    this.bio,
-    required this.canvasID,
-    required this.email,
-    required this.id,
-    this.location,
-    required this.name,
-    this.phone,
-    this.school,
-    required this.username,
-    this.loggedIn = false,
-  });
-
-  User get userState => this;
-
-  User copyWith({
-    final String? bio,
-    final int? canvasID,
-    final String? email,
-    final int? id,
-    final String? location,
-    final String? name,
-    final String? phone,
-    final String? school,
-    final String? username,
-    final bool? loggedIn,
-  }) {
-    return User(
-      canvasID: canvasID ?? this.canvasID,
-      email: email ?? this.email,
-      id: id ?? this.id,
-      name: name ?? this.name,
-      location: location ?? this.location,
-      phone: phone ?? this.phone,
-      school: school ?? this.school,
-      bio: bio ?? this.bio,
-      username: username ?? this.username,
-      loggedIn: loggedIn ?? this.loggedIn,
-    );
-  }
-}
-
 class UserState {
-  User? user;
-  List<UserPost>? _userPost;
+  final User? user;
+  final List<UserPost> _userPost;
+  final NavigationStateProvider? navstate;
+  final List<UserPost> _announcements;
 
-  UserState();
+  UserState({
+    this.navstate,
+    this.user,
+    List<UserPost> userPost = const [],
+    List<UserPost> announcements = const [],
+  })  : _userPost = userPost,
+        _announcements = announcements;
+
+  UserState copyWith({
+    final User? user,
+    final List<UserPost>? userPost,
+    List<UserPost>? announcements = const [],
+  }) {
+    return UserState(
+      navstate: navstate,
+      user: user ?? this.user,
+      userPost: userPost ?? _userPost,
+      announcements: announcements ?? _announcements,
+    );
+  }
 }
 
 class UserStateProvider extends ChangeNotifier {
-  //final UserState userState;
+  UserState? userState;
 
   User? user;
   List<UserPost> _userPost;
   List<UserPost> _announcements;
-  final NavgiationState navstate;
+  final NavigationStateProvider navstate;
   final bool userPostLoading = true;
 
   Iterable<UserPost> get getUserposts => _userPost.reversed;
@@ -95,6 +50,7 @@ class UserStateProvider extends ChangeNotifier {
 //initial state emptyUser;
 
   UserStateProvider({
+    this.userState,
     required this.navstate,
     this.user,
     List<UserPost> userPost = const [],
@@ -105,8 +61,10 @@ class UserStateProvider extends ChangeNotifier {
   UserStateProvider copyWith({
     final User? user,
     final List<UserPost>? userPost,
+    final UserState? userState,
   }) {
     return UserStateProvider(
+      userState: userState ?? this.userState,
       navstate: navstate,
       user: user ?? this.user,
     );
@@ -117,7 +75,7 @@ class UserStateProvider extends ChangeNotifier {
   }
 
   Future getPosts() async {
-    final postResponse = await HttpService().getPosts();
+    final postResponse = await HttpService().getPosts(user!.id.toString());
     final ann = await HttpService().getAnnouncements();
 
     if (postResponse is UserPostSuccess) {
@@ -129,7 +87,10 @@ class UserStateProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  void login(String username, String password) async {
+  void login(
+    String username,
+    String password,
+  ) async {
     final userResponse = await HttpService().login(username, password);
 
     //we wait for a user type and if we get it, we need to fire an action to retireve other information
@@ -146,12 +107,14 @@ class UserStateProvider extends ChangeNotifier {
 
       user = resolved;
 
+      userState = userState!.copyWith(user: user);
+
       await getPosts();
 
       //after loging in we need to get userposts to populate.
       //we can hit another method to retrieve
 
-      navstate.pushPageRoute(
+      navstate.pushReplacementRoute(
         const MaterialPage(
           child: Material(
             child: Dashboard(),
@@ -168,78 +131,64 @@ class UserStateProvider extends ChangeNotifier {
     }
   }
 
-  void addComment(UserPost comment) {}
+  void addComment(String comment, int id) async {
+    //add comment where userpost equal the id of the post/
+
+    final action = AddCommentAttempt(
+      comment: comment,
+      id: id,
+    );
+
+    final nextState = postReducer(action, _userPost);
+
+    _userPost = nextState;
+
+    //then do server stuff
+
+    notifyListeners();
+  }
 
   void addPost(String post) async {
     //TODO @yasantha : handle this via request repsonse actions. if successs
 
     final userPost = UserPost(
       message: post,
-      user: user!,
+      user: user,
       comments: [],
       id: 69,
     );
 
     final action = AddPostAttempt(
       post: post,
-      state: _userPost,
       user: user!,
     );
 
-    final nextState = postReducer(action);
+    final nextState = postReducer(action, _userPost);
 
     _userPost = nextState;
 
-    //final response = await HttpService().createPost('1');
+    final response = await HttpService().createPost('1');
     notifyListeners();
   }
 
   void delete(int postID) async {
     final nextState = postReducer(
-      DeletePostAttempt(
-        postID: postID,
-        state: _userPost,
-      ),
+      DeletePostAttempt(postID: postID),
+      _userPost,
     );
 
     _userPost = nextState;
     notifyListeners();
-    // final response = await HttpService().deletePost(postID);
+    final response = await HttpService().deletePost(postID);
   }
 }
 
-postReducer(Action action) {
-  if (action is DeletePostAttempt) {
-    final nextState = action.state.where(
-      (element) => element.id != action.postID,
-    );
-
-    return nextState.toList();
-  }
-
-  if (action is AddPostAttempt) {
-    final nextState = [
-      ...action.state,
-      UserPost(
-        message: action.post,
-        user: action.user,
-        comments: [],
-        id: 69,
-      ),
-    ];
-
-    return nextState;
-  }
+abstract class BaseAction {
+  const BaseAction();
 }
 
-abstract class Action {
-  const Action();
-}
-
-abstract class PostActionReducer extends Action {
-  final List<UserPost> state;
-
-  const PostActionReducer({required this.state});
+abstract class PostActionReducer extends BaseAction {
+  const PostActionReducer();
 }
 
 class DeletePostAttempt extends PostActionReducer {
@@ -247,19 +196,27 @@ class DeletePostAttempt extends PostActionReducer {
 
   DeletePostAttempt({
     required this.postID,
-    required super.state,
   });
 }
 
-class AddPostAttempt extends Action {
+class AddPostAttempt extends BaseAction {
   final String post;
-  final List<UserPost> state;
+
   final User user;
 
   const AddPostAttempt({
     required this.post,
-    required this.state,
     required this.user,
+  });
+}
+
+class AddCommentAttempt extends BaseAction {
+  final String comment;
+  final int id;
+
+  const AddCommentAttempt({
+    required this.comment,
+    required this.id,
   });
 }
 

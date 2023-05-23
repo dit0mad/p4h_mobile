@@ -8,14 +8,16 @@ void main() {
     MultiProvider(
       providers: [
         ChangeNotifierProvider(
-          create: (_) => NavgiationState(),
+          create: (_) => NavigationStateProvider(),
         ),
-        ChangeNotifierProxyProvider<NavgiationState, UserStateProvider>(
+        ChangeNotifierProxyProvider<NavigationStateProvider, UserStateProvider>(
           create: (_) => UserStateProvider(
-            navstate: NavgiationState(),
+            userState: UserState(),
+            navstate: NavigationStateProvider(),
           ),
           update: (BuildContext context, value, UserStateProvider? previous) {
             return UserStateProvider(
+              userState: previous?.userState,
               navstate: value,
               user: previous?.user,
               userPost: previous!.getUserposts.toList(),
@@ -35,7 +37,7 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final navStateProvider = Provider.of<NavgiationState>(context);
+    final navStateProvider = Provider.of<NavigationStateProvider>(context);
     final stack = navStateProvider.mainStack;
 
     return MaterialApp(

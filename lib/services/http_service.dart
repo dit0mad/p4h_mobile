@@ -4,12 +4,13 @@ import 'dart:math';
 import 'package:dio/dio.dart';
 import 'package:http/http.dart' as http;
 import 'package:p4h_mobile/appstate/user/user_state.dart';
+import 'package:p4h_mobile/models/user.dart';
 import 'package:p4h_mobile/models/user_post.dart';
 
 const String url = 'https://p4hteach.org/api/';
 
 const session =
-    'session=.eJwdzjEOwzAIQNG7MGcwNhjIZSIbg9o1aaaqd2_V-UtP_w1HnnE9YH-dd2xwPBfsoM042bVG5d6J-iKalJWzLVnWYlAjn51rwWk0foELmaIkC5OyKCZKmW2mZV3C6pilNxSbOqqTLuPhXeKn6KDe2D2ISrVcHLDBfcX5n8HPF6nTLXc.ZB3qFA.prGRL8PcsqLxbmMZbCub2FOOaeU; Path=/; HttpOnly';
+    'session=.eJwdzrkNwzAMAMBdWLsQzUeSlwkoPkhaO66C7B4gN8F94FFnXk843uedGzxeAQcwZlRz7kPUvC2hynBqNolLesao3Ad3C9NEmuKhvJAyeE6REt2REDmWj-ZdssvySJIwQxmps_lClbLKoSlzrBkNxc3MGRU2uK88_xn8_gCFWi--.ZFlKBg.02xRvyD3mdKEjLtEyH8Q3LGeWHo';
 
 class HttpService {
   Future<UserPostSuccess> getAnnouncements() async {
@@ -38,7 +39,7 @@ class HttpService {
   Future deletePost(int postID) async {
     final resolveUri = Uri.parse('https://p4hteach.org/api/post/$postID');
 
-    // final response = Dio().deleteUri(resolveUri);
+    //final response = Dio().deleteUri(resolveUri);
 
     try {
       final response = await http.delete(
@@ -48,8 +49,29 @@ class HttpService {
         },
         resolveUri,
       );
+      print(response.statusCode);
     } catch (e) {
       throw UnimplementedError(e.toString());
+    }
+  }
+
+  Future<UserPostResponse> postComment(String postID) async {
+    final resolvedUri = Uri.parse('https://p4hteach.org/api/comment/$postID');
+
+    try {
+      final response = await Dio().postUri(resolvedUri,
+          data: {'text': 'Test comment from p4hMobile'},
+          options: Options(
+            headers: {
+              'Content-Type': 'application/x-www-form-urlencoded',
+              'Cookie': session,
+            },
+          ));
+
+      print(response.data);
+      return const UserPostSuccess(userPosts: []);
+    } catch (e) {
+      throw Exception(e);
     }
   }
 
@@ -77,8 +99,8 @@ class HttpService {
 
   void getUser() {}
 
-  Future<UserPostResponse> getPosts() async {
-    final resolveUri = Uri.parse('https://p4hteach.org/api/posts');
+  Future<UserPostResponse> getPosts(String userID) async {
+    final resolveUri = Uri.parse('https://p4hteach.org/api/posts/$userID');
 
     try {
       final response = await http.get(
@@ -146,6 +168,33 @@ class HttpService {
     }
 
     return EmptyUser(e: e.toString());
+  }
+
+  Future<void> logOut() async {
+    final url = Uri.parse("https://p4hteach.org/api/logout");
+
+    http.Response response = await http.post(
+      headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+      url,
+    );
+
+    try {
+      if (response.statusCode == 200) {
+        final decodedResponse = jsonDecode(response.body);
+
+        final resolvedUser = User.fromJson(decodedResponse);
+
+        const rq = RequestType.get;
+
+       
+
+        print(response.body);
+
+        return;
+      }
+    } catch (e) {
+      throw EmptyUserError(e: e.toString());
+    }
   }
 }
 
