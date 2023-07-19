@@ -48,7 +48,7 @@ class Dashboard extends StatelessWidget {
                             children: const [
                               ProfileState(),
                               Messages(),
-                              ResourceScreen(),
+                              ResourceScreenMediator(),
                               DiscussionScreen(),
                             ])),
                   ),

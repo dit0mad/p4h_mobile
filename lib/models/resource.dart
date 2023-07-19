@@ -1,29 +1,43 @@
-class Resource {
-  final String? name;
-  final String? date;
-  final List? files;
+abstract class UserResourceResponse {
+  const UserResourceResponse();
+}
 
-  const Resource({
+class ResourcesResponse extends UserResourceResponse {
+  final List<UserResourceResponseSuccess> resource;
+
+  const ResourcesResponse({required this.resource});
+}
+
+class UserResourceResponseSuccess extends UserResourceResponse {
+  final int? id;
+  final String? name;
+  final String? updatedAt;
+
+  const UserResourceResponseSuccess({
+    this.id,
     this.name,
-    this.date,
-    this.files,
+    this.updatedAt,
   });
 
-  factory Resource.fromJson(Map<String, dynamic> data) {
+  factory UserResourceResponseSuccess.fromJson(Map<String, dynamic> data) {
+    final id = data['id'];
     final name = data['name'];
-    final date = data['date'];
-    final files = data['files'];
+    final updatedAt = data['updated_at'];
 
-    return Resource(
-      date: date,
+    return UserResourceResponseSuccess(
+      id: id,
       name: name,
-      files: files,
+      updatedAt: updatedAt,
     );
   }
 
   Map<String, dynamic> toJson() => {
-        ' name': name,
-        'date': date,
-        'files': files,
+        ' id': id,
+        'name': name,
+        'updatedAt': updatedAt,
       };
+}
+
+class UserResourceResponseFailure extends UserResourceResponse {
+  const UserResourceResponseFailure();
 }

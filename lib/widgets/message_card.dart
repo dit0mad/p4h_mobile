@@ -24,12 +24,12 @@ class MessageCardWidget extends StatelessWidget {
                             'https://lh3.googleusercontent.com/a-/AAuE7mChgTiAe-N8ibcM3fB_qvGdl2vQ9jvjYv0iOOjB=s96-c'),
                       ),
                     ),
-                    Expanded(
+                    const Expanded(
                       child: Padding(
-                        padding: const EdgeInsets.only(left: 8.0, top: 5),
+                        padding: EdgeInsets.only(left: 8.0, top: 5),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
-                          children: const [
+                          children: [
                             Text(
                               '2:11',
                               style: TextStyle(fontSize: 17),

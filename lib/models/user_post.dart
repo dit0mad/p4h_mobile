@@ -17,7 +17,7 @@ class UserPostFailedResponse extends UserPostResponse {
 
 class UserPost extends UserPostResponse {
   final int? id;
-  final User? user;
+  final UserSuccess? user;
   final String? title;
   final String? postedAt;
   final List<Comment>? comments;
@@ -36,7 +36,7 @@ class UserPost extends UserPostResponse {
 
   UserPost copyWith({
     final int? id,
-    final User? user,
+    final UserSuccess? user,
     final String? title,
     final String? postedAt,
     final List<Comment>? comments,
@@ -56,7 +56,7 @@ class UserPost extends UserPostResponse {
 
   factory UserPost.fromJson(Map<String, dynamic>? data) {
     if (data == null) {
-      throw UnimplementedError('userpost from json error');
+      return const UserPost(message: 'null');
     }
 
     final Map<String, dynamic> commentParent = data['comments'];
@@ -64,7 +64,7 @@ class UserPost extends UserPostResponse {
     final List commentValue = commentParent.entries.first.value;
 
     final id = data['id'];
-    final user = User.fromJson(data['profileUser']);
+    final user = UserSuccess.fromJson(data['profileUser']);
     final title = data['title'];
     final postedAt = data['posted_at'];
     final comments =

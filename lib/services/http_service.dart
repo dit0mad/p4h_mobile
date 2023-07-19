@@ -4,15 +4,50 @@ import 'dart:math';
 import 'package:dio/dio.dart';
 import 'package:http/http.dart' as http;
 import 'package:p4h_mobile/appstate/user/user_state.dart';
+import 'package:p4h_mobile/models/resource.dart';
 import 'package:p4h_mobile/models/user.dart';
 import 'package:p4h_mobile/models/user_post.dart';
+import 'package:p4h_mobile/services/rocket_chat_auth_response.dart';
 
 const String url = 'https://p4hteach.org/api/';
 
-const session =
-    'session=.eJwdzrkNwzAMAMBdWLsQzUeSlwkoPkhaO66C7B4gN8F94FFnXk843uedGzxeAQcwZlRz7kPUvC2hynBqNolLesao3Ad3C9NEmuKhvJAyeE6REt2REDmWj-ZdssvySJIwQxmps_lClbLKoSlzrBkNxc3MGRU2uK88_xn8_gCFWi--.ZFlKBg.02xRvyD3mdKEjLtEyH8Q3LGeWHo';
-
 class HttpService {
+  late final StoreCookie? cookie;
+
+  HttpService({
+    this.cookie = StoreCookie.nothing,
+  });
+
+  HttpService copyWith({
+    final StoreCookie? cookie,
+  }) {
+    return HttpService(
+      cookie: cookie ?? this.cookie,
+    );
+  }
+
+  Future<RocketChatAuthResponse> getRocketChatAuth(StoreCookie cookie) async {
+    final resolveUri = Uri.parse('https://p4hteach.org/api/rocket/token');
+
+    try {
+      final response = await http.get(
+        headers: {
+          'Content-Type': 'application/json',
+          'Cookie': cookie.cookie,
+        },
+        resolveUri,
+      );
+
+      final Map<String, dynamic> result = json.decode(response.body);
+
+      final authResponse = RocketChatAuthResponse.fromJson(result);
+
+      return authResponse;
+    } catch (e) {
+      throw EmptyUserError(e: e.toString());
+    }
+  }
+
   Future<UserPostSuccess> getAnnouncements() async {
     final resolveUri = Uri.parse('https://p4hteach.org/api/announcements');
 
@@ -20,7 +55,7 @@ class HttpService {
       final response = await http.get(
         headers: {
           'Content-Type': 'application/json',
-          'Cookie': session,
+          'Cookie': cookie!.cookie,
         },
         resolveUri,
       );
@@ -45,7 +80,7 @@ class HttpService {
       final response = await http.delete(
         headers: {
           'Content-Type': 'application/json',
-          'Cookie': session,
+          'Cookie': cookie!.cookie,
         },
         resolveUri,
       );
@@ -64,7 +99,7 @@ class HttpService {
           options: Options(
             headers: {
               'Content-Type': 'application/x-www-form-urlencoded',
-              'Cookie': session,
+              'Cookie': cookie!.cookie,
             },
           ));
 
@@ -85,7 +120,7 @@ class HttpService {
           options: Options(
             headers: {
               'Content-Type': 'application/x-www-form-urlencoded',
-              'Cookie': session,
+              'Cookie': cookie!.cookie,
             },
           ));
 
@@ -99,14 +134,14 @@ class HttpService {
 
   void getUser() {}
 
-  Future<UserPostResponse> getPosts(String userID) async {
+  Future<UserPostResponse> getPosts(int userID) async {
     final resolveUri = Uri.parse('https://p4hteach.org/api/posts/$userID');
 
     try {
       final response = await http.get(
         headers: {
           'Content-Type': 'application/json',
-          'Cookie': session,
+          'Cookie': cookie!.cookie,
         },
         resolveUri,
       );
@@ -118,27 +153,30 @@ class HttpService {
 
       return UserPostSuccess(userPosts: resolvedPost);
     } catch (e) {
-      throw EmptyUserError(e: e.toString());
+      return const UserPostFailedResponse();
     }
   }
 
-  void getResources() async {
+  Future<UserResourceResponse?> getResources() async {
     const resolveUri = '$url' 'resources';
 
     try {
       final response = await http.get(
-        headers: {'Content-Type': 'application/json', 'Cookie': session},
+        headers: {'Content-Type': 'application/json', 'Cookie': cookie!.cookie},
         Uri.parse(resolveUri),
       );
 
-      print(response.body);
+      final List<dynamic> result = json.decode(response.body);
+
+      final resources =
+          result.map((e) => UserResourceResponseSuccess.fromJson(e)).toList();
+
+      final resolved = ResourcesResponse(resource: resources);
+
+      return resolved;
     } catch (e) {
-      print(e);
+      return const UserResourceResponseFailure();
     }
-
-    // final decodedResponse = jsonDecode(response.body);
-
-    // print(decodedResponse);
   }
 
   Future<UserStatus> login(String username, String password) async {
@@ -159,12 +197,21 @@ class HttpService {
       if (response.statusCode == 200) {
         final decodedResponse = jsonDecode(response.body);
 
-        final resolvedUser = User.fromJson(decodedResponse);
+        //i need to store the cookie and check if it has expired or not. store seprate maybe?
 
-        return resolvedUser;
+        cookie = StoreCookie(cookie: response.headers['set-cookie']!);
+
+        //dispatch an action to save cookie
+        final resolvedUser = UserSuccess.fromJson(
+          decodedResponse,
+        );
+
+        final s = resolvedUser.copyWith(cookie: cookie);
+
+        return s;
       }
     } catch (e) {
-      throw EmptyUserError(e: e.toString());
+      return InvalidLoginInfo();
     }
 
     return EmptyUser(e: e.toString());
@@ -182,11 +229,7 @@ class HttpService {
       if (response.statusCode == 200) {
         final decodedResponse = jsonDecode(response.body);
 
-        final resolvedUser = User.fromJson(decodedResponse);
-
-        const rq = RequestType.get;
-
-       
+        final resolvedUser = UserSuccess.fromJson(decodedResponse);
 
         print(response.body);
 
@@ -195,6 +238,11 @@ class HttpService {
     } catch (e) {
       throw EmptyUserError(e: e.toString());
     }
+  }
+
+  void downloadFile(String fileId) {
+    final url =
+        Uri.parse("https://p4hteach.org/api/resources/download/$fileId");
   }
 }
 
@@ -208,4 +256,48 @@ class RequestType {
   static const RequestType patch = RequestType._string('PATCH');
   static const RequestType post = RequestType._string('POST');
   static const RequestType delete = RequestType._string('DELETE');
+}
+
+class StoreCookie {
+  final String cookie;
+
+  const StoreCookie._string(this.cookie);
+
+  static const StoreCookie nothing = StoreCookie._string('nothing');
+  StoreCookie({required this.cookie});
+}
+
+class HttpRepo {
+  final _httpService = HttpService();
+
+  Future<UserStatus> login(String username, String password) async {
+    final resp = await _httpService.login(username, password);
+
+    if (resp is UserSuccess) {
+      final allresp = await Future.wait([
+        _httpService.getPosts(resp.id),
+        _httpService.getResources(),
+      ]);
+
+      final resp1 = allresp[0] as UserPostResponse;
+      final resp2 = allresp[1] as UserResourceResponse;
+
+      if (resp1 is UserPostSuccess && resp2 is ResourcesResponse) {
+        return resp.copyWith(
+          userPost: resp1.userPosts,
+          resources: resp2.resource,
+        );
+      }
+    }
+
+    return resp;
+  }
+
+  Future<UserPostResponse> getPosts(int userID) async {
+    return await _httpService.getPosts(userID);
+  }
+
+  Future downloadFile(String fileId) async {
+    _httpService.downloadFile(fileId);
+  }
 }

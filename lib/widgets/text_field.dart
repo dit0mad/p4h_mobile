@@ -1,14 +1,11 @@
 import 'package:flutter/material.dart';
-
 import 'package:p4h_mobile/constants.dart';
 
-import '../constants.dart';
-
-class CustomTextField extends StatelessWidget {
+class CustomSearchField extends StatelessWidget {
   final String hintText;
   final double fieldSize;
 
-  const CustomTextField({
+  const CustomSearchField({
     Key? key,
     required this.hintText,
     required this.fieldSize,

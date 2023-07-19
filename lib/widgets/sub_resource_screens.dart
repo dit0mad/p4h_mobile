@@ -25,7 +25,7 @@ class SubResourceScreens extends StatelessWidget {
           margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 30),
           child: Column(
             children: [
-              const CustomTextField(
+              const CustomSearchField(
                 hintText: 'Search Resous',
                 fieldSize: 40,
               ),

@@ -1,8 +1,13 @@
 import 'package:p4h_mobile/appstate/user/user_state.dart';
+import 'package:p4h_mobile/models/resource.dart';
+import 'package:p4h_mobile/models/user_post.dart';
+import 'package:p4h_mobile/services/http_service.dart';
 
-class User extends UserStatus {
-  factory User.fromJson(Map<String, dynamic> json) {
-    return User(
+class UserSuccess extends UserStatus {
+  factory UserSuccess.fromJson(
+    Map<String, dynamic> json,
+  ) {
+    return UserSuccess(
       canvasID: json["canvasId"],
       bio: json['bio'],
       email: json['email'],
@@ -14,6 +19,8 @@ class User extends UserStatus {
       phone: json['phone'],
     );
   }
+
+  final StoreCookie cookie;
 
   final String? bio;
   final int canvasID;
@@ -27,7 +34,12 @@ class User extends UserStatus {
 
   final bool loggedIn;
 
-  const User({
+  final List<UserPost> userPost;
+
+  final List<UserResourceResponseSuccess> resources;
+
+  const UserSuccess({
+    this.cookie = StoreCookie.nothing,
     this.bio,
     required this.canvasID,
     required this.email,
@@ -38,11 +50,13 @@ class User extends UserStatus {
     this.school,
     required this.username,
     this.loggedIn = false,
+    this.userPost = const [],
+    this.resources = const [],
   });
 
-  User get userState => this;
+  UserSuccess get userState => this;
 
-  User copyWith({
+  UserSuccess copyWith({
     final String? bio,
     final int? canvasID,
     final String? email,
@@ -53,18 +67,23 @@ class User extends UserStatus {
     final String? school,
     final String? username,
     final bool? loggedIn,
+    final StoreCookie? cookie,
+    final List<UserPost>? userPost,
+    final List<UserResourceResponseSuccess>? resources,
   }) {
-    return User(
-      canvasID: canvasID ?? this.canvasID,
-      email: email ?? this.email,
-      id: id ?? this.id,
-      name: name ?? this.name,
-      location: location ?? this.location,
-      phone: phone ?? this.phone,
-      school: school ?? this.school,
-      bio: bio ?? this.bio,
-      username: username ?? this.username,
-      loggedIn: loggedIn ?? this.loggedIn,
-    );
+    return UserSuccess(
+        cookie: cookie ?? this.cookie,
+        canvasID: canvasID ?? this.canvasID,
+        email: email ?? this.email,
+        id: id ?? this.id,
+        name: name ?? this.name,
+        location: location ?? this.location,
+        phone: phone ?? this.phone,
+        school: school ?? this.school,
+        bio: bio ?? this.bio,
+        username: username ?? this.username,
+        loggedIn: loggedIn ?? this.loggedIn,
+        userPost: userPost ?? this.userPost,
+        resources: resources ?? this.resources);
   }
 }

@@ -44,7 +44,7 @@ class BuildCard extends StatelessWidget {
           subtitle: subTitleText != null
               ? Text(
                   subTitleText!,
-                  style: subtitle2,
+                  style: subtitle3,
                 )
               : const SizedBox(),
           trailing: trailingEnd != null ? trailingEnd! : const SizedBox(),

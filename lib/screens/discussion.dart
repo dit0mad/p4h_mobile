@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:p4h_mobile/constants.dart';
-import 'package:p4h_mobile/screens/profile.dart';
 import 'package:p4h_mobile/widgets/build_divider.dart';
+
 import '../widgets/text_field.dart';
 
 class DiscussionScreen extends StatelessWidget {
@@ -19,10 +19,10 @@ class DiscussionScreen extends StatelessWidget {
       children: [
         Container(
           margin: EdgeInsets.zero,
-          child: Row(
-            children: const [
+          child: const Row(
+            children: [
               Expanded(
-                child: CustomTextField(
+                child: CustomSearchField(
                   hintText: 'Search Diskisyon',
                   fieldSize: 40,
                 ),

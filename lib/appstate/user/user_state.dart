@@ -1,20 +1,19 @@
 import 'package:flutter/material.dart';
-import 'package:p4h_mobile/appstate/nagivation/nav_state.dart';
 import 'package:p4h_mobile/appstate/user/reducer.dart';
-import 'package:p4h_mobile/models/comment.dart';
 import 'package:p4h_mobile/models/user.dart';
 import 'package:p4h_mobile/models/user_post.dart';
 import 'package:p4h_mobile/screens/dashboard.dart';
 import 'package:p4h_mobile/services/http_service.dart';
+import 'package:p4h_mobile/services/rocket_chat_auth_response.dart';
 
 class UserState {
-  final User? user;
+  final UserSuccess? user;
   final List<UserPost> _userPost;
-  final NavigationStateProvider? navstate;
+  // final NavigationStateProvider? navstate;
   final List<UserPost> _announcements;
 
   UserState({
-    this.navstate,
+    //this.navstate,
     this.user,
     List<UserPost> userPost = const [],
     List<UserPost> announcements = const [],
@@ -22,12 +21,12 @@ class UserState {
         _announcements = announcements;
 
   UserState copyWith({
-    final User? user,
+    final UserSuccess? user,
     final List<UserPost>? userPost,
     List<UserPost>? announcements = const [],
   }) {
     return UserState(
-      navstate: navstate,
+      // navstate: navstate,
       user: user ?? this.user,
       userPost: userPost ?? _userPost,
       announcements: announcements ?? _announcements,
@@ -38,45 +37,48 @@ class UserState {
 class UserStateProvider extends ChangeNotifier {
   UserState? userState;
 
-  User? user;
+  UserSuccess? user;
   List<UserPost> _userPost;
   List<UserPost> _announcements;
-  final NavigationStateProvider navstate;
+  //final NavigationStateProvider navstate;
   final bool userPostLoading = true;
 
   Iterable<UserPost> get getUserposts => _userPost.reversed;
   Iterable<UserPost> get getAnnouncements => _announcements;
 
+  bool isLoading = false;
+
+  final HttpService httpService;
+
 //initial state emptyUser;
 
   UserStateProvider({
     this.userState,
-    required this.navstate,
+    //required this.navstate,
     this.user,
     List<UserPost> userPost = const [],
     List<UserPost> announcements = const [],
   })  : _userPost = userPost,
-        _announcements = announcements;
-
-  UserStateProvider copyWith({
-    final User? user,
-    final List<UserPost>? userPost,
-    final UserState? userState,
-  }) {
-    return UserStateProvider(
-      userState: userState ?? this.userState,
-      navstate: navstate,
-      user: user ?? this.user,
-    );
-  }
+        _announcements = announcements,
+        httpService = HttpService();
 
   void getResources() {
-    HttpService().getResources();
+    httpService.getResources();
+  }
+
+  void configureRocketChatAuth(final RocketChatAuthResponse res) {
+    final tokenID = res.authToken;
+  }
+
+  Future getRocketChatAuth(StoreCookie cookie) async {
+    final res = await httpService.getRocketChatAuth(cookie);
+
+    configureRocketChatAuth(res);
   }
 
   Future getPosts() async {
-    final postResponse = await HttpService().getPosts(user!.id.toString());
-    final ann = await HttpService().getAnnouncements();
+    final postResponse = await httpService.getPosts(user!.id);
+    final ann = await httpService.getAnnouncements();
 
     if (postResponse is UserPostSuccess) {
       _userPost = postResponse.userPosts;
@@ -91,14 +93,21 @@ class UserStateProvider extends ChangeNotifier {
     String username,
     String password,
   ) async {
-    final userResponse = await HttpService().login(username, password);
+    isLoading = true;
+    notifyListeners();
+    final userResponse = await httpService.login(username, password);
 
     //we wait for a user type and if we get it, we need to fire an action to retireve other information
     //such as userposts and resources,
     //my thought is to create another class which takes in action and gives a response.
+    if (userResponse is InvalidLoginInfo) {
+      isLoading = false;
+      notifyListeners();
+    }
 
-    if (userResponse is User) {
-      final resolved = User(
+    if (userResponse is UserSuccess) {
+      final resolved = UserSuccess(
+          cookie: userResponse.cookie,
           canvasID: userResponse.canvasID,
           email: userResponse.email,
           id: userResponse.id,
@@ -107,26 +116,30 @@ class UserStateProvider extends ChangeNotifier {
 
       user = resolved;
 
-      userState = userState!.copyWith(user: user);
+      // userState = userState!.copyWith(user: user);
 
+      await getRocketChatAuth(userResponse.cookie);
       await getPosts();
+
+      isLoading = false;
 
       //after loging in we need to get userposts to populate.
       //we can hit another method to retrieve
 
-      navstate.pushReplacementRoute(
-        const MaterialPage(
-          child: Material(
-            child: Dashboard(),
-          ),
+      // navstate.pushReplacementRoute(
+      const MaterialPage(
+        child: Material(
+          child: Dashboard(),
         ),
       );
+      // );
       notifyListeners();
       return;
     }
 
     if (userResponse is EmptyUserError) {
-      //TODO: @yasantha empty user error
+      isLoading = false;
+      notifyListeners();
       throw UnimplementedError('empty user');
     }
   }
@@ -167,7 +180,8 @@ class UserStateProvider extends ChangeNotifier {
 
     _userPost = nextState;
 
-    final response = await HttpService().createPost('1');
+    final response = await httpService
+      ..createPost('1');
     notifyListeners();
   }
 
@@ -179,7 +193,8 @@ class UserStateProvider extends ChangeNotifier {
 
     _userPost = nextState;
     notifyListeners();
-    final response = await HttpService().deletePost(postID);
+    final response = await httpService
+      ..deletePost(postID);
   }
 }
 
@@ -202,7 +217,7 @@ class DeletePostAttempt extends PostActionReducer {
 class AddPostAttempt extends BaseAction {
   final String post;
 
-  final User user;
+  final UserSuccess user;
 
   const AddPostAttempt({
     required this.post,
@@ -224,8 +239,19 @@ abstract class UserStatus extends RepresentableError {
   const UserStatus();
 }
 
+class EmptyUserState extends UserStatus {
+  const EmptyUserState();
+}
+
 abstract class RepresentableError {
   const RepresentableError();
+}
+
+class InvalidLoginInfo extends UserStatus {
+  @override
+  String toString() {
+    return 'Invalid Login Info';
+  }
 }
 
 class EmptyUser extends UserStatus {
