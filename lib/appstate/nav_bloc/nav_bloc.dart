@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:p4h_mobile/appstate/nav_bloc/nav_events.dart';
-import 'package:p4h_mobile/screens/dashboard.dart';
 import 'package:p4h_mobile/screens/login_screen.dart';
 import 'package:p4h_mobile/screens/resource_screens/resource_screen.dart';
 
@@ -20,7 +19,6 @@ const initStack = [
 ];
 
 const resourceInit = [
-  MaterialPage(name: 'empty', child: EmptyPage()),
   MaterialPage(
     name: 'resource',
     child: ResourceScreen(),
