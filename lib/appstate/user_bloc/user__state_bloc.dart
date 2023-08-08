@@ -59,6 +59,16 @@ class UserStateBloc extends Bloc<UserStateEvents, UserState> {
         ) {
     final HttpRepo http = HttpRepo();
 
+    on<Download>(
+      (event, emit) async {
+        final resp = await http.downloadFile('1');
+
+        final nextState = state as UserStateSuccess;
+
+        emit(nextState.copyWith(image: resp));
+      },
+    );
+
     on<UserLoginEvent>((event, emit) async {
       // emit(UserStatePush());
       // emit(dum);
@@ -103,7 +113,7 @@ class UserStateBloc extends Bloc<UserStateEvents, UserState> {
 
       final userPost = UserPost(
         message: event.post,
-        user: currentState.user,
+        user: currentState._user,
         comments: [],
         id: 69,
       );
@@ -130,10 +140,6 @@ class UserStateBloc extends Bloc<UserStateEvents, UserState> {
         emit(nextState);
       },
     );
-
-    on<DownloadFile>((event, emit) async {
-      final resp = await http.downloadFile(event.fileId);
-    });
   }
 }
 
@@ -148,21 +154,27 @@ class UserStateLoading extends UserState {}
 class UserStateError extends UserState {}
 
 class UserStateSuccess extends UserState {
-  final UserSuccess user;
+  final UserSuccess _user;
   final List<UserPost> userPost;
+  final String? image;
 
   const UserStateSuccess({
-    required this.user,
+    required UserSuccess user,
     this.userPost = const [],
-  });
+    this.image,
+  }) : _user = user;
+
+  UserSuccess get userSrate => _user;
 
   UserStateSuccess copyWith({
     final UserSuccess? user,
-    final List<UserPost>? userPost = const [],
+    final List<UserPost>? userPost,
+    final String? image,
   }) {
     return UserStateSuccess(
-      user: user ?? this.user,
+      user: user ?? _user,
       userPost: userPost ?? this.userPost,
+      image: image ?? this.image,
     );
   }
 }

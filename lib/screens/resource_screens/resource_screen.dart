@@ -49,7 +49,7 @@ class ResourceScreen extends StatelessWidget {
 
     final state = bloc.state as UserStateSuccess;
 
-    final resources = state.user.resources;
+    final resources = state.userSrate.resources;
 
     final theMap = Map.fromIterables(resources, icons);
 
@@ -69,7 +69,7 @@ class ResourceScreen extends StatelessWidget {
         default:
       }
 
-      navBloc.add(PopToRootPushPageRoute(
+      navBloc.add(PushPageRoute(
         page: MaterialPage<StatelessWidget>(
           child: page,
         ),

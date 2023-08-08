@@ -15,12 +15,8 @@ class _LoginScreenState extends State<LoginScreen> {
   final userNameController = TextEditingController();
   final passWordController = TextEditingController();
 
-  late UserStateBloc userProvider;
-
   @override
   void didChangeDependencies() {
-    userProvider = context.read<UserStateBloc>();
-
     super.didChangeDependencies();
   }
 
@@ -98,10 +94,12 @@ class _LoginScreenState extends State<LoginScreen> {
                           Expanded(
                             child: ElevatedButton(
                               onPressed: () {
-                                userProvider.add(UserLoginEvent(
-                                  password: passWordController.text,
-                                  userName: userNameController.text,
-                                ));
+                                context
+                                    .read<UserStateBloc>()
+                                    .add(UserLoginEvent(
+                                      password: passWordController.text,
+                                      userName: userNameController.text,
+                                    ));
                               },
                               child: const Text('Kontinye'),
                             ),
@@ -141,11 +139,21 @@ class _LoginScreenState extends State<LoginScreen> {
         }
 
         if (state is UserStateLoading) {
-          return const Center(child: CircularProgressIndicator());
+          return Center(
+              child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(
+                'Fetching Information',
+                style: Theme.of(context).textTheme.bodySmall,
+              ),
+              const CircularProgressIndicator(),
+            ],
+          ));
         }
 
         if (state is UserStateError) {
-          return  Text('Invalid Password');
+          return const Text('Invalid Password');
         }
 
         return const CircularProgressIndicator();
