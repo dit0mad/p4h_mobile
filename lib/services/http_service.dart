@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 import 'dart:math';
 
 import 'package:dio/dio.dart';
@@ -8,15 +9,14 @@ import 'package:p4h_mobile/models/resource.dart';
 import 'package:p4h_mobile/models/user.dart';
 import 'package:p4h_mobile/models/user_post.dart';
 import 'package:p4h_mobile/services/rocket_chat_auth_response.dart';
+import 'package:path_provider/path_provider.dart';
 
 const String url = 'https://p4hteach.org/api/';
 
 class HttpService {
-  late final StoreCookie? cookie;
+  late StoreCookie? cookie;
 
-  HttpService({
-    this.cookie = StoreCookie.nothing,
-  });
+  HttpService({this.cookie});
 
   HttpService copyWith({
     final StoreCookie? cookie,
@@ -240,23 +240,61 @@ class HttpService {
     }
   }
 
-  void downloadFile(String fileId) {
-    final url =
-        Uri.parse("https://p4hteach.org/api/resources/download/$fileId");
+  Future<String> downloadFile(String fileId) async {
+    final url = Uri.parse("https://p4hteach.org/resources/download/file_10-1");
+    http.Response response = await http.get(
+      headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+      url,
+    );
+    try {
+      if (response.statusCode == 200) {
+        // Get the app's external storage directory
+        Directory appDir =
+            await getApplicationDocumentsDirectory(); // Or use getApplicationDocumentsDirectory() for internal storage
+
+        // Create the file path where the downloaded file will be saved
+        String filePath = '${appDir.path}/lessasons.txt';
+
+        // Write the file content to the specified file path
+
+        File file = File(filePath);
+
+        final v = response.bodyBytes.buffer;
+        await file.writeAsBytes(v.asUint8List(response.bodyBytes.offsetInBytes,
+            response.bodyBytes.lengthInBytes));
+        // var documentDirectory = await getApplicationDocumentsDirectory();
+        // var firstPath = documentDirectory.path + "/images";
+        // var filePathAndName = '${documentDirectory.path}/images/pic.jpg';
+        // //comment out the next three lines to prevent the image from being saved
+        // //to the device to show that it's coming from the internet
+        // await Directory(firstPath).create(recursive: true); // <-- 1
+        // File file2 = File(filePathAndName); // <-- 2
+        // file2.writeAsBytesSync(response.bodyBytes);
+
+        // final de = filePathAndName;
+
+        print(filePath);
+
+        return filePath;
+      }
+      return '';
+    } catch (e) {
+      return e.toString();
+    }
   }
 }
 
-class RequestType {
-  final String _value;
+// class RequestType {
+//   final String _value;
 
-  const RequestType._string(this._value);
+//   const RequestType._string(this._value);
 
-  static const RequestType get = RequestType._string('GET');
-  static const RequestType put = RequestType._string('PUT');
-  static const RequestType patch = RequestType._string('PATCH');
-  static const RequestType post = RequestType._string('POST');
-  static const RequestType delete = RequestType._string('DELETE');
-}
+//   static const RequestType get = RequestType._string('GET');
+//   static const RequestType put = RequestType._string('PUT');
+//   static const RequestType patch = RequestType._string('PATCH');
+//   static const RequestType post = RequestType._string('POST');
+//   static const RequestType delete = RequestType._string('DELETE');
+// }
 
 class StoreCookie {
   final String cookie;
@@ -298,6 +336,6 @@ class HttpRepo {
   }
 
   Future downloadFile(String fileId) async {
-    _httpService.downloadFile(fileId);
+    return _httpService.downloadFile(fileId);
   }
 }

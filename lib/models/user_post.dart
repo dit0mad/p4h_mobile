@@ -1,3 +1,6 @@
+import 'dart:convert';
+import 'dart:typed_data';
+
 import 'package:p4h_mobile/models/comment.dart';
 import 'package:p4h_mobile/models/user.dart';
 
@@ -23,6 +26,7 @@ class UserPost extends UserPostResponse {
   final List<Comment>? comments;
   final List? files;
   final String message;
+  final dynamic image;
 
   const UserPost({
     this.id,
@@ -31,6 +35,7 @@ class UserPost extends UserPostResponse {
     this.postedAt,
     this.comments,
     this.files,
+    this.image,
     required this.message,
   });
 
@@ -42,16 +47,17 @@ class UserPost extends UserPostResponse {
     final List<Comment>? comments,
     final List? files,
     final String? message,
+    final dynamic image,
   }) {
     return UserPost(
-      comments: comments ?? this.comments,
-      files: files ?? this.files,
-      id: id ?? this.id,
-      postedAt: postedAt ?? this.postedAt,
-      title: title ?? this.title,
-      user: user ?? this.user,
-      message: message ?? this.message,
-    );
+        comments: comments ?? this.comments,
+        files: files ?? this.files,
+        id: id ?? this.id,
+        postedAt: postedAt ?? this.postedAt,
+        title: title ?? this.title,
+        user: user ?? this.user,
+        message: message ?? this.message,
+        image: image ?? this.image);
   }
 
   factory UserPost.fromJson(Map<String, dynamic>? data) {
@@ -72,6 +78,10 @@ class UserPost extends UserPostResponse {
     final files = data['files'];
     final message = data['message'];
 
+    final i = data['img'];
+
+    final img = i == null ? null : base64Decode(data['img'.toString()]);
+
     return UserPost(
       id: id,
       user: user,
@@ -80,6 +90,7 @@ class UserPost extends UserPostResponse {
       comments: comments,
       files: files,
       message: message,
+      image: img,
     );
   }
 

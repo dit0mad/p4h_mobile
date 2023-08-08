@@ -12,6 +12,10 @@ class UserLoginEvent extends UserStateEvents {
   });
 }
 
+class Download extends UserStateEvents {
+  const Download();
+}
+
 class AddPost extends UserStateEvents {
   final String post;
 

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:p4h_mobile/appstate/user_bloc/user__state_bloc.dart' as ub;
+import 'package:p4h_mobile/appstate/user_bloc/user__state_bloc.dart';
 import 'package:p4h_mobile/appstate/user_bloc/user_state_events.dart';
 import 'package:p4h_mobile/constants.dart';
 import 'package:p4h_mobile/models/user_post.dart';
@@ -19,6 +20,12 @@ class _ProfileStateState extends State<ProfileState> {
   late final TextEditingController postController = TextEditingController();
 
   @override
+  void dispose() {
+    super.dispose();
+    postController.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final userProvider = context.read<ub.UserStateBloc>();
 
@@ -26,62 +33,13 @@ class _ProfileStateState extends State<ProfileState> {
         builder: (context, state) {
       if (state is ub.UserStateSuccess) {
         return SingleChildScrollView(
-          child: Ink(
-            color: Colors.pink,
+          child: Padding(
+            padding: const EdgeInsets.all(5.0),
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Ink(
-                  color: Colors.green,
-                  child: Padding(
-                    padding: const EdgeInsets.only(top: 10.0, bottom: 8),
-                    child: Row(
-                      children: [
-                        Flexible(
-                          child: CircleAvatar(
-                            backgroundColor: Colors.greenAccent[400],
-                            radius: 40,
-                            backgroundImage: const NetworkImage(
-                                'https://lh3.googleusercontent.com/a-/AAuE7mChgTiAe-N8ibcM3fB_qvGdl2vQ9jvjYv0iOOjB=s96-c'),
-                          ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.only(left: 8.0, top: 5),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                state.user.name,
-                                style: const TextStyle(fontSize: 17),
-                              ),
-                              const Text(
-                                'Admin',
-                                style: TextStyle(fontSize: 14),
-                              ),
-                              const Text(
-                                'I work for P4H Global',
-                                style: TextStyle(fontSize: 10),
-                              ),
-                            ],
-                          ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.only(left: 10.0, right: 10),
-                          child: ElevatedButton(
-                            style: ElevatedButton.styleFrom(
-                                foregroundColor: mainAppColor1),
-                            child: const Text('pwogre mwen'),
-                            onPressed: () {
-                              HttpService().getAnnouncements();
-                            },
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-                Ink(
-                  color: Colors.pink,
+                const ProfileHeader(),
+                Flexible(
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
@@ -233,6 +191,67 @@ class _ProfileStateState extends State<ProfileState> {
   }
 }
 
+class ProfileHeader extends StatelessWidget {
+  const ProfileHeader({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final userProvider = context.read<ub.UserStateBloc>();
+
+    final state = userProvider.state as UserStateSuccess;
+
+    return Flexible(
+      child: Padding(
+        padding: const EdgeInsets.only(top: 10.0, bottom: 8),
+        child: Row(
+          children: [
+            Flexible(
+              child: CircleAvatar(
+                backgroundColor: Colors.greenAccent[400],
+                radius: 40,
+                backgroundImage: const NetworkImage(
+                    'https://lh3.googleusercontent.com/a-/AAuE7mChgTiAe-N8ibcM3fB_qvGdl2vQ9jvjYv0iOOjB=s96-c'),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.only(left: 8.0, top: 5),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    state.userSrate.name,
+                    style: const TextStyle(fontSize: 17),
+                  ),
+                  const Text(
+                    'Admin',
+                    style: TextStyle(fontSize: 14),
+                  ),
+                  const Text(
+                    'I work for P4H Global',
+                    style: TextStyle(fontSize: 10),
+                  ),
+                ],
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.only(left: 10.0, right: 10),
+              child: ElevatedButton(
+                style: ElevatedButton.styleFrom(foregroundColor: mainAppColor1),
+                child: const Text('pwogre mwen'),
+                onPressed: () {
+                  HttpService().getAnnouncements();
+                },
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
 class PostWidget extends StatelessWidget {
   final UserPost userPost;
 
@@ -243,13 +262,10 @@ class PostWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final userProvider = context.read<ub.UserStateBloc>();
-
     return BlocBuilder<ub.UserStateBloc, ub.UserState>(
-      builder: (context, state) => Container(
-        color: Colors.red,
-        padding: const EdgeInsets.only(left: 5),
-        child: DefaultTextStyle(
+      builder: (context, state) {
+        state as UserStateSuccess;
+        return DefaultTextStyle(
           style: const TextStyle(color: Colors.black),
           child: Column(
             mainAxisSize: MainAxisSize.min,
@@ -276,9 +292,13 @@ class PostWidget extends StatelessWidget {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
+                            Text(state.userSrate.name),
                             Row(
                               children: [
-                                const Icon(Icons.timer),
+                                const Icon(
+                                  Icons.timelapse,
+                                  size: 20,
+                                ),
                                 Text(
                                   userPost.postedAt.toString(),
                                   style: const TextStyle(fontSize: 17),
@@ -292,11 +312,16 @@ class PostWidget extends StatelessWidget {
                   ],
                 ),
               ),
-              if (userPost.message != null)
-                Flexible(
-                  flex: 0,
-                  child: Text(userPost.message!),
+
+              Flexible(
+                flex: 0,
+                child: Column(
+                  children: [
+                    if (userPost.image != null) Image.memory(userPost.image),
+                    Text(userPost.message),
+                  ],
                 ),
+              ),
 
               if (userPost.comments!.isNotEmpty)
                 ...userPost.comments!
@@ -316,7 +341,9 @@ class PostWidget extends StatelessWidget {
                       child: const Text('Comment'),
                     ),
                     ElevatedButton.icon(
-                        onPressed: () => userProvider.add(DeletePost(id: 69)),
+                        onPressed: () => context
+                            .read<UserStateBloc>()
+                            .add(DeletePost(id: 69)),
                         icon: const Icon(Icons.delete),
                         label: const Text('Delete'))
                   ],
@@ -327,8 +354,8 @@ class PostWidget extends StatelessWidget {
               )
             ],
           ),
-        ),
-      ),
+        );
+      },
     );
   }
 }
