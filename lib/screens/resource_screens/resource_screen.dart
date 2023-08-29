@@ -11,7 +11,7 @@ import 'package:p4h_mobile/screens/resource_screens/photo_screen.dart';
 import 'package:p4h_mobile/screens/resource_screens/video_screen.dart';
 
 import '../../widgets/build_card.dart';
-import '../../widgets/text_field.dart';
+import '../../widgets/custom_text_field.dart';
 
 const icons = [
   FontAwesomeIcons.book,
@@ -43,6 +43,7 @@ class ResourceScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    late final TextEditingController controller = TextEditingController();
     final bloc = context.read<UserStateBloc>();
 
     final navBloc = context.read<NavigationBloc>();
@@ -78,13 +79,11 @@ class ResourceScreen extends StatelessWidget {
     }
 
     Widget one = Padding(
-      padding: const EdgeInsets.only(top: 1),
+      padding: EdgeInsets.only(top: 1),
       child: Column(
         children: [
-          const CustomSearchField(
-            hintText: 'Search Resous',
-            fieldSize: 40,
-          ),
+          CustomTextField(
+              hintText: 'Search Resous', fieldSize: 40, controller: controller),
           ...theMap.entries.map((e) => BuildCard(
                 subTitleText: '${e.key.name} to help plan every day lessons',
                 titleText: e.key.name,

@@ -7,7 +7,7 @@ import 'package:p4h_mobile/appstate/user_bloc/user_state_events.dart';
 import 'package:p4h_mobile/constants.dart';
 import 'build_card.dart';
 import 'build_divider.dart';
-import 'text_field.dart';
+import 'custom_text_field.dart';
 
 class SubResourceScreens extends StatelessWidget {
   final String text1;
@@ -23,6 +23,8 @@ class SubResourceScreens extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    late final TextEditingController subResourceController =
+        TextEditingController();
     return Scaffold(
       body: Padding(
         padding: const EdgeInsets.symmetric(vertical: 40),
@@ -30,9 +32,10 @@ class SubResourceScreens extends StatelessWidget {
           margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 30),
           child: Column(
             children: [
-              const CustomSearchField(
+              CustomTextField(
                 hintText: 'Search Resous',
                 fieldSize: 40,
+                controller: subResourceController,
               ),
               Row(
                 children: [

@@ -73,6 +73,46 @@ TextStyle get subtitle4 {
   );
 }
 
+TextStyle get subtitle5 {
+  return const TextStyle(
+    color: Color(0XFF6E6E6E),
+    fontSize: 12,
+    fontWeight: FontWeight.w600,
+  );
+}
+
+TextStyle get subtitle6 {
+  return GoogleFonts.raleway(
+    color: mainAppColor2,
+    fontSize: 18,
+    fontWeight: FontWeight.w800,
+  );
+}
+
+TextStyle get subtitle7 {
+  return GoogleFonts.roboto(
+    color: Colors.grey.shade600,
+    fontSize: 15,
+    fontWeight: FontWeight.w600,
+  );
+}
+
+TextStyle get subtitle8 {
+  return GoogleFonts.raleway(
+    color: Colors.grey.shade900,
+    fontSize: 12,
+    fontWeight: FontWeight.w600,
+  );
+}
+
+TextStyle get subtitle9 {
+  return GoogleFonts.raleway(
+    color: Colors.grey.shade800,
+    fontSize: 12,
+    fontWeight: FontWeight.w800,
+  );
+}
+
 TextStyle get buttonTitle {
   return GoogleFonts.lato(
     color: Colors.grey.shade300,
