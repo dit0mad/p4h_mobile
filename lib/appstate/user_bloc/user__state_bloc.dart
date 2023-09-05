@@ -1,80 +1,61 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:p4h_mobile/appstate/user/user_state.dart';
 import 'package:p4h_mobile/appstate/user_bloc/user_state_events.dart';
-import 'package:p4h_mobile/models/comment.dart';
+import 'package:p4h_mobile/models/progress_model.dart';
 import 'package:p4h_mobile/models/resource.dart';
 import 'package:p4h_mobile/models/user.dart';
 import 'package:p4h_mobile/models/user_post.dart';
 import 'package:p4h_mobile/services/http_service.dart';
 
-const resourse = [
-  UserResourceResponseSuccess(
-    id: 1,
-    name: 'notes',
-    updatedAt: 'today',
-  ),
-  UserResourceResponseSuccess(
-    id: 1,
-    name: 'pictures',
-    updatedAt: 'today',
-  ),
-  UserResourceResponseSuccess(
-    id: 1,
-    name: 'videos',
-    updatedAt: 'today',
-  ),
-];
-
-const userSucess = UserSuccess(
-  resources: resourse,
-  canvasID: 1,
-  email: 'email',
-  id: 1,
-  name: "name",
-  username: "username",
-);
-
-final userpost = UserPost(
-  message: 'message',
-  comments: [
-    Comment(
-      message: 'comment',
-      author: userSucess,
-    ),
-  ],
-);
-
-final dum = UserStateSuccess(
-  user: userSucess,
-  userPost: [userpost],
-);
-
 class UserStateBloc extends Bloc<UserStateEvents, UserState> {
   final UserStatus user;
+  final HttpRepo http;
 
   UserStateBloc()
       : user = const EmptyUserState(),
+        http = HttpRepo(),
         super(
           UserInitial(),
         ) {
-    final HttpRepo http = HttpRepo();
+    on<GoToMyProgressSuccess>((event, emit) {
+      final prevState = state as UserStateSuccess;
 
+      final result = event.result;
+
+      emit(
+        prevState.copyWith(progress: result),
+      );
+
+      //here we need to update state with progress info
+    });
+    on<SetResourceFolder>((event, emit) {
+      final prevState = state as UserStateSuccess;
+
+      emit(const UserStateLoading());
+
+      if (!checkState(state)) {}
+
+      emit(
+        prevState.copyWith(
+          resourceFolder: event.rr,
+        ),
+      );
+    });
     on<Download>(
       (event, emit) async {
-        final resp = await http.downloadFile('1');
+        final resp = await http.downloadFile(
+          fileId: event.fileID,
+          fileName: event.fileName,
+        );
 
         final nextState = state as UserStateSuccess;
-
-        emit(nextState.copyWith(image: resp));
+//TODO @yasantha
+        emit(nextState.copyWith(filePath: resp));
       },
     );
 
     on<UserLoginEvent>((event, emit) async {
-      // emit(UserStatePush());
-      // emit(dum);
-
-      // return;
-      emit(UserStateLoading());
+      emit(const UserStateLoading());
 
       final loginRes = await http.login(event.userName, event.password);
 
@@ -87,9 +68,9 @@ class UserStateBloc extends Bloc<UserStateEvents, UserState> {
       if (loginRes is UserSuccess) {
         final getPostRes = await http.getPosts(loginRes.id);
 
-        emit(UserStatePush());
-
         if (getPostRes is UserPostSuccess) {
+          emit(UserStatePush());
+
           emit(UserStateSuccess(
             user: loginRes,
             userPost: getPostRes.userPosts,
@@ -149,36 +130,54 @@ abstract class UserState {
 
 class UserInitial extends UserState {}
 
-class UserStateLoading extends UserState {}
+class UserStateLoading extends UserState {
+  const UserStateLoading();
+}
 
 class UserStateError extends UserState {}
 
 class UserStateSuccess extends UserState {
   final UserSuccess _user;
   final List<UserPost> userPost;
-  final String? image;
+  final String? filePath;
+
+  final ResourcesFolderIdResponse? resourceFolder;
+
+  final Iterable<MyProgress> progress;
 
   const UserStateSuccess({
     required UserSuccess user,
     this.userPost = const [],
-    this.image,
+    this.progress = const [],
+    this.filePath,
+    this.resourceFolder,
   }) : _user = user;
 
-  UserSuccess get userSrate => _user;
+  UserSuccess get userState => _user;
 
   UserStateSuccess copyWith({
     final UserSuccess? user,
     final List<UserPost>? userPost,
-    final String? image,
+    final String? filePath,
+    final ResourcesFolderIdResponse? resourceFolder,
+    final Iterable<MyProgress>? progress,
   }) {
     return UserStateSuccess(
       user: user ?? _user,
       userPost: userPost ?? this.userPost,
-      image: image ?? this.image,
+      filePath: filePath ?? this.filePath,
+      resourceFolder: resourceFolder ?? this.resourceFolder,
+      progress: progress ?? this.progress,
     );
   }
 }
 
 class UserStatePush extends UserState {}
 
-abstract class BaseAction {}
+bool checkState(UserState state) {
+  if (state is UserStateSuccess) {
+    return true;
+  }
+
+  return false;
+}
