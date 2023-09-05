@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:p4h_mobile/appstate/actions_bloc/action_bloc.dart';
+import 'package:p4h_mobile/appstate/actions_bloc/actions.dart';
 import 'package:p4h_mobile/appstate/nav_bloc/nav_bloc.dart';
 import 'package:p4h_mobile/appstate/nav_bloc/nav_events.dart';
 import 'package:p4h_mobile/appstate/user_bloc/user__state_bloc.dart';
@@ -45,17 +47,15 @@ class ResourceScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final bloc = context.read<UserStateBloc>();
 
-    final navBloc = context.read<NavigationBloc>();
-
     final state = bloc.state as UserStateSuccess;
 
-    final resources = state.userSrate.resources;
+    final resources = state.userState.resources;
 
     final theMap = Map.fromIterables(resources, icons);
 
     Widget page = Ink();
 
-    void navigate(String name) {
+    void navigate(String name, int resourceID) {
       switch (name) {
         case 'notes':
           page = const LessonPlanScreen();
@@ -69,39 +69,38 @@ class ResourceScreen extends StatelessWidget {
         default:
       }
 
-      navBloc.add(PushPageRoute(
-        page: MaterialPage<StatelessWidget>(
-          child: page,
-        ),
-        target: Target.resourceStack,
-      ));
+      context.read<ActionListenerBloc>().add(
+            NavigateToLessenPlanScreen(
+              mp: page,
+              target: Target.resourceStack,
+              folderID: resourceID,
+            ),
+          );
     }
 
-    Widget one = Padding(
-      padding: const EdgeInsets.only(top: 1),
+    Widget one = Material(
       child: Column(
         children: [
           const CustomSearchField(
             hintText: 'Search Resous',
             fieldSize: 40,
           ),
-          ...theMap.entries.map((e) => BuildCard(
-                subTitleText: '${e.key.name} to help plan every day lessons',
-                titleText: e.key.name,
-                icon: e.value,
-                onPressed: () {
-                  navigate(e.key.name!);
-                },
-                iconColor: mainIconColor,
+          ...theMap.entries.map((e) => Expanded(
+                child: BuildCard(
+                  subTitleText: '${e.key.name} to help plan every day lessons',
+                  titleText: e.key.name,
+                  icon: e.value,
+                  onPressed: () {
+                    navigate(e.key.name, e.key.id);
+                  },
+                  iconColor: mainIconColor,
+                ),
               )),
         ],
       ),
     );
 
-    return BlocBuilder<UserStateBloc, UserState>(builder: (
-      context,
-      state,
-    ) {
+    return BlocBuilder<UserStateBloc, UserState>(builder: (context, state) {
       if (state is UserStateSuccess) {
         return one;
       }

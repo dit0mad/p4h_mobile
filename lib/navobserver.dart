@@ -2,8 +2,8 @@ import 'dart:developer';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-class WeatherBlocObserver extends BlocObserver {
-  const WeatherBlocObserver();
+class P4HBlocObserver extends BlocObserver {
+  const P4HBlocObserver();
 
   @override
   void onEvent(Bloc<dynamic, dynamic> bloc, Object? event) {

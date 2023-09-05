@@ -4,7 +4,9 @@ import 'dart:math';
 
 import 'package:dio/dio.dart';
 import 'package:http/http.dart' as http;
+import 'package:open_file_plus/open_file_plus.dart';
 import 'package:p4h_mobile/appstate/user/user_state.dart';
+import 'package:p4h_mobile/models/progress_model.dart';
 import 'package:p4h_mobile/models/resource.dart';
 import 'package:p4h_mobile/models/user.dart';
 import 'package:p4h_mobile/models/user_post.dart';
@@ -179,6 +181,28 @@ class HttpService {
     }
   }
 
+  Future<UserResourceResponse> getResourceFolder(int folderID) async {
+    final resolveUri = '$url' 'resources/$folderID';
+
+    try {
+      final response = await http.get(
+        headers: {'Content-Type': 'application/json', 'Cookie': cookie!.cookie},
+        Uri.parse(resolveUri),
+      );
+
+      final List<dynamic> result = json.decode(response.body);
+
+      final resources =
+          result.map((e) => UserResourceFolderResponse.fromJson(e)).toList();
+
+      final resolved = ResourcesFolderIdResponse(resources: resources);
+
+      return resolved;
+    } catch (e) {
+      throw const UserResourceResponseFailure();
+    }
+  }
+
   Future<UserStatus> login(String username, String password) async {
     final url = Uri.parse("https://p4hteach.org/api/login");
 
@@ -201,7 +225,6 @@ class HttpService {
 
         cookie = StoreCookie(cookie: response.headers['set-cookie']!);
 
-        //dispatch an action to save cookie
         final resolvedUser = UserSuccess.fromJson(
           decodedResponse,
         );
@@ -217,7 +240,7 @@ class HttpService {
     return EmptyUser(e: e.toString());
   }
 
-  Future<void> logOut() async {
+  Future<UserStatus> logOut() async {
     final url = Uri.parse("https://p4hteach.org/api/logout");
 
     http.Response response = await http.post(
@@ -231,70 +254,72 @@ class HttpService {
 
         final resolvedUser = UserSuccess.fromJson(decodedResponse);
 
-        print(response.body);
-
-        return;
+        return resolvedUser;
       }
+      return EmptyUser(e: e.toString());
     } catch (e) {
       throw EmptyUserError(e: e.toString());
     }
   }
 
-  Future<String> downloadFile(String fileId) async {
-    final url = Uri.parse("https://p4hteach.org/resources/download/file_10-1");
-    http.Response response = await http.get(
-      headers: {'Content-Type': 'application/x-www-form-urlencoded'},
-      url,
-    );
+  Future<String> getFilePath(String fileName) async {
+    final Directory? tempDir;
+
+    if (Platform.isIOS) {
+      tempDir = await getApplicationSupportDirectory();
+    } else if (Platform.isAndroid) {
+      tempDir = await getApplicationDocumentsDirectory();
+    } else {
+      tempDir = await getApplicationSupportDirectory();
+    }
+
+    return '${tempDir.path}/$fileName';
+  }
+
+  Future<String> downloadFile(int fileId, String fileName) async {
+    //TODO @yasantha rename to https://p4hteach.org/resources/download/$fileNam
+
+    final url = "https://p4hteach.org/resources/download/file_13-2";
+
+    // Create the file path where the downloaded file will be saved
+
+    final path = await getFilePath(fileName);
+
+    await Dio().download(url, path);
+
+    final file = File(path);
+
+    await OpenFile.open(file.path);
+
+    return file.path;
+  }
+
+  Future<MyProgressStatus> getProgress(int profileID) async {
+    const url = 'https://p4hteach.org/api/profile/1/progress';
+
     try {
+      final response = await http.get(
+        headers: {
+          'Content-Type': 'application/json',
+          'Cookie': cookie!.cookie,
+        },
+        Uri.parse(url),
+      );
+
       if (response.statusCode == 200) {
-        // Get the app's external storage directory
-        Directory appDir =
-            await getApplicationDocumentsDirectory(); // Or use getApplicationDocumentsDirectory() for internal storage
+        final List<dynamic> decode = jsonDecode(response.body);
 
-        // Create the file path where the downloaded file will be saved
-        String filePath = '${appDir.path}/lessasons.txt';
+        final resolved = decode.map((e) => MyProgress.fromJson(e));
 
-        // Write the file content to the specified file path
-
-        File file = File(filePath);
-
-        final v = response.bodyBytes.buffer;
-        await file.writeAsBytes(v.asUint8List(response.bodyBytes.offsetInBytes,
-            response.bodyBytes.lengthInBytes));
-        // var documentDirectory = await getApplicationDocumentsDirectory();
-        // var firstPath = documentDirectory.path + "/images";
-        // var filePathAndName = '${documentDirectory.path}/images/pic.jpg';
-        // //comment out the next three lines to prevent the image from being saved
-        // //to the device to show that it's coming from the internet
-        // await Directory(firstPath).create(recursive: true); // <-- 1
-        // File file2 = File(filePathAndName); // <-- 2
-        // file2.writeAsBytesSync(response.bodyBytes);
-
-        // final de = filePathAndName;
-
-        print(filePath);
-
-        return filePath;
+        return MyProgressSuccess(myProgress: resolved);
       }
-      return '';
+
+      return MyProgresError();
     } catch (e) {
-      return e.toString();
+      rethrow;
     }
   }
 }
-
-// class RequestType {
-//   final String _value;
-
-//   const RequestType._string(this._value);
-
-//   static const RequestType get = RequestType._string('GET');
-//   static const RequestType put = RequestType._string('PUT');
-//   static const RequestType patch = RequestType._string('PATCH');
-//   static const RequestType post = RequestType._string('POST');
-//   static const RequestType delete = RequestType._string('DELETE');
-// }
 
 class StoreCookie {
   final String cookie;
@@ -335,7 +360,48 @@ class HttpRepo {
     return await _httpService.getPosts(userID);
   }
 
-  Future downloadFile(String fileId) async {
-    return _httpService.downloadFile(fileId);
+  Future<UserResourceResponse> gotoResourceFolder(int folderID) async {
+    return await _httpService.getResourceFolder(folderID);
+  }
+
+  Future downloadFile({required int fileId, required String fileName}) async {
+    return _httpService.downloadFile(fileId, fileName);
+  }
+
+  Future<Iterable<MyProgress>> getProgress() async {
+    final result = await _httpService.getProgress(1);
+
+    if (result is MyProgressSuccess) {
+      return result.myProgress;
+    }
+
+    throw e;
   }
 }
+
+abstract class DownloadType {}
+
+class Notes {}
+
+class Picture {}
+
+abstract class DownloadService<DownloadType> {
+  bool shouldMiddlewareApply(
+    final DownloadType type,
+  ) =>
+      true;
+}
+
+class DownloadLesson<DownloadType> extends DownloadService {
+  download() {}
+
+  @override
+  bool shouldMiddlewareApply(type) {
+    if (type is Notes) return true;
+    return false;
+  }
+
+  //if type is notes apply it\
+}
+
+final DownloadLesson dw = DownloadLesson<Notes>();

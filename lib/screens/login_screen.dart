@@ -36,11 +36,6 @@ class _LoginScreenState extends State<LoginScreen> {
                 width: width,
                 child: Column(
                   children: [
-                    Center(
-                        child: Text(
-                      'Addmi ',
-                      style: Theme.of(context).textTheme.displayLarge,
-                    )),
                     const SizedBox(
                       height: 15,
                     ),

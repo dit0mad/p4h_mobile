@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:p4h_mobile/appstate/actions_bloc/action_bloc.dart';
+import 'package:p4h_mobile/appstate/actions_bloc/actions.dart';
 import 'package:p4h_mobile/appstate/user_bloc/user__state_bloc.dart' as ub;
 import 'package:p4h_mobile/appstate/user_bloc/user__state_bloc.dart';
 import 'package:p4h_mobile/appstate/user_bloc/user_state_events.dart';
 import 'package:p4h_mobile/constants.dart';
 import 'package:p4h_mobile/models/user_post.dart';
-import 'package:p4h_mobile/services/http_service.dart';
 import 'package:p4h_mobile/widgets/text_field.dart';
 
 class ProfileState extends StatefulWidget {
@@ -108,39 +109,8 @@ class _ProfileStateState extends State<ProfileState> {
                     ],
                   ),
                 ),
-                Flexible(
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Expanded(
-                        child: TextFormField(
-                          controller: postController,
-                          decoration: const InputDecoration(
-                            hintText: 'Write Post Here',
-                            border: OutlineInputBorder(
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(20))),
-                          ),
-                        ),
-                      ),
-                      Flexible(
-                          flex: 0,
-                          child: TextButton(
-                              onPressed: () {
-                                userProvider
-                                    .add(const DownloadFile(fileId: ''));
-                                // userProvider.add(
-                                //   AddPost(
-                                //     post: postController.text,
-                                //   ),
-                                // );
-
-                                // postController.clear();
-                              },
-                              child: const Text('POST')))
-                    ],
-                  ),
-                ),
+                WritePostHereWidget(
+                    postController: postController, userProvider: userProvider),
                 Flexible(
                   child: Ink(
                     color: Colors.blue,
@@ -191,6 +161,52 @@ class _ProfileStateState extends State<ProfileState> {
   }
 }
 
+class WritePostHereWidget extends StatelessWidget {
+  const WritePostHereWidget({
+    super.key,
+    required this.postController,
+    required this.userProvider,
+  });
+
+  final TextEditingController postController;
+  final ub.UserStateBloc userProvider;
+
+  @override
+  Widget build(BuildContext context) {
+    return Flexible(
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Expanded(
+            child: TextFormField(
+              controller: postController,
+              decoration: const InputDecoration(
+                hintText: 'Write Post Here',
+                border: OutlineInputBorder(
+                    borderRadius: BorderRadius.all(Radius.circular(20))),
+              ),
+            ),
+          ),
+          Flexible(
+              flex: 0,
+              child: TextButton(
+                  onPressed: () {
+                    //   userProvider.add(GoToMyProgrss());
+                    // userProvider.add(
+                    //   AddPost(
+                    //     post: postController.text,
+                    //   ),
+                    // );
+
+                    postController.clear();
+                  },
+                  child: const Text('POST')))
+        ],
+      ),
+    );
+  }
+}
+
 class ProfileHeader extends StatelessWidget {
   const ProfileHeader({
     super.key,
@@ -221,7 +237,7 @@ class ProfileHeader extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    state.userSrate.name,
+                    state.userState.name,
                     style: const TextStyle(fontSize: 17),
                   ),
                   const Text(
@@ -241,7 +257,8 @@ class ProfileHeader extends StatelessWidget {
                 style: ElevatedButton.styleFrom(foregroundColor: mainAppColor1),
                 child: const Text('pwogre mwen'),
                 onPressed: () {
-                  HttpService().getAnnouncements();
+                  BlocProvider.of<ActionListenerBloc>(context)
+                      .add(GoToMyProgress());
                 },
               ),
             ),
@@ -292,7 +309,7 @@ class PostWidget extends StatelessWidget {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text(state.userSrate.name),
+                            Text(state.userState.name),
                             Row(
                               children: [
                                 const Icon(

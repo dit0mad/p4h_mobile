@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:p4h_mobile/appstate/actions_bloc/actions.dart';
 import 'package:p4h_mobile/appstate/user/reducer.dart';
 import 'package:p4h_mobile/models/user.dart';
 import 'package:p4h_mobile/models/user_post.dart';
@@ -196,10 +197,6 @@ class UserStateProvider extends ChangeNotifier {
     final response = await httpService
       ..deletePost(postID);
   }
-}
-
-abstract class BaseAction {
-  const BaseAction();
 }
 
 abstract class PostActionReducer extends BaseAction {
