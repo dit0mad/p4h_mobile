@@ -43,10 +43,13 @@ class _ProfileStateState extends State<ProfileState> {
             padding: const EdgeInsets.symmetric(vertical: 5.0),
             child: Column(
               children: [
-                CustomTextField(
-                  hintText: 'Search Prowfil Pos',
-                  fieldSize: 40,
-                  controller: searchController,
+                Container(
+                  margin: const EdgeInsets.only(top: 10),
+                  child: CustomTextField(
+                    hintText: 'Search Prowfil Pos',
+                    fieldSize: 40,
+                    controller: searchController,
+                  ),
                 ),
                 const Divider(
                   height: 6,
