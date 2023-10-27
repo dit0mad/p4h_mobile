@@ -27,7 +27,7 @@ class BuildCard extends StatelessWidget {
       onTap: onPressed,
       child: Card(
         margin: EdgeInsets.zero,
-        color: fillColor != null ? mainFillColor : Colors.white,
+        color: fillColor != null ? mainFillColor : Colors.white24,
         elevation: 0,
         child: ListTile(
           leading: Icon(

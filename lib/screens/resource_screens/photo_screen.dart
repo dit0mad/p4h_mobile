@@ -7,10 +7,8 @@ class PhotoScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const SubResourceScreens(
-      text1: 'Videyo.mp3',
-      text2: 'Videyo2.mp3',
-      text3: 'Videyo3.mp3',
+    return const Material(
+      child: SubResourceScreens(),
     );
   }
 }

@@ -7,10 +7,11 @@ class LessonPlanScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const SubResourceScreens(
-      text1: 'Dokiman.txt',
-      text2: 'Dokiman2.docx',
-      text3: 'Dokiman.pdf',
+    return Material(
+      child: WillPopScope(
+        onWillPop: () async => false,
+        child: const SubResourceScreens(),
+      ),
     );
   }
 }

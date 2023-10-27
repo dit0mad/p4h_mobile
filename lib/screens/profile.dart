@@ -1,17 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:p4h_mobile/appstate/actions_bloc/action_bloc.dart';
+import 'package:p4h_mobile/appstate/actions_bloc/actions.dart';
 import 'package:p4h_mobile/appstate/user_bloc/user__state_bloc.dart' as ub;
 import 'package:p4h_mobile/appstate/user_bloc/user__state_bloc.dart';
 import 'package:p4h_mobile/appstate/user_bloc/user_state_events.dart';
 import 'package:p4h_mobile/constants.dart';
 import 'package:p4h_mobile/models/user_post.dart';
+
 import 'package:p4h_mobile/services/http_service.dart';
 import 'package:p4h_mobile/widgets/build_divider.dart';
 import 'package:p4h_mobile/widgets/custom_text_field.dart';
 import 'package:p4h_mobile/widgets/login_text_field.dart';
 
 import '../widgets/build_button.dart';
+
 
 class ProfileState extends StatefulWidget {
   const ProfileState({super.key});
@@ -136,6 +140,7 @@ class _ProfileStateState extends State<ProfileState> {
                     ],
                   ),
                 ),
+
                 Row(
                   children: [
                     Flexible(
@@ -181,6 +186,37 @@ class _ProfileStateState extends State<ProfileState> {
                               }),
                         ],
                       ),
+// =======
+//                 WritePostHereWidget(
+//                     postController: postController, userProvider: userProvider),
+//                 Flexible(
+//                   child: Ink(
+//                     color: Colors.blue,
+//                     child: Row(
+//                       crossAxisAlignment: CrossAxisAlignment.end,
+//                       children: [
+//                         Expanded(
+//                           flex: 2,
+//                           child: Padding(
+//                             padding:
+//                                 const EdgeInsets.only(bottom: 1.0, left: 4),
+//                             child: Container(
+//                               margin: const EdgeInsets.only(top: 15),
+//                               child: const Text(
+//                                 'Prowfil Pos',
+//                                 style: TextStyle(
+//                                     fontSize: 15, fontWeight: FontWeight.w700),
+//                               ),
+//                             ),
+//                           ),
+//                         ),
+//                         const Expanded(
+//                           flex: 3,
+//                           child: CustomSearchField(
+//                               hintText: 'Search Prowfil', fieldSize: 30),
+//                         ),
+//                       ],
+// >>>>>>> master
                     ),
                   ],
                 ),
@@ -201,6 +237,52 @@ class _ProfileStateState extends State<ProfileState> {
       }
       return Ink();
     });
+  }
+}
+
+class WritePostHereWidget extends StatelessWidget {
+  const WritePostHereWidget({
+    super.key,
+    required this.postController,
+    required this.userProvider,
+  });
+
+  final TextEditingController postController;
+  final ub.UserStateBloc userProvider;
+
+  @override
+  Widget build(BuildContext context) {
+    return Flexible(
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Expanded(
+            child: TextFormField(
+              controller: postController,
+              decoration: const InputDecoration(
+                hintText: 'Write Post Here',
+                border: OutlineInputBorder(
+                    borderRadius: BorderRadius.all(Radius.circular(20))),
+              ),
+            ),
+          ),
+          Flexible(
+              flex: 0,
+              child: TextButton(
+                  onPressed: () {
+                    //   userProvider.add(GoToMyProgrss());
+                    // userProvider.add(
+                    //   AddPost(
+                    //     post: postController.text,
+                    //   ),
+                    // );
+
+                    postController.clear();
+                  },
+                  child: const Text('POST')))
+        ],
+      ),
+    );
   }
 }
 
@@ -230,6 +312,7 @@ class ProfileHeader extends StatelessWidget {
               backgroundImage: const NetworkImage(
                   'https://lh3.googleusercontent.com/a-/AAuE7mChgTiAe-N8ibcM3fB_qvGdl2vQ9jvjYv0iOOjB=s96-c'),
             ),
+
           ),
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -258,6 +341,36 @@ class ProfileHeader extends StatelessWidget {
                 buttonText: 'pwogre mwen',
                 onPress: () {
                   HttpService().getAnnouncements();
+// =======
+//             Padding(
+//               padding: const EdgeInsets.only(left: 8.0, top: 5),
+//               child: Column(
+//                 crossAxisAlignment: CrossAxisAlignment.start,
+//                 children: [
+//                   Text(
+//                     state.userState.name,
+//                     style: const TextStyle(fontSize: 17),
+//                   ),
+//                   const Text(
+//                     'Admin',
+//                     style: TextStyle(fontSize: 14),
+//                   ),
+//                   const Text(
+//                     'I work for P4H Global',
+//                     style: TextStyle(fontSize: 10),
+//                   ),
+//                 ],
+//               ),
+//             ),
+//             Padding(
+//               padding: const EdgeInsets.only(left: 10.0, right: 10),
+//               child: ElevatedButton(
+//                 style: ElevatedButton.styleFrom(foregroundColor: mainAppColor1),
+//                 child: const Text('pwogre mwen'),
+//                 onPressed: () {
+//                   BlocProvider.of<ActionListenerBloc>(context)
+//                       .add(GoToMyProgress());
+// >>>>>>> master
                 },
               ),
             ],
@@ -308,6 +421,7 @@ class PostWidget extends StatelessWidget {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
+
                             Text(
                               state.userSrate.name,
                               style: subtitle6,
@@ -315,7 +429,10 @@ class PostWidget extends StatelessWidget {
                             const SizedBox(
                               height: 15,
                             ),
-                            Row(
+// =======
+//                             Text(state.userState.name),
+// >>>>>>> master
+                           Row(
                               children: [
                                 Icon(
                                   Icons.timelapse,

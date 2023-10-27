@@ -1,15 +1,13 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:p4h_mobile/appstate/nav_bloc/nav_events.dart';
 import 'package:p4h_mobile/screens/login_screen.dart';
+import 'package:p4h_mobile/screens/resource_screens/lesson_plan_screen.dart';
 import 'package:p4h_mobile/screens/resource_screens/resource_screen.dart';
 
 const initStack = [
-  MaterialPage(
-      name: 'empty',
-      child: Material(
-        child: EmptyPage(),
-      )),
   MaterialPage(
     name: 'login',
     child: Material(
@@ -30,8 +28,20 @@ class NavigationBloc extends Bloc<NavigationEvent, MainStackState> {
       : super(
           const MainStackState(),
         ) {
+    on<PopRoute>((event, emit) {
+      final target = event.target;
+
+      final nextState = navReducer(event, target, state);
+      emit(nextState);
+    });
     on<PushPageRoute>((event, emit) {
       final target = event.target;
+
+      // final sideEffect = event.sideEffect;
+
+      if (event.page is LessonPlanScreen) {
+        print('yeah');
+      }
 
       final nextState = navReducer(event, target, state);
 
@@ -72,7 +82,7 @@ class EmptyPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container();
+    return Material();
   }
 }
 
@@ -108,9 +118,13 @@ List<MaterialPage<dynamic>> reduce(
   final NavigationEvent event,
   final List<MaterialPage> stack,
 ) {
+  if (event is PopRoute) {
+    final next = stack.sublist(0, max(1, stack.length - 1));
+
+    return next;
+  }
   if (event is PopToRootPushPageRoute) {
     final next = [
-      ...stack.sublist(0, 1),
       event.page,
     ];
     return next;

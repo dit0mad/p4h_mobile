@@ -47,6 +47,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 width: width,
                 child: Column(
                   children: [
+
                     SizedBox(height: height * .01),
                     Center(
                         child: Text(
@@ -57,6 +58,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     SizedBox(
                       height: height * 0.2,
                       child: const Logo(),
+
                     ),
                     SizedBox(height: height * .02),
                     Center(

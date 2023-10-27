@@ -2,6 +2,10 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:p4h_mobile/appstate/actions_bloc/action_bloc.dart';
+import 'package:p4h_mobile/appstate/actions_bloc/actions.dart';
+import 'package:p4h_mobile/appstate/nav_bloc/nav_bloc.dart';
+import 'package:p4h_mobile/appstate/nav_bloc/nav_events.dart';
 import 'package:p4h_mobile/appstate/user_bloc/user__state_bloc.dart';
 import 'package:p4h_mobile/appstate/user_bloc/user_state_events.dart';
 import 'package:p4h_mobile/constants.dart';
@@ -10,19 +14,13 @@ import 'build_divider.dart';
 import 'custom_text_field.dart';
 
 class SubResourceScreens extends StatelessWidget {
-  final String text1;
-  final String text2;
-  final String text3;
-
   const SubResourceScreens({
     Key? key,
-    required this.text1,
-    required this.text2,
-    required this.text3,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+
     late final TextEditingController subResourceController =
         TextEditingController();
     return Scaffold(
@@ -72,89 +70,150 @@ class SubResourceScreens extends StatelessWidget {
                 state,
               ) {
                 final userProvider = context.read<UserStateBloc>();
+// =======
+//     return BlocBuilder<ActionListenerBloc, BaseAction>(
+//       builder: (context, state) {
+//         if (state is Loading) {
+//           return const Center(child: CircularProgressIndicator());
+//         }
 
-                return Row(
+//         if (state is BaseActionSuccess) {
+//           return BlocBuilder<UserStateBloc, UserState>(builder: (
+//             final context,
+//             final state,
+//           ) {
+//             final nextState = state as UserStateSuccess;
+//             final resourseList = nextState.resourceFolder!;
+// >>>>>>> master
+
+            return Column(
+              children: [
+                const CustomSearchField(
+                  hintText: 'Search Resous',
+                  fieldSize: 40,
+                ),
+                Column(
                   children: [
-                    Expanded(
-                      flex: 4,
-                      child: BuildCard(
-                        icon: Icons.download,
-                        fillColor: mainFillColor,
-                        titleText: 'download',
-                        onPressed: () {
-                          userProvider.add(const Download());
-                        },
-                      ),
-                    ),
-                    Expanded(
-                      flex: 1,
-                      child: Container(
-                        height: 70,
-                        color: const Color(0XFF153760),
-                        child: const Padding(
-                          padding: EdgeInsets.symmetric(
-                              horizontal: 15, vertical: 20),
-                          child: Text(
-                            'View',
-                            textAlign: TextAlign.center,
-                            style: TextStyle(color: Colors.white, fontSize: 18),
+                    ...resourseList.resources.map(
+                      (e) => Row(
+                        children: [
+                          Expanded(
+                            flex: 4,
+                            child: BuildCard(
+                              icon: Icons.download,
+                              fillColor: mainFillColor,
+                              titleText: e.display,
+                              onPressed: () {
+                                BlocProvider.of<UserStateBloc>(context).add(
+                                    Download(
+                                        fileID: e.id, fileName: e.display));
+                              },
+                            ),
                           ),
-                        ),
+                          Expanded(
+                            flex: 1,
+                            child: Container(
+                              height: 70,
+                              color: mainAppColor2,
+                              child: const Padding(
+                                padding: EdgeInsets.symmetric(
+                                    horizontal: 15, vertical: 20),
+                                child: Text(
+                                  'View',
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                      color: Colors.white, fontSize: 18),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
                     ),
                   ],
-                );
-              }),
-              const BuildDivider(),
-              Row(
-                children: [
-                  Expanded(
-                    flex: 4,
-                    child: BuildCard(
-                      icon: Icons.download,
-                      fillColor: mainFillColor,
-                      titleText: text3,
-                      onPressed: () {},
-                    ),
-                  ),
-                  Expanded(
-                    flex: 1,
-                    child: Container(
-                      height: 70,
-                      color: const Color(0XFF153760),
-                      child: const Padding(
-                        padding:
-                            EdgeInsets.symmetric(horizontal: 15, vertical: 20),
-                        child: Text(
-                          'View',
-                          textAlign: TextAlign.center,
-                          style: TextStyle(color: Colors.white, fontSize: 18),
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-              BlocBuilder<UserStateBloc, UserState>(
-                builder: (context, state) {
-                  if (state is UserStateSuccess) {
-                    final image = state.image;
+                ),
+                const BuildDivider(),
+                const Expanded(child: DownloadedFile()),
+                const TemporaryBackButton(),
+              ],
+            );
+          });
+        }
 
-                    return image == null
-                        ? Ink()
-                        : SizedBox(
-                            height: 200,
-                            width: 200,
-                            child: Image.file(File(state.image!)));
-                  }
-                  return Ink();
-                },
-              ),
-              const BuildDivider(),
-            ],
+        return Ink();
+      },
+    );
+  }
+}
+
+class TemporaryBackButton extends StatelessWidget {
+  const TemporaryBackButton({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.end,
+      children: [
+        Flexible(
+          child: Ink(
+            width: 100,
+            decoration: BoxDecoration(color: Colors.red, border: Border.all()),
+            child: IconButton(
+              icon: const Icon(Icons.arrow_back),
+              onPressed: () {
+                BlocProvider.of<NavigationBloc>(context).add(
+                  PopRoute(
+                    target: Target.resourceStack,
+                  ),
+                );
+              },
+            ),
           ),
         ),
-      ),
+      ],
     );
+  }
+}
+
+class DownloadedFile extends StatelessWidget {
+  const DownloadedFile({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<UserStateBloc, UserState>(
+      builder: (context, state) {
+        if (state is UserStateSuccess) {
+          final image = state.filePath;
+
+          return image == null ? Ink() : const FilePreview();
+        }
+        return Ink(
+          color: Colors.green,
+        );
+      },
+    );
+  }
+}
+
+class FilePreview extends StatelessWidget {
+  const FilePreview({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<UserStateBloc, UserState>(builder: (context, state) {
+      state as UserStateSuccess;
+      return SizedBox(
+          height: 200,
+          width: 200,
+          child: Image.file(
+            File(state.filePath!),
+          ));
+    });
   }
 }

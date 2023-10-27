@@ -1,5 +1,10 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:get/get.dart';
+import 'package:p4h_mobile/appstate/actions_bloc/action_bloc.dart';
+import 'package:p4h_mobile/appstate/actions_bloc/actions.dart';
 import 'package:p4h_mobile/appstate/nav_bloc/nav_bloc.dart';
 import 'package:p4h_mobile/appstate/nav_bloc/nav_events.dart';
 import 'package:p4h_mobile/appstate/user_bloc/user__state_bloc.dart';
@@ -8,7 +13,7 @@ import 'package:p4h_mobile/screens/dashboard.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
-  Bloc.observer = const WeatherBlocObserver();
+  Bloc.observer = const P4HBlocObserver();
   runApp(
     MultiBlocProvider(providers: [
       BlocProvider(
@@ -16,6 +21,12 @@ void main() {
       ),
       BlocProvider(
         create: (_) => NavigationBloc(),
+      ),
+      BlocProvider(
+        create: (_) => ActionListenerBloc(
+          bloc: _.read<NavigationBloc>(),
+          userStateBloc: _.read<UserStateBloc>(),
+        ),
       ),
     ], child: const MyApp()),
   );
@@ -26,9 +37,11 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
     return const MaterialApp(
       debugShowCheckedModeBanner: false,
       home: Mediator(),
+
     );
   }
 }
@@ -38,23 +51,23 @@ class Mediator extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocListener<UserStateBloc, UserState>(
-      listener: (context, state) {
-        if (state is UserStatePush) {
-          BlocProvider.of<NavigationBloc>(context).add(
-            const PopToRootPushPageRoute(
-              target: Target.mainStack,
-              page: MaterialPage(
-                name: 'dashboard',
-                child: Material(
+    return Scaffold(
+      body: BlocListener<UserStateBloc, UserState>(
+        listener: (context, state) {
+          if (state is UserStatePush) {
+            BlocProvider.of<NavigationBloc>(context).add(
+              const PopToRootPushPageRoute(
+                target: Target.mainStack,
+                page: MaterialPage(
+                  name: 'dashboard',
                   child: Dashboard(),
                 ),
               ),
-            ),
-          );
-        }
-      },
-      child: const NavigationBuilder(),
+            );
+          }
+        },
+        child: const NavigationBuilder(),
+      ),
     );
   }
 }
@@ -64,18 +77,48 @@ class NavigationBuilder extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<NavigationBloc, MainStackState>(
-      builder: (BuildContext context, MainStackState state) {
-        return Navigator(
-          key: mainNavigatorKey,
-          onPopPage: (final Route<dynamic> route, final dynamic result) {
-            return route.didPop(result);
-          },
-          pages: [
-            ...state.mainStack,
-          ],
-        );
+    return WillPopScope(
+      onWillPop: () async {
+        //here we can check if the current route is what i want if not go back.
+        final bloc = BlocProvider.of<NavigationBloc>(context);
+
+        final stack = bloc.state.mainStack.length;
+
+        if (stack.isEqual(1)) {
+          //TODO @yasantha:     // terminate all peacefully;
+
+          exit(0);
+        }
+
+        bloc.add(PopRoute(target: Target.mainStack));
+
+        return false;
       },
+      child: Scaffold(
+        body: BlocBuilder<ActionListenerBloc, BaseAction>(
+            builder: (context, state) {
+          if (state is Loading) {
+            return const Scaffold(
+              body: Center(
+                child: CircularProgressIndicator(),
+              ),
+            );
+          }
+          return BlocBuilder<NavigationBloc, MainStackState>(
+            builder: (BuildContext context, MainStackState state) {
+              return Navigator(
+                key: mainNavigatorKey,
+                onPopPage: (final Route<dynamic> route, final dynamic result) {
+                  return route.didPop(result);
+                },
+                pages: [
+                  ...state.mainStack,
+                ],
+              );
+            },
+          );
+        }),
+      ),
     );
   }
 }
