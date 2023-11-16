@@ -2,6 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:p4h_mobile/appstate/user_bloc/user__state_bloc.dart';
 import 'package:p4h_mobile/appstate/user_bloc/user_state_events.dart';
+import 'package:p4h_mobile/widgets/build_button.dart';
+import 'package:p4h_mobile/widgets/build_logo.dart';
+import '../constants.dart';
+import '../widgets/login_text_field.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({Key? key}) : super(key: key);
@@ -14,6 +18,13 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   final userNameController = TextEditingController();
   final passWordController = TextEditingController();
+
+  @override
+  void dispose() {
+    userNameController.dispose();
+    passWordController.dispose();
+    super.dispose();
+  }
 
   @override
   void didChangeDependencies() {
@@ -36,95 +47,65 @@ class _LoginScreenState extends State<LoginScreen> {
                 width: width,
                 child: Column(
                   children: [
-                    const SizedBox(
-                      height: 15,
-                    ),
+
+                    SizedBox(height: height * .01),
                     Center(
                         child: Text(
-                      textAlign: TextAlign.center,
-                      'Ouvri sesyon an',
-                      style: Theme.of(context).textTheme.bodyLarge,
+                      'P4H Chat',
+                      style: headlineStyle1,
                     )),
-                    const SizedBox(
-                      height: 15,
-                    ),
-                    Column(
-                      children: [
-                        Container(
-                          decoration: BoxDecoration(
-                            color: Colors.black12,
-                            border:
-                                Border.all(width: 0.5, color: Colors.black38),
-                          ),
-                          width: 260,
-                          child: TextField(
-                            decoration: const InputDecoration(
-                              labelText: "Non",
-                            ),
-                            controller: userNameController,
-                          ),
-                        ),
-                        const SizedBox(
-                          height: 10,
-                        ),
-                        Container(
-                          color: Colors.black12,
-                          width: 260,
-                          child: TextFormField(
-                            decoration: const InputDecoration(
-                              labelText: "Telefon",
-                            ),
-                            controller: passWordController,
-                          ),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(
-                      height: 25,
-                    ),
+                    SizedBox(height: height * .02),
                     SizedBox(
-                      width: width * 0.9,
-                      child: Row(
-                        children: [
-                          Expanded(
-                            child: ElevatedButton(
-                              onPressed: () {
-                                context
-                                    .read<UserStateBloc>()
-                                    .add(UserLoginEvent(
-                                      password: passWordController.text,
-                                      userName: userNameController.text,
-                                    ));
-                              },
-                              child: const Text('Kontinye'),
-                            ),
-                          ),
-                        ],
+                      height: height * 0.2,
+                      child: const Logo(),
+
+                    ),
+                    SizedBox(height: height * .02),
+                    Center(
+                        child: Text(
+                      'Ouvri sesyon an',
+                      style: bodyText1,
+                    )),
+                    SizedBox(height: height * .04),
+                    LoginTextField(
+                      controller: userNameController,
+                      text: 'Non',
+                    ),
+                    SizedBox(height: height * .01),
+                    LoginTextField(
+                      controller: passWordController,
+                      text: 'Telefon',
+                    ),
+                    SizedBox(height: height * .04),
+                    SizedBox(
+                      height: height * .05,
+                      width: width * 0.8,
+                      child: ButtonBuild(
+                        color: mainAppColor2,
+                        buttonText: 'Kontinye',
+                        onPress: () {
+                          context.read<UserStateBloc>().add(
+                                UserLoginEvent(
+                                  password: passWordController.text,
+                                  userName: userNameController.text,
+                                ),
+                              );
+                        },
                       ),
                     ),
-                    const SizedBox(
-                      height: 15,
+                    SizedBox(height: height * .03),
+                    Center(
+                      child: Text(
+                        'Enformaysyon sou Profile',
+                        style: bodyText1,
+                      ),
                     ),
-                    Column(
-                      children: [
-                        Center(
-                            child: Text(
-                          textAlign: TextAlign.center,
-                          'Enformaysyon sou \n Profile',
-                          style: Theme.of(context).textTheme.bodyLarge,
-                        )),
-                        const SizedBox(
-                          height: 15,
-                        ),
-                        Center(
-                            child: Text(
-                          'Mete non ak telefon ou anwo a',
-                          style: Theme.of(context).textTheme.bodyMedium,
-                        )),
-                      ],
-                    ),
-                    const SizedBox(
-                      height: 25,
+                    SizedBox(height: height * .01),
+                    Center(
+                      child: Text(
+                        'Mete non ak telefon ou anwo a',
+                        style: bodyText2,
+                      ),
                     ),
                   ],
                 ),
@@ -138,10 +119,7 @@ class _LoginScreenState extends State<LoginScreen> {
               child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Text(
-                'Fetching Information',
-                style: Theme.of(context).textTheme.bodySmall,
-              ),
+              Text('Fetching Information', style: subtitle2),
               const CircularProgressIndicator(),
             ],
           ));

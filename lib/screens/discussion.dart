@@ -3,7 +3,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:p4h_mobile/constants.dart';
 import 'package:p4h_mobile/widgets/build_divider.dart';
 
-import '../widgets/text_field.dart';
+import '../widgets/custom_text_field.dart';
 
 class DiscussionScreen extends StatelessWidget {
   static const routeName = 'Discussion Screen';
@@ -19,12 +19,13 @@ class DiscussionScreen extends StatelessWidget {
       children: [
         Container(
           margin: EdgeInsets.zero,
-          child: const Row(
+          child: Row(
             children: [
               Expanded(
-                child: CustomSearchField(
+                child: CustomTextField(
                   hintText: 'Search Diskisyon',
                   fieldSize: 40,
+                  controller: controller,
                 ),
               ),
             ],

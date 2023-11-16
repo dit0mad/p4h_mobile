@@ -11,7 +11,7 @@ import 'package:p4h_mobile/appstate/user_bloc/user_state_events.dart';
 import 'package:p4h_mobile/constants.dart';
 import 'build_card.dart';
 import 'build_divider.dart';
-import 'text_field.dart';
+import 'custom_text_field.dart';
 
 class SubResourceScreens extends StatelessWidget {
   const SubResourceScreens({
@@ -20,19 +20,71 @@ class SubResourceScreens extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<ActionListenerBloc, BaseAction>(
-      builder: (context, state) {
-        if (state is Loading) {
-          return const Center(child: CircularProgressIndicator());
-        }
 
-        if (state is BaseActionSuccess) {
-          return BlocBuilder<UserStateBloc, UserState>(builder: (
-            final context,
-            final state,
-          ) {
-            final nextState = state as UserStateSuccess;
-            final resourseList = nextState.resourceFolder!;
+    late final TextEditingController subResourceController =
+        TextEditingController();
+    return Scaffold(
+      body: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 40),
+        child: Container(
+          margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 30),
+          child: Column(
+            children: [
+              CustomTextField(
+                hintText: 'Search Resous',
+                fieldSize: 40,
+                controller: subResourceController,
+              ),
+              Row(
+                children: [
+                  Expanded(
+                    flex: 4,
+                    child: BuildCard(
+                      icon: Icons.download,
+                      fillColor: mainFillColor,
+                      titleText: text1,
+                      onPressed: () {},
+                    ),
+                  ),
+                  Expanded(
+                    flex: 1,
+                    child: Container(
+                      height: 70,
+                      color: mainAppColor2,
+                      child: const Padding(
+                        padding:
+                            EdgeInsets.symmetric(horizontal: 15, vertical: 20),
+                        child: Text(
+                          'View',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(color: Colors.white, fontSize: 18),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              const BuildDivider(),
+              BlocBuilder<UserStateBloc, UserState>(builder: (
+                context,
+                state,
+              ) {
+                final userProvider = context.read<UserStateBloc>();
+// =======
+//     return BlocBuilder<ActionListenerBloc, BaseAction>(
+//       builder: (context, state) {
+//         if (state is Loading) {
+//           return const Center(child: CircularProgressIndicator());
+//         }
+
+//         if (state is BaseActionSuccess) {
+//           return BlocBuilder<UserStateBloc, UserState>(builder: (
+//             final context,
+//             final state,
+//           ) {
+//             final nextState = state as UserStateSuccess;
+//             final resourseList = nextState.resourceFolder!;
+// >>>>>>> master
 
             return Column(
               children: [

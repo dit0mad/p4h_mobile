@@ -37,40 +37,11 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: MaterialApp(
-        title: 'Addmi',
-        theme: ThemeData(
-          textTheme: const TextTheme(
-            displayLarge: TextStyle(
-              color: Color.fromARGB(255, 6, 50, 88),
-              fontSize: 35,
-              fontWeight: FontWeight.w800,
-            ),
-            bodyLarge: TextStyle(
-              color: Colors.black,
-              fontSize: 26,
-              fontWeight: FontWeight.w700,
-            ),
-            bodyMedium: TextStyle(
-              color: Colors.black,
-              fontSize: 20,
-              fontWeight: FontWeight.w500,
-            ),
-            titleMedium: TextStyle(
-              color: Color(0XFF6E6E6E),
-              fontSize: 18,
-              fontWeight: FontWeight.w900,
-            ),
-            titleSmall: TextStyle(
-              color: Colors.black,
-              fontSize: 18,
-              fontWeight: FontWeight.w400,
-            ),
-          ),
-        ),
-        home: const Mediator(),
-      ),
+
+    return const MaterialApp(
+      debugShowCheckedModeBanner: false,
+      home: Mediator(),
+
     );
   }
 }
