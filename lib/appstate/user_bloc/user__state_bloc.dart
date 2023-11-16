@@ -46,6 +46,7 @@ class UserStateBloc extends Bloc<UserStateEvents, UserState> {
         final resp = await http.downloadFile(
           fileId: event.fileID,
           fileName: event.fileName,
+          type: Notes(),
         );
 
         final nextState = state as UserStateSuccess;
@@ -59,13 +60,20 @@ class UserStateBloc extends Bloc<UserStateEvents, UserState> {
 
       final loginRes = await http.login(event.userName, event.password);
 
+      // final dummyloginRes = UserSuccess(
+      //     canvasID: 1, email: "", id: 1, name: "name", username: "usernmae");
+      // emit(UserStateSuccess(
+      //   user: loginRes,
+      // ));
+
       if (loginRes is InvalidLoginInfo) {
         emit(
-          UserStateError(),
+          UserStateError(error: "Invalid Login Ifo"),
         );
       }
 
       if (loginRes is UserSuccess) {
+        ///this is ugly break it down
         final getPostRes = await http.getPosts(loginRes.id);
 
         if (getPostRes is UserPostSuccess) {
@@ -79,9 +87,11 @@ class UserStateBloc extends Bloc<UserStateEvents, UserState> {
 
         if (getPostRes is UserPostFailedResponse) {
           emit(
-            UserStateError(),
+            const UserStateError(error: 'Fetching User Post Failed'),
           );
         }
+
+        emit(UserStatePush());
       }
     });
 
@@ -126,6 +136,8 @@ class UserStateBloc extends Bloc<UserStateEvents, UserState> {
 
 abstract class UserState {
   const UserState();
+
+  String errorMessage() => ("");
 }
 
 class UserInitial extends UserState {}
@@ -134,7 +146,16 @@ class UserStateLoading extends UserState {
   const UserStateLoading();
 }
 
-class UserStateError extends UserState {}
+class UserStateError extends UserState {
+  final String error;
+
+  const UserStateError({required this.error});
+
+  @override
+  String errorMessage() {
+    return error;
+  }
+}
 
 class UserStateSuccess extends UserState {
   final UserSuccess _user;

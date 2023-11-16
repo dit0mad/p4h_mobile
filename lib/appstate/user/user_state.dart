@@ -49,7 +49,7 @@ class UserStateProvider extends ChangeNotifier {
 
   bool isLoading = false;
 
-  final HttpService httpService;
+  late final HttpService httpService = HttpService();
 
 //initial state emptyUser;
 
@@ -60,8 +60,7 @@ class UserStateProvider extends ChangeNotifier {
     List<UserPost> userPost = const [],
     List<UserPost> announcements = const [],
   })  : _userPost = userPost,
-        _announcements = announcements,
-        httpService = HttpService();
+        _announcements = announcements;
 
   void getResources() {
     httpService.getResources();
@@ -245,9 +244,13 @@ abstract class RepresentableError {
 }
 
 class InvalidLoginInfo extends UserStatus {
+  final String error;
+
+  const InvalidLoginInfo({required this.error});
+
   @override
   String toString() {
-    return 'Invalid Login Info';
+    return error;
   }
 }
 

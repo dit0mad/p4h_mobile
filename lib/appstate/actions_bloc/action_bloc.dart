@@ -5,7 +5,6 @@ import 'package:p4h_mobile/appstate/nav_bloc/nav_bloc.dart';
 import 'package:p4h_mobile/appstate/nav_bloc/nav_events.dart';
 import 'package:p4h_mobile/appstate/user_bloc/user__state_bloc.dart';
 import 'package:p4h_mobile/appstate/user_bloc/user_state_events.dart';
-import 'package:p4h_mobile/models/progress_model.dart';
 import 'package:p4h_mobile/models/resource.dart';
 import 'package:p4h_mobile/screens/progress_screen.dart';
 import 'package:p4h_mobile/services/http_service.dart';
@@ -29,7 +28,7 @@ class ActionListenerBloc extends Bloc<BaseAction, BaseAction> {
   })  : httpService = userStateBloc.http,
         super(const InitialAction()) {
     on<GoToMyProgress>((event, emit) async {
-      emit(const Loading());
+      emit(const LoadingAction());
 
       bloc.add(const PushPageRoute(
         page: MaterialPage(

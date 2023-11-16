@@ -3,11 +3,12 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:p4h_mobile/appstate/actions_bloc/action_bloc.dart';
 import 'package:p4h_mobile/appstate/actions_bloc/actions.dart';
-import 'package:p4h_mobile/appstate/user_bloc/user__state_bloc.dart' as ub;
+
 import 'package:p4h_mobile/appstate/user_bloc/user__state_bloc.dart';
 import 'package:p4h_mobile/appstate/user_bloc/user_state_events.dart';
 import 'package:p4h_mobile/constants.dart';
 import 'package:p4h_mobile/models/user_post.dart';
+import 'package:p4h_mobile/widgets/loading_screen.dart';
 import 'package:p4h_mobile/widgets/text_field.dart';
 
 class ProfileState extends StatefulWidget {
@@ -28,11 +29,10 @@ class _ProfileStateState extends State<ProfileState> {
 
   @override
   Widget build(BuildContext context) {
-    final userProvider = context.read<ub.UserStateBloc>();
+    final userProvider = context.read<UserStateBloc>();
 
-    return BlocBuilder<ub.UserStateBloc, ub.UserState>(
-        builder: (context, state) {
-      if (state is ub.UserStateSuccess) {
+    return BlocBuilder<UserStateBloc, UserState>(builder: (context, state) {
+      if (state is UserStateSuccess) {
         return SingleChildScrollView(
           child: Padding(
             padding: const EdgeInsets.all(5.0),
@@ -156,7 +156,13 @@ class _ProfileStateState extends State<ProfileState> {
           ),
         );
       }
-      return Ink();
+
+      if (state is UserStateError) {
+        return Text(state.error);
+      }
+      return const LoadingScreen(
+        text: "Loading Profile",
+      );
     });
   }
 }
@@ -169,7 +175,7 @@ class WritePostHereWidget extends StatelessWidget {
   });
 
   final TextEditingController postController;
-  final ub.UserStateBloc userProvider;
+  final UserStateBloc userProvider;
 
   @override
   Widget build(BuildContext context) {
@@ -214,7 +220,7 @@ class ProfileHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final userProvider = context.read<ub.UserStateBloc>();
+    final userProvider = context.read<UserStateBloc>();
 
     final state = userProvider.state as UserStateSuccess;
 
@@ -279,7 +285,7 @@ class PostWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<ub.UserStateBloc, ub.UserState>(
+    return BlocBuilder<UserStateBloc, UserState>(
       builder: (context, state) {
         state as UserStateSuccess;
         return DefaultTextStyle(

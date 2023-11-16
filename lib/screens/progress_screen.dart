@@ -3,7 +3,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:p4h_mobile/appstate/nav_bloc/nav_bloc.dart';
 import 'package:p4h_mobile/appstate/nav_bloc/nav_events.dart';
 import 'package:p4h_mobile/appstate/user_bloc/user__state_bloc.dart';
-import 'package:p4h_mobile/appstate/user_bloc/user_state_events.dart';
 
 class ProgressScreen extends StatelessWidget {
   const ProgressScreen({super.key});

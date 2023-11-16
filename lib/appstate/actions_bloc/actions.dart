@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:p4h_mobile/appstate/nav_bloc/nav_events.dart';
-import 'package:p4h_mobile/models/progress_model.dart';
 
 abstract class BaseAction {
   const BaseAction();
@@ -14,8 +13,8 @@ class InitialAction extends BaseActionSuccess {
   const InitialAction();
 }
 
-class Loading extends BaseAction {
-  const Loading();
+class LoadingAction extends BaseAction {
+  const LoadingAction();
 }
 
 class ActionSucess extends BaseAction {

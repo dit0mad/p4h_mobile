@@ -18,18 +18,7 @@ class Dashboard extends StatelessWidget {
     final controller.TabController tabController =
         Get.put(controller.TabController());
 
-    final p = context.read<NavigationBloc>();
-
     return Scaffold(
-      appBar: AppBar(
-        automaticallyImplyLeading: true,
-        title: Center(
-          child: Text(
-            'P4H',
-            style: Theme.of(context).textTheme.displayLarge,
-          ),
-        ),
-      ),
       body: Material(
         child: Column(
           mainAxisSize: MainAxisSize.min,

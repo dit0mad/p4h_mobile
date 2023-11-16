@@ -18,6 +18,7 @@ import '../../widgets/text_field.dart';
 const icons = [
   FontAwesomeIcons.book,
   FontAwesomeIcons.camera,
+  FontAwesomeIcons.video,
   FontAwesomeIcons.video
 ];
 
@@ -45,13 +46,7 @@ class ResourceScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final bloc = context.read<UserStateBloc>();
-
-    final state = bloc.state as UserStateSuccess;
-
-    final resources = state.userState.resources;
-
-    final theMap = Map.fromIterables(resources, icons);
+    // final bloc = context.read<UserStateBloc>();
 
     Widget page = Ink();
 
@@ -69,6 +64,8 @@ class ResourceScreen extends StatelessWidget {
         default:
       }
 
+      //downloading resources related to the page type.
+
       context.read<ActionListenerBloc>().add(
             NavigateToLessenPlanScreen(
               mp: page,
@@ -78,30 +75,35 @@ class ResourceScreen extends StatelessWidget {
           );
     }
 
-    Widget one = Material(
-      child: Column(
-        children: [
-          const CustomSearchField(
-            hintText: 'Search Resous',
-            fieldSize: 40,
-          ),
-          ...theMap.entries.map((e) => Expanded(
-                child: BuildCard(
-                  subTitleText: '${e.key.name} to help plan every day lessons',
-                  titleText: e.key.name,
-                  icon: e.value,
-                  onPressed: () {
-                    navigate(e.key.name, e.key.id);
-                  },
-                  iconColor: mainIconColor,
-                ),
-              )),
-        ],
-      ),
-    );
-
     return BlocBuilder<UserStateBloc, UserState>(builder: (context, state) {
       if (state is UserStateSuccess) {
+        final resources = state.userState.resources;
+
+        final theMap = Map.fromIterables(resources, icons);
+
+        Widget one = Material(
+          child: Column(
+            children: [
+              const CustomSearchField(
+                hintText: 'Search Resous',
+                fieldSize: 40,
+              ),
+              ...theMap.entries.map((e) => Expanded(
+                    child: BuildCard(
+                      subTitleText:
+                          '${e.key.name} to help plan every day lessons',
+                      titleText: e.key.name,
+                      icon: e.value,
+                      onPressed: () {
+                        navigate(e.key.name, e.key.id);
+                      },
+                      iconColor: mainIconColor,
+                    ),
+                  )),
+            ],
+          ),
+        );
+
         return one;
       }
       return Ink();

@@ -83,6 +83,8 @@ class Mediator extends StatelessWidget {
     return Scaffold(
       body: BlocListener<UserStateBloc, UserState>(
         listener: (context, state) {
+//@yasantha
+          //pushes when login is success. can be moved to an action listener
           if (state is UserStatePush) {
             BlocProvider.of<NavigationBloc>(context).add(
               const PopToRootPushPageRoute(
@@ -126,10 +128,16 @@ class NavigationBuilder extends StatelessWidget {
       child: Scaffold(
         body: BlocBuilder<ActionListenerBloc, BaseAction>(
             builder: (context, state) {
-          if (state is Loading) {
+          if (state is LoadingAction) {
             return const Scaffold(
               body: Center(
-                child: CircularProgressIndicator(),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text("Loading"),
+                    CircularProgressIndicator(),
+                  ],
+                ),
               ),
             );
           }

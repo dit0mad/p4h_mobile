@@ -134,8 +134,6 @@ class HttpService {
     }
   }
 
-  void getUser() {}
-
   Future<UserPostResponse> getPosts(int userID) async {
     final resolveUri = Uri.parse('https://p4hteach.org/api/posts/$userID');
 
@@ -208,8 +206,8 @@ class HttpService {
 
     Map<String, dynamic> map = {};
 
-    map['username'] = 'lcundiff';
-    map['password'] = 'password2';
+    map['username'] = username;
+    map['password'] = password;
 
     http.Response response = await http.post(
       headers: {'Content-Type': 'application/x-www-form-urlencoded'},
@@ -234,10 +232,10 @@ class HttpService {
         return s;
       }
     } catch (e) {
-      return InvalidLoginInfo();
+      return InvalidLoginInfo(error: e.toString());
     }
 
-    return EmptyUser(e: e.toString());
+    return InvalidLoginInfo(error: response.reasonPhrase!);
   }
 
   Future<UserStatus> logOut() async {
@@ -364,7 +362,11 @@ class HttpRepo {
     return await _httpService.getResourceFolder(folderID);
   }
 
-  Future downloadFile({required int fileId, required String fileName}) async {
+  Future downloadFile({
+    required int fileId,
+    required String fileName,
+    required DownloadType type,
+  }) async {
     return _httpService.downloadFile(fileId, fileName);
   }
 
@@ -381,23 +383,20 @@ class HttpRepo {
 
 abstract class DownloadType {}
 
-class Notes {}
+class Notes extends DownloadType {}
 
-class Picture {}
+class Picture extends DownloadType {}
+
+class Other extends DownloadType {}
 
 abstract class DownloadService<DownloadType> {
-  bool shouldMiddlewareApply(
-    final DownloadType type,
-  ) =>
-      true;
+  bool shouldMiddlewareApply() => true;
 }
 
 class DownloadLesson<DownloadType> extends DownloadService {
-  download() {}
-
   @override
-  bool shouldMiddlewareApply(type) {
-    if (type is Notes) return true;
+  bool shouldMiddlewareApply() {
+    if (DownloadType is Notes) return true;
     return false;
   }
 

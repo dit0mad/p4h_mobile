@@ -13,6 +13,26 @@ import 'build_card.dart';
 import 'build_divider.dart';
 import 'text_field.dart';
 
+class SubResourceScreenLoading extends StatelessWidget {
+  const SubResourceScreenLoading({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder(builder: (context, state) {
+      return const Center(child: CircularProgressIndicator());
+    });
+  }
+}
+
+class SubResourceScreenSuccess extends StatelessWidget {
+  const SubResourceScreenSuccess({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container();
+  }
+}
+
 class SubResourceScreens extends StatelessWidget {
   const SubResourceScreens({
     Key? key,
@@ -21,17 +41,20 @@ class SubResourceScreens extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<ActionListenerBloc, BaseAction>(
-      builder: (context, state) {
-        if (state is Loading) {
+      builder: (context, action) {
+        // preffered way of listening to actions so we can pause the whole app kinda vibes.
+
+        if (action is LoadingAction) {
           return const Center(child: CircularProgressIndicator());
         }
 
-        if (state is BaseActionSuccess) {
+        if (action is BaseActionSuccess) {
           return BlocBuilder<UserStateBloc, UserState>(builder: (
             final context,
             final state,
           ) {
             final nextState = state as UserStateSuccess;
+
             final resourseList = nextState.resourceFolder!;
 
             return Column(
@@ -52,9 +75,11 @@ class SubResourceScreens extends StatelessWidget {
                               fillColor: mainFillColor,
                               titleText: e.display,
                               onPressed: () {
-                                BlocProvider.of<UserStateBloc>(context).add(
-                                    Download(
-                                        fileID: e.id, fileName: e.display));
+                                BlocProvider.of<UserStateBloc>(context)
+                                    .add(Download(
+                                  fileID: e.id,
+                                  fileName: e.display,
+                                ));
                               },
                             ),
                           ),
