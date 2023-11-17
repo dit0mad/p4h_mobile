@@ -1,20 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:p4h_mobile/appstate/actions_bloc/action_bloc.dart';
-import 'package:p4h_mobile/appstate/actions_bloc/actions.dart';
-
 import 'package:p4h_mobile/appstate/user_bloc/user__state_bloc.dart';
 import 'package:p4h_mobile/appstate/user_bloc/user_state_events.dart';
 import 'package:p4h_mobile/constants.dart';
 import 'package:p4h_mobile/models/user_post.dart';
-
 import 'package:p4h_mobile/services/http_service.dart';
-import 'package:p4h_mobile/widgets/build_divider.dart';
 import 'package:p4h_mobile/widgets/custom_text_field.dart';
-import 'package:p4h_mobile/widgets/login_text_field.dart';
 
 import '../widgets/build_button.dart';
+
+import 'loading_screen.dart';
 
 class ProfileState extends StatefulWidget {
   const ProfileState({super.key});
@@ -319,7 +315,7 @@ class ProfileHeader extends StatelessWidget {
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(state.userSrate.name, style: subtitle6),
+              Text(state.userState.name, style: subtitle6),
               const SizedBox(
                 height: 8,
               ),
@@ -424,7 +420,7 @@ class PostWidget extends StatelessWidget {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              state.userSrate.name,
+                              state.userState.name,
                               style: subtitle6,
                             ),
                             const SizedBox(

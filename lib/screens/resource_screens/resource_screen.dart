@@ -83,42 +83,40 @@ class ResourceScreen extends StatelessWidget {
     }
 
     return BlocBuilder<UserStateBloc, UserState>(builder: (context, state) {
-      if (state is UserStateSuccess) {
-        final resources = state.userState.resources;
+      return BlocBuilder<UserStateBloc, UserState>(builder: (context, state) {
+        if (state is UserStateSuccess) {
+          final resources = state.userState.resources;
 
-        final theMap = Map.fromIterables(resources, icons);
+          final theMap = Map.fromIterables(resources, icons);
 
-    return BlocBuilder<UserStateBloc, UserState>(builder: (context, state) {
-      if (state is UserStateSuccess) {
-        final resources = state.userState.resources;
-
-        final theMap = Map.fromIterables(resources, icons);
-
-    Widget one = Material(
-      child: Column(
-        children: [
-          const CustomSearchField(
-            hintText: 'Search Resous',
-            fieldSize: 40,
-          ),
-          ...theMap.entries.map((e) => Expanded(
-                child: BuildCard(
-                  subTitleText: '${e.key.name} to help plan every day lessons',
-                  titleText: e.key.name,
-                  icon: e.value,
-                  onPressed: () {
-                    navigate(e.key.name, e.key.id);
-                  },
-                  iconColor: mainIconColor,
+          Widget one = Material(
+            child: Column(
+              children: [
+                CustomTextField(
+                  controller: controller,
+                  hintText: 'Search Resous',
+                  fieldSize: 40,
                 ),
-              )),
-        ],
-      ),
-    );
+                ...theMap.entries.map((e) => Expanded(
+                      child: BuildCard(
+                        subTitleText:
+                            '${e.key.name} to help plan every day lessons',
+                        titleText: e.key.name,
+                        icon: e.value,
+                        onPressed: () {
+                          navigate(e.key.name, e.key.id);
+                        },
+                        iconColor: mainIconColor,
+                      ),
+                    )),
+              ],
+            ),
+          );
 
-        return one;
-      }
-      return Ink();
+          return one;
+        }
+        return Ink();
+      });
     });
   }
 }

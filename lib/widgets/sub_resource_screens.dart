@@ -11,7 +11,6 @@ import 'package:p4h_mobile/appstate/user_bloc/user_state_events.dart';
 import 'package:p4h_mobile/constants.dart';
 import 'build_card.dart';
 import 'build_divider.dart';
-import 'text_field.dart';
 
 class SubResourceScreenLoading extends StatelessWidget {
   const SubResourceScreenLoading({super.key});
@@ -59,10 +58,10 @@ class SubResourceScreens extends StatelessWidget {
 
             return Column(
               children: [
-                const CustomSearchField(
-                  hintText: 'Search Resous',
-                  fieldSize: 40,
-                ),
+                // const CustomSearchField(
+                //   hintText: 'Search Resous',
+                //   fieldSize: 40,
+                // ),
                 Column(
                   children: [
                     ...resourseList.resources.map(
