@@ -13,7 +13,7 @@ import 'package:p4h_mobile/screens/resource_screens/photo_screen.dart';
 import 'package:p4h_mobile/screens/resource_screens/video_screen.dart';
 
 import '../../widgets/build_card.dart';
-import '../../widgets/text_field.dart';
+import '../../widgets/custom_text_field.dart';
 
 const icons = [
   FontAwesomeIcons.book,
@@ -46,7 +46,14 @@ class ResourceScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // final bloc = context.read<UserStateBloc>();
+    late final TextEditingController controller = TextEditingController();
+    final bloc = context.read<UserStateBloc>();
+
+    final state = bloc.state as UserStateSuccess;
+
+    final resources = state.userState.resources;
+
+    final theMap = Map.fromIterables(resources, icons);
 
     Widget page = Ink();
 
@@ -81,28 +88,33 @@ class ResourceScreen extends StatelessWidget {
 
         final theMap = Map.fromIterables(resources, icons);
 
-        Widget one = Material(
-          child: Column(
-            children: [
-              const CustomSearchField(
-                hintText: 'Search Resous',
-                fieldSize: 40,
-              ),
-              ...theMap.entries.map((e) => Expanded(
-                    child: BuildCard(
-                      subTitleText:
-                          '${e.key.name} to help plan every day lessons',
-                      titleText: e.key.name,
-                      icon: e.value,
-                      onPressed: () {
-                        navigate(e.key.name, e.key.id);
-                      },
-                      iconColor: mainIconColor,
-                    ),
-                  )),
-            ],
+    return BlocBuilder<UserStateBloc, UserState>(builder: (context, state) {
+      if (state is UserStateSuccess) {
+        final resources = state.userState.resources;
+
+        final theMap = Map.fromIterables(resources, icons);
+
+    Widget one = Material(
+      child: Column(
+        children: [
+          const CustomSearchField(
+            hintText: 'Search Resous',
+            fieldSize: 40,
           ),
-        );
+          ...theMap.entries.map((e) => Expanded(
+                child: BuildCard(
+                  subTitleText: '${e.key.name} to help plan every day lessons',
+                  titleText: e.key.name,
+                  icon: e.value,
+                  onPressed: () {
+                    navigate(e.key.name, e.key.id);
+                  },
+                  iconColor: mainIconColor,
+                ),
+              )),
+        ],
+      ),
+    );
 
         return one;
       }

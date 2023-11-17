@@ -1,19 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:p4h_mobile/constants.dart';
 
-class CustomSearchField extends StatelessWidget {
+class CustomTextField extends StatelessWidget {
   final String hintText;
   final double fieldSize;
+  final TextEditingController controller;
 
-  const CustomSearchField({
+  const CustomTextField({
     Key? key,
     required this.hintText,
     required this.fieldSize,
+    required this.controller,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    final TextEditingController controller = TextEditingController();
     return GestureDetector(
       onTap: () {
         FocusScope.of(context).unfocus();
