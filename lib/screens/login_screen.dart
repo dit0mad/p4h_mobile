@@ -5,7 +5,6 @@ import 'package:p4h_mobile/appstate/user_bloc/user_state_events.dart';
 import 'package:p4h_mobile/widgets/build_button.dart';
 import 'package:p4h_mobile/widgets/build_logo.dart';
 import '../constants.dart';
-import '../widgets/login_text_field.dart';
 import 'loading_screen.dart';
 
 class LoginScreen extends StatelessWidget {
@@ -49,6 +48,7 @@ class LoginForm extends StatefulWidget {
 class _LoginFormState extends State<LoginForm> {
   final userNameController = TextEditingController();
   final passWordController = TextEditingController();
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   @override
   void dispose() {
@@ -58,107 +58,96 @@ class _LoginFormState extends State<LoginForm> {
   }
 
   @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
+  Widget build(BuildContext context) {
+    void submitForm() {
+      if (_formKey.currentState!.validate()) {
+        context.read<UserStateBloc>().add(
+              UserLoginEvent(
+                password: passWordController.text,
+                userName: userNameController.text,
+              ),
+            );
+      }
+    }
+
+    return GestureDetector(
+      onTap: () => FocusScope.of(context).unfocus(),
+      child: Form(
+        key: _formKey,
+        child: Column(
+          children: [
+            Container(
+              height: 60,
+              margin: const EdgeInsets.symmetric(horizontal: 25),
+              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+              decoration: BoxDecoration(
+                border: Border.all(color: Colors.grey),
+                borderRadius: BorderRadius.circular(20),
+                color: Colors.black12,
+              ),
+              child: TextFormField(
+                decoration: const InputDecoration(
+                  border: OutlineInputBorder(
+                    borderSide: BorderSide.none,
+                  ),
+                  labelText: 'Non',
+                ),
+                controller: userNameController,
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Username Cannot Be Empty';
+                  }
+                  return null;
+                },
+              ),
+            ),
+            Container(
+              height: 60,
+              margin: const EdgeInsets.symmetric(horizontal: 25),
+              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+              decoration: BoxDecoration(
+                border: Border.all(color: Colors.grey),
+                borderRadius: BorderRadius.circular(20),
+                color: Colors.black12,
+              ),
+              child: TextFormField(
+                decoration: const InputDecoration(
+                  border: OutlineInputBorder(borderSide: BorderSide.none),
+                  labelText: 'Telefon',
+                ),
+                controller: passWordController,
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Password Cannot Be Empty';
+                  }
+                  return null;
+                },
+              ),
+            ),
+            SubmitButton(
+              callback: submitForm,
+            ),
+          ],
+        ),
+      ),
+    );
   }
+}
+
+class SubmitButton extends StatelessWidget {
+  final VoidCallback callback;
+  const SubmitButton({
+    super.key,
+    required this.callback,
+  });
 
   @override
   Widget build(BuildContext context) {
-    final width = MediaQuery.of(context).size.width;
-    final height = MediaQuery.of(context).size.height;
-
-    return BlocBuilder<UserStateBloc, UserState>(
-      builder: (BuildContext context, UserState state) {
-        if (state is UserInitial) {
-          return SafeArea(
-            child: GestureDetector(
-              onTap: () => FocusScope.of(context).unfocus(),
-              child: SizedBox(
-                height: height,
-                width: width,
-                child: Column(
-                  children: [
-                    SizedBox(height: height * .01),
-                    Center(
-                        child: Text(
-                      'P4H Chat',
-                      style: headlineStyle1,
-                    )),
-                    SizedBox(height: height * .02),
-                    SizedBox(
-                      height: height * 0.2,
-                      child: const Logo(),
-                    ),
-                    SizedBox(height: height * .02),
-                    Center(
-                        child: Text(
-                      'Ouvri sesyon an',
-                      style: bodyText1,
-                    )),
-                    SizedBox(height: height * .04),
-                    LoginTextField(
-                      controller: userNameController,
-                      text: 'Non',
-                    ),
-                    SizedBox(height: height * .01),
-                    LoginTextField(
-                      controller: passWordController,
-                      text: 'Telefon',
-                    ),
-                    SizedBox(height: height * .04),
-                    SizedBox(
-                      height: height * .05,
-                      width: width * 0.8,
-                      child: ButtonBuild(
-                        color: mainAppColor2,
-                        buttonText: 'Kontinye',
-                        onPress: () {
-                          context.read<UserStateBloc>().add(
-                                UserLoginEvent(
-                                  password: passWordController.text,
-                                  userName: userNameController.text,
-                                ),
-                              );
-                        },
-                      ),
-                    ),
-                    SizedBox(height: height * .03),
-                    Center(
-                      child: Text(
-                        'Enformaysyon sou Profile',
-                        style: bodyText1,
-                      ),
-                    ),
-                    SizedBox(height: height * .01),
-                    Center(
-                      child: Text(
-                        'Mete non ak telefon ou anwo a',
-                        style: bodyText2,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          );
-        }
-
-        if (state is UserStateLoading) {
-          return Center(
-              child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text('Fetching Information', style: subtitle2),
-              const CircularProgressIndicator(),
-            ],
-          ));
-        }
-
-        if (state is UserStateError) {
-          return const Text('Invalid Password');
-        }
-
-        return const CircularProgressIndicator();
+    return ButtonBuild(
+      color: mainAppColor2,
+      buttonText: 'Kontinye',
+      onPress: () {
+        callback();
       },
     );
   }

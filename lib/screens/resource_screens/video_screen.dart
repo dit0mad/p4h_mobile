@@ -8,8 +8,8 @@ class VideoScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Material(
-      child: SubResourceScreens(),
+    return Material(
+      child: Container(),
     );
   }
 }

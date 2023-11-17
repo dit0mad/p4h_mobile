@@ -1,3 +1,5 @@
+// import 'dart:io';
+
 import 'dart:io';
 
 import 'package:flutter/material.dart';
@@ -26,16 +28,10 @@ class SubResourceScreenLoading extends StatelessWidget {
 class SubResourceScreenSuccess extends StatelessWidget {
   const SubResourceScreenSuccess({Key? key}) : super(key: key);
 
-  @override
-  Widget build(BuildContext context) {
-    return Container();
-  }
-}
-
-class SubResourceScreens extends StatelessWidget {
-  const SubResourceScreens({
-    Key? key,
-  }) : super(key: key);
+// class SubResourceScreens extends StatelessWidget {
+//   const SubResourceScreens({
+//     Key? key,
+//   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

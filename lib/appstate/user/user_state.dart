@@ -244,13 +244,13 @@ abstract class RepresentableError {
 }
 
 class InvalidLoginInfo extends UserStatus {
-  final String error;
+  String errorText;
 
-  const InvalidLoginInfo({required this.error});
+  InvalidLoginInfo({required this.errorText});
 
   @override
   String toString() {
-    return error;
+    return errorText;
   }
 }
 

@@ -82,41 +82,23 @@ class ResourceScreen extends StatelessWidget {
           );
     }
 
-    return BlocBuilder<UserStateBloc, UserState>(builder: (context, state) {
-      return BlocBuilder<UserStateBloc, UserState>(builder: (context, state) {
-        if (state is UserStateSuccess) {
-          final resources = state.userState.resources;
-
-          final theMap = Map.fromIterables(resources, icons);
-
-          Widget one = Material(
-            child: Column(
-              children: [
-                CustomTextField(
-                  controller: controller,
-                  hintText: 'Search Resous',
-                  fieldSize: 40,
-                ),
-                ...theMap.entries.map((e) => Expanded(
-                      child: BuildCard(
-                        subTitleText:
-                            '${e.key.name} to help plan every day lessons',
-                        titleText: e.key.name,
-                        icon: e.value,
-                        onPressed: () {
-                          navigate(e.key.name, e.key.id);
-                        },
-                        iconColor: mainIconColor,
-                      ),
-                    )),
-              ],
-            ),
-          );
-
-          return one;
-        }
-        return Ink();
-      });
-    });
+    return Padding(
+      padding: EdgeInsets.only(top: 1),
+      child: Column(
+        children: [
+          CustomTextField(
+              hintText: 'Search Resous', fieldSize: 40, controller: controller),
+          ...theMap.entries.map((e) => BuildCard(
+                subTitleText: '${e.key.name} to help plan every day lessons',
+                titleText: e.key.name,
+                icon: e.value,
+                onPressed: () {
+                  navigate(e.key.name!, 1);
+                },
+                iconColor: mainIconColor,
+              )),
+        ],
+      ),
+    );
   }
 }

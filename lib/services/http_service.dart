@@ -4,7 +4,7 @@ import 'dart:math';
 
 import 'package:dio/dio.dart';
 import 'package:http/http.dart' as http;
-import 'package:open_file_plus/open_file_plus.dart';
+//import 'package:open_file_plus/open_file_plus.dart';
 import 'package:p4h_mobile/appstate/user/user_state.dart';
 import 'package:p4h_mobile/models/progress_model.dart';
 import 'package:p4h_mobile/models/resource.dart';
@@ -219,23 +219,28 @@ class HttpService {
       if (response.statusCode == 200) {
         final decodedResponse = jsonDecode(response.body);
 
-        //i need to store the cookie and check if it has expired or not. store seprate maybe?
+        //if decodedresponse is not a map then username or password wrong.
+
+        //TODO @yasantha
+        if (decodedResponse != Map) {
+          return InvalidLoginInfo(errorText: decodedResponse);
+        }
 
         cookie = StoreCookie(cookie: response.headers['set-cookie']!);
 
-        final resolvedUser = UserSuccess.fromJson(
+        final decodedUser = UserSuccess.fromJson(
           decodedResponse,
         );
 
-        final s = resolvedUser.copyWith(cookie: cookie);
+        final resolvedUser = decodedUser.copyWith(cookie: cookie);
 
-        return s;
+        return resolvedUser;
       }
     } catch (e) {
-      return InvalidLoginInfo(error: e.toString());
+      throw '';
     }
 
-    return InvalidLoginInfo(error: response.reasonPhrase!);
+    return InvalidLoginInfo(errorText: response.reasonPhrase!);
   }
 
   Future<UserStatus> logOut() async {
@@ -287,7 +292,7 @@ class HttpService {
 
     final file = File(path);
 
-    await OpenFile.open(file.path);
+    //await OpenFile.open(file.path);
 
     return file.path;
   }
@@ -338,7 +343,7 @@ class HttpRepo {
       final allresp = await Future.wait([
         _httpService.getPosts(resp.id),
         _httpService.getResources(),
-      ]);
+      ]).then((value) => null);
 
       final resp1 = allresp[0] as UserPostResponse;
       final resp2 = allresp[1] as UserResourceResponse;
