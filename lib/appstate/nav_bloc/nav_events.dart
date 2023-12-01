@@ -1,16 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:p4h_mobile/appstate/actions_bloc/actions.dart';
 
-// abstract class NavigationAction extends BaseAction {
-//   const NavigationAction();
-// }
-
-// class PushPageRoute extends NavigationAction {
-//   final Target target;
-//   final MaterialPage page;
-//   const PushPageRoute({required this.target, required this.page});
-// }
-
 class Target {
   final String _value;
 
@@ -27,7 +17,7 @@ sealed class NavigationEvent {
   final Target target;
   // final MaterialPage? page;
 
-  MaterialPage? get pages;
+  MaterialPage get pages;
   BaseAction? get sideEffect;
   const NavigationEvent({required this.target});
 }
@@ -40,7 +30,7 @@ class PushPageRoute extends NavigationEvent {
   });
 
   @override
-  MaterialPage? get pages => page;
+  MaterialPage get pages => page;
 
   @override
   BaseAction? get sideEffect => throw UnimplementedError();
@@ -54,11 +44,9 @@ class PopToRootPushPageRoute extends NavigationEvent {
   });
 
   @override
-  // TODO: implement pages
-  MaterialPage? get pages => page;
+  MaterialPage get pages => page;
 
   @override
-  // TODO: implement sideEffect
   BaseAction? get sideEffect => throw UnimplementedError();
 }
 
@@ -66,9 +54,8 @@ class PopRoute extends NavigationEvent {
   PopRoute({required super.target});
 
   @override
-  MaterialPage? get pages => throw UnimplementedError();
+  MaterialPage get pages => throw UnimplementedError();
 
   @override
-  // TODO: implement sideEffect
   BaseAction? get sideEffect => throw UnimplementedError();
 }

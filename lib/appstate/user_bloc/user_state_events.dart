@@ -1,3 +1,4 @@
+import 'package:p4h_mobile/appstate/user/user_state_old.dart';
 import 'package:p4h_mobile/models/progress_model.dart';
 import 'package:p4h_mobile/models/resource.dart';
 
@@ -6,11 +7,11 @@ sealed class UserStateEvents {
 }
 
 class UserLoginEvent extends UserStateEvents {
-  final String userName;
+  final String username;
   final String password;
 
   const UserLoginEvent({
-    required this.userName,
+    required this.username,
     required this.password,
   });
 }
@@ -21,10 +22,20 @@ class GoToMyProgressSuccess extends UserStateEvents {
   const GoToMyProgressSuccess({required this.result});
 }
 
-class SetResourceFolder extends UserStateEvents {
-  final ResourcesFolderIdResponse rr;
+class ClearLoginErrors extends UserStateEvents {}
 
-  const SetResourceFolder({required this.rr});
+class ClearUserResourceResponseError extends UserStateEvents {}
+
+class AddError extends UserStateEvents {
+  final List<RepresentableError> errors;
+
+  const AddError({required this.errors});
+}
+
+class SetResourceFolder extends UserStateEvents {
+  final ResourcesFolderIdResponse resourceFolderIdResponse;
+
+  const SetResourceFolder({required this.resourceFolderIdResponse});
 }
 
 class Download extends UserStateEvents {

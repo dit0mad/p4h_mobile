@@ -1,5 +1,5 @@
 import 'package:p4h_mobile/appstate/actions_bloc/actions.dart';
-import 'package:p4h_mobile/appstate/user/user_state.dart';
+import 'package:p4h_mobile/appstate/user/user_state_old.dart';
 import 'package:p4h_mobile/models/comment.dart';
 import 'package:p4h_mobile/models/user_post.dart';
 

@@ -38,18 +38,15 @@ class ActionListenerBloc extends Bloc<BaseAction, BaseAction> {
         target: Target.mainStack,
       ));
 
-      final nextState = userStateBloc.state;
+      final nextState = userStateBloc.state as UserStateSuccess;
+      final hasProgress = nextState.progress;
 
-      if (nextState is UserStateSuccess) {
-        final hasProgress = nextState.progress;
-
-        if (hasProgress.isNotEmpty) {
-          emit(const ActionSucess());
-          return;
-        }
+      if (hasProgress.isNotEmpty) {
+        emit(const ActionSucess());
+        return;
       }
 
-      final result = await httpService.getProgress();
+      final result = await httpService.getProgress(nextState.userState.id);
 
       userStateBloc.add(
         GoToMyProgressSuccess(result: result),
@@ -59,7 +56,13 @@ class ActionListenerBloc extends Bloc<BaseAction, BaseAction> {
     });
     on<NavigateToLessenPlanScreen>(
       (event, emit) async {
+        userStateBloc.add(ClearUserResourceResponseError());
+
         final result = await httpService.gotoResourceFolder(event.folderID);
+
+        if (result is UserResourceResponseFailure) {
+          userStateBloc.add(AddError(errors: [result]));
+        }
 
         if (result is ResourcesFolderIdResponse) {
           bloc.add(
@@ -70,7 +73,7 @@ class ActionListenerBloc extends Bloc<BaseAction, BaseAction> {
                 target: event.target),
           );
           userStateBloc.add(SetResourceFolder(
-            rr: result,
+            resourceFolderIdResponse: result,
           ));
         }
 

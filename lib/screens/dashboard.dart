@@ -1,12 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/get.dart';
-import 'package:p4h_mobile/appstate/nav_bloc/nav_bloc.dart';
 import 'package:p4h_mobile/constants.dart';
 import 'package:p4h_mobile/controllers/tab_controller.dart' as controller;
 import 'package:p4h_mobile/screens/discussion.dart';
 import 'package:p4h_mobile/screens/messages.dart';
-import 'package:p4h_mobile/screens/profile.dart';
+import 'package:p4h_mobile/screens/profile_screen/profile_main.dart';
 import 'package:p4h_mobile/screens/resource_screens/resource_screen.dart';
 
 class Dashboard extends StatelessWidget {
@@ -18,33 +16,35 @@ class Dashboard extends StatelessWidget {
     final controller.TabController tabController =
         Get.put(controller.TabController());
 
-    return Scaffold(
-      body: Material(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Obx(
-              () => Center(
-                child: Text(
-                  tabController.title.value,
-                  style: headlineStyle1,
+    return SafeArea(
+      child: Scaffold(
+        body: Material(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Obx(
+                () => Center(
+                  child: Text(
+                    tabController.title.value,
+                    style: headlineStyle1,
+                  ),
                 ),
               ),
-            ),
-            TabBar(
-              tabController: tabController,
-            ),
-            Expanded(
-              child: Obx(() => IndexedStack(
-                      index: tabController.index.value,
-                      children: const [
-                        ProfileState(),
-                        Messages(),
-                        ResourceScreenMediator(),
-                        DiscussionScreen(),
-                      ])),
-            ),
-          ],
+              TabBar(
+                tabController: tabController,
+              ),
+              Expanded(
+                child: Obx(() => IndexedStack(
+                        index: tabController.index.value,
+                        children: const [
+                          ProfileState(),
+                          Messages(),
+                          ResourceScreenMediator(),
+                          DiscussionScreen(),
+                        ])),
+              ),
+            ],
+          ),
         ),
       ),
     );

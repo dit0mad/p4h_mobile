@@ -5,7 +5,7 @@ import 'dart:math';
 import 'package:dio/dio.dart';
 import 'package:http/http.dart' as http;
 //import 'package:open_file_plus/open_file_plus.dart';
-import 'package:p4h_mobile/appstate/user/user_state.dart';
+import 'package:p4h_mobile/appstate/user/user_state_old.dart';
 import 'package:p4h_mobile/models/progress_model.dart';
 import 'package:p4h_mobile/models/resource.dart';
 import 'package:p4h_mobile/models/user.dart';
@@ -197,7 +197,7 @@ class HttpService {
 
       return resolved;
     } catch (e) {
-      throw const UserResourceResponseFailure();
+      return const UserResourceResponseFailure();
     }
   }
 
@@ -217,14 +217,22 @@ class HttpService {
 
     try {
       if (response.statusCode == 200) {
+        final resp = response.body;
+
+        if (resp is! Map) {
+          switch (resp) {
+            case 'Username not found':
+              return LoginErrorType.invalidUserName(resp);
+            case 'Password not correct':
+              return LoginErrorType.invalidPassword(resp);
+
+            default:
+          }
+        }
+
         final decodedResponse = jsonDecode(response.body);
 
         //if decodedresponse is not a map then username or password wrong.
-
-        //TODO @yasantha
-        if (decodedResponse != Map) {
-          return InvalidLoginInfo(errorText: decodedResponse);
-        }
 
         cookie = StoreCookie(cookie: response.headers['set-cookie']!);
 
@@ -240,7 +248,7 @@ class HttpService {
       throw '';
     }
 
-    return InvalidLoginInfo(errorText: response.reasonPhrase!);
+    throw '';
   }
 
   Future<UserStatus> logOut() async {
@@ -343,7 +351,7 @@ class HttpRepo {
       final allresp = await Future.wait([
         _httpService.getPosts(resp.id),
         _httpService.getResources(),
-      ]).then((value) => null);
+      ]);
 
       final resp1 = allresp[0] as UserPostResponse;
       final resp2 = allresp[1] as UserResourceResponse;
@@ -364,7 +372,7 @@ class HttpRepo {
   }
 
   Future<UserResourceResponse> gotoResourceFolder(int folderID) async {
-    return await _httpService.getResourceFolder(folderID);
+    return await _httpService.getResourceFolder(folderID).catchError((e) => e);
   }
 
   Future downloadFile({
@@ -375,8 +383,8 @@ class HttpRepo {
     return _httpService.downloadFile(fileId, fileName);
   }
 
-  Future<Iterable<MyProgress>> getProgress() async {
-    final result = await _httpService.getProgress(1);
+  Future<Iterable<MyProgress>> getProgress(int userID) async {
+    final result = await _httpService.getProgress(userID);
 
     if (result is MyProgressSuccess) {
       return result.myProgress;

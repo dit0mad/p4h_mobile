@@ -1,5 +1,6 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:p4h_mobile/appstate/user/user_state.dart';
+import 'package:p4h_mobile/appstate/user/user_state_old.dart';
+import 'package:p4h_mobile/appstate/user_bloc/reducer.dart';
 import 'package:p4h_mobile/appstate/user_bloc/user_state_events.dart';
 import 'package:p4h_mobile/models/progress_model.dart';
 import 'package:p4h_mobile/models/resource.dart';
@@ -17,6 +18,28 @@ class UserStateBloc extends Bloc<UserStateEvents, UserState> {
         super(
           UserInitial(),
         ) {
+    on<AddError>((event, emit) {
+      final prevState = state as UserStateSuccess;
+
+      final nextState = userStateReducer(event, prevState);
+
+      emit(nextState);
+    });
+    on<ClearLoginErrors>((event, emit) {
+      final prevState = state as UserInitial;
+
+      final nextState = userStateReducer(event, prevState);
+
+      emit(nextState);
+    });
+    on<ClearUserResourceResponseError>((event, emit) {
+      final prevState = state as UserStateSuccess;
+
+      final nextState = userStateReducer(event, prevState);
+
+      emit(nextState);
+    });
+
     on<GoToMyProgressSuccess>((event, emit) {
       final prevState = state as UserStateSuccess;
 
@@ -33,11 +56,9 @@ class UserStateBloc extends Bloc<UserStateEvents, UserState> {
 
       emit(const UserStateLoading());
 
-      if (!checkState(state)) {}
-
       emit(
         prevState.copyWith(
-          resourceFolder: event.rr,
+          resourceFolder: event.resourceFolderIdResponse,
         ),
       );
     });
@@ -56,20 +77,18 @@ class UserStateBloc extends Bloc<UserStateEvents, UserState> {
     );
 
     on<UserLoginEvent>((event, emit) async {
+      final prevState = state as UserInitial;
       emit(const UserStateLoading());
 
-      final loginRes = await http.login(event.userName, event.password);
+      final loginRes = await http.login(event.username, event.password);
 
-      // final dummyloginRes = UserSuccess(
-      //     canvasID: 1, email: "", id: 1, name: "name", username: "usernmae");
-      // emit(UserStateSuccess(
-      //   user: loginRes,
-      // ));
-
-      if (loginRes is InvalidLoginInfo) {
-        emit(
-          UserStateError(error: "Invalid Login Ifo"),
-        );
+      if (loginRes is LoginErrorType) {
+        emit(prevState.copyWith(
+          loginErrors: [
+            ...prevState.loginErrors,
+            loginRes,
+          ],
+        ));
       }
 
       if (loginRes is UserSuccess) {
@@ -90,16 +109,10 @@ class UserStateBloc extends Bloc<UserStateEvents, UserState> {
             const UserStateError(error: 'Fetching User Post Failed'),
           );
         }
-
-        emit(UserStatePush());
       }
     });
 
     on<AddPost>((event, emit) async {
-      if (state is! UserStateSuccess) {
-        //emit addpost failure
-        return;
-      }
       final currentState = state as UserStateSuccess;
 
       final userPost = UserPost(
@@ -119,9 +132,6 @@ class UserStateBloc extends Bloc<UserStateEvents, UserState> {
 
     on<DeletePost>(
       (event, emit) {
-        if (state is! UserStateSuccess) {
-          return;
-        }
         final currentState = state as UserStateSuccess;
 
         final nextState = currentState.copyWith(userPost: [
@@ -140,7 +150,19 @@ abstract class UserState {
   String errorMessage() => ("");
 }
 
-class UserInitial extends UserState {}
+class UserInitial extends UserState {
+  final List<LoginErrorType> loginErrors;
+
+  UserInitial({
+    this.loginErrors = const [],
+  });
+
+  UserInitial copyWith({
+    final List<LoginErrorType>? loginErrors,
+  }) {
+    return UserInitial(loginErrors: loginErrors ?? []);
+  }
+}
 
 class UserStateLoading extends UserState {
   const UserStateLoading();
@@ -162,6 +184,8 @@ class UserStateSuccess extends UserState {
   final List<UserPost> userPost;
   final String? filePath;
 
+  final List<RepresentableError> errors;
+
   final ResourcesFolderIdResponse? resourceFolder;
 
   final Iterable<MyProgress> progress;
@@ -170,6 +194,7 @@ class UserStateSuccess extends UserState {
     required UserSuccess user,
     this.userPost = const [],
     this.progress = const [],
+    this.errors = const [],
     this.filePath,
     this.resourceFolder,
   }) : _user = user;
@@ -182,6 +207,7 @@ class UserStateSuccess extends UserState {
     final String? filePath,
     final ResourcesFolderIdResponse? resourceFolder,
     final Iterable<MyProgress>? progress,
+    final List<RepresentableError>? errors,
   }) {
     return UserStateSuccess(
       user: user ?? _user,
@@ -189,16 +215,9 @@ class UserStateSuccess extends UserState {
       filePath: filePath ?? this.filePath,
       resourceFolder: resourceFolder ?? this.resourceFolder,
       progress: progress ?? this.progress,
+      errors: errors ?? [],
     );
   }
 }
 
 class UserStatePush extends UserState {}
-
-bool checkState(UserState state) {
-  if (state is UserStateSuccess) {
-    return true;
-  }
-
-  return false;
-}
