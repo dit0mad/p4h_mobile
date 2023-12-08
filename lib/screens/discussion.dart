@@ -66,7 +66,7 @@ class DiscussionScreen extends StatelessWidget {
                   color: Colors.white,
                   border: Border.all(color: mainAppColor1),
                   borderRadius: BorderRadius.circular(15)),
-              child: Row(
+              child: const Row(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
                   Icon(FontAwesomeIcons.globe, size: 15, color: mainAppColor1),
@@ -144,8 +144,8 @@ class DiscussionScreen extends StatelessWidget {
         Container(
             margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 0),
             child: const BuildDivider()),
-        Padding(
-          padding: const EdgeInsets.all(8.0),
+        const Padding(
+          padding: EdgeInsets.all(8.0),
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [

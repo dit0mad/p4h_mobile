@@ -1,4 +1,6 @@
-abstract class UserResourceResponse {
+import 'package:p4h_mobile/appstate/user/user_state_old.dart';
+
+abstract class UserResourceResponse extends RepresentableError {
   const UserResourceResponse();
 }
 

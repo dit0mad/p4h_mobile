@@ -3,15 +3,17 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:p4h_mobile/appstate/nav_bloc/nav_bloc.dart';
 import 'package:p4h_mobile/appstate/nav_bloc/nav_events.dart';
 import 'package:p4h_mobile/appstate/user_bloc/user__state_bloc.dart';
-import 'package:p4h_mobile/appstate/user_bloc/user_state_events.dart';
+import 'package:p4h_mobile/models/progress_model.dart';
+import 'package:p4h_mobile/models/resource.dart';
+import 'package:syncfusion_flutter_charts/charts.dart';
 
 class ProgressScreen extends StatelessWidget {
   const ProgressScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return WillPopScope(
-      onWillPop: () async => false,
+    return PopScope(
+      canPop: false,
       child: Scaffold(
         appBar: AppBar(
           leading: BackButton(
@@ -28,7 +30,7 @@ class ProgressScreen extends StatelessWidget {
           state,
         ) {
           if (state is UserStateLoading) {
-            return Center(
+            return const Center(
               child: CircularProgressIndicator(),
             );
           }
@@ -37,31 +39,35 @@ class ProgressScreen extends StatelessWidget {
 
           final progress = nextState.progress;
 
-          return Center(
-            child: SingleChildScrollView(
-              child: Column(
-                children: [
-                  ...progress.map((e) => Ink(
-                        padding: EdgeInsets.all(12),
-                        child: Row(
-                          children: [
-                            Expanded(child: Text(e.name)),
-                            Checkbox(
-                              value: e.hasSubmission,
-                              onChanged: (value) => '',
-                            ),
-                            TextButton(
-                                onPressed: () {},
-                                child: Text('Upload Submission'))
-                          ],
-                        ),
-                      ))
-                ],
-              ),
-            ),
-          );
+          // final submitCount =
+          //     progress.where((element) => element.hasSubmission).length;
+
+          return buildLinearChart(progress.toList());
         }),
       ),
     );
   }
+}
+
+Widget buildLinearChart(List<MyProgress> progressList) {
+  return SfCartesianChart(
+    primaryXAxis: NumericAxis(
+      title: AxisTitle(text: 'Index'),
+    ),
+    primaryYAxis: NumericAxis(
+      title: AxisTitle(text: 'Progress'),
+      minimum: 0,
+      maximum: 10,
+      interval: 1,
+    ),
+    series: <ChartSeries>[
+      LineSeries<MyProgress, int>(
+        dataSource: progressList,
+        xValueMapper: (MyProgress progress, _) => progress.id,
+        yValueMapper: (MyProgress progress, _) =>
+            progress.hasSubmission ? 1 : 0,
+        dataLabelSettings: const DataLabelSettings(isVisible: true),
+      ),
+    ],
+  );
 }

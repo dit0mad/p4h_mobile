@@ -22,7 +22,7 @@ class MyProgress {
     }
     return MyProgress(
       description: data['description'],
-      hasSubmission: data['hasSubmission'],
+      hasSubmission: true,
       id: data['id'],
       name: data['name'],
     );

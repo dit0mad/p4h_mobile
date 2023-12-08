@@ -39,11 +39,15 @@ dependencies:
   get: ^4.6.5
   font_awesome_flutter: ^10.1.0
   google_fonts: ^4.0.4
-  provider: ^6.0.4
   http: ^0.13.5
   dio: ^4.0.6
   webview_flutter: ^4.2.0
   flutter_bloc: ^8.1.2
+  path_provider: ^2.1.0
+  open_file_plus: ^3.4.1
+  permission_handler: ^10.4.3
+  syncfusion_flutter_charts: ^23.2.6
+
 
 dev_dependencies:
   flutter_test:

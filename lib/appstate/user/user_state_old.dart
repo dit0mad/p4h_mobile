@@ -49,7 +49,7 @@ class UserStateProvider extends ChangeNotifier {
 
   bool isLoading = false;
 
-  final HttpService httpService;
+  late final HttpService httpService = HttpService();
 
 //initial state emptyUser;
 
@@ -60,16 +60,13 @@ class UserStateProvider extends ChangeNotifier {
     List<UserPost> userPost = const [],
     List<UserPost> announcements = const [],
   })  : _userPost = userPost,
-        _announcements = announcements,
-        httpService = HttpService();
+        _announcements = announcements;
 
   void getResources() {
     httpService.getResources();
   }
 
-  void configureRocketChatAuth(final RocketChatAuthResponse res) {
-    final tokenID = res.authToken;
-  }
+  void configureRocketChatAuth(final RocketChatAuthResponse res) {}
 
   Future getRocketChatAuth(StoreCookie cookie) async {
     final res = await httpService.getRocketChatAuth(cookie);
@@ -101,7 +98,7 @@ class UserStateProvider extends ChangeNotifier {
     //we wait for a user type and if we get it, we need to fire an action to retireve other information
     //such as userposts and resources,
     //my thought is to create another class which takes in action and gives a response.
-    if (userResponse is InvalidLoginInfo) {
+    if (userResponse is InvalidUserName) {
       isLoading = false;
       notifyListeners();
     }
@@ -244,10 +241,26 @@ abstract class RepresentableError {
   const RepresentableError();
 }
 
-class InvalidLoginInfo extends UserStatus {
+abstract class LoginErrorType extends UserStatus {
+  String basicDescription();
+
+  static LoginErrorType invalidUserName(String error) => InvalidUserName();
+  static LoginErrorType invalidPassword(String error) => InvalidPassword();
+}
+
+class InvalidUserName extends LoginErrorType {
+  InvalidUserName();
+
   @override
-  String toString() {
-    return 'Invalid Login Info';
+  String basicDescription() {
+    return 'Invalid Username';
+  }
+}
+
+class InvalidPassword extends LoginErrorType {
+  @override
+  String basicDescription() {
+    return "Invalid Password";
   }
 }
 

@@ -5,7 +5,6 @@ import 'package:p4h_mobile/appstate/nav_bloc/nav_bloc.dart';
 import 'package:p4h_mobile/appstate/nav_bloc/nav_events.dart';
 import 'package:p4h_mobile/appstate/user_bloc/user__state_bloc.dart';
 import 'package:p4h_mobile/appstate/user_bloc/user_state_events.dart';
-import 'package:p4h_mobile/models/progress_model.dart';
 import 'package:p4h_mobile/models/resource.dart';
 import 'package:p4h_mobile/screens/progress_screen.dart';
 import 'package:p4h_mobile/services/http_service.dart';
@@ -29,7 +28,7 @@ class ActionListenerBloc extends Bloc<BaseAction, BaseAction> {
   })  : httpService = userStateBloc.http,
         super(const InitialAction()) {
     on<GoToMyProgress>((event, emit) async {
-      emit(const Loading());
+      emit(const LoadingAction());
 
       bloc.add(const PushPageRoute(
         page: MaterialPage(
@@ -39,18 +38,15 @@ class ActionListenerBloc extends Bloc<BaseAction, BaseAction> {
         target: Target.mainStack,
       ));
 
-      final nextState = userStateBloc.state;
+      final nextState = userStateBloc.state as UserStateSuccess;
+      final hasProgress = nextState.progress;
 
-      if (nextState is UserStateSuccess) {
-        final hasProgress = nextState.progress;
-
-        if (hasProgress.isNotEmpty) {
-          emit(const ActionSucess());
-          return;
-        }
+      if (hasProgress.isNotEmpty) {
+        emit(const ActionSucess());
+        return;
       }
 
-      final result = await httpService.getProgress();
+      final result = await httpService.getProgress(nextState.userState.id);
 
       userStateBloc.add(
         GoToMyProgressSuccess(result: result),
@@ -60,7 +56,13 @@ class ActionListenerBloc extends Bloc<BaseAction, BaseAction> {
     });
     on<NavigateToLessenPlanScreen>(
       (event, emit) async {
+        userStateBloc.add(ClearUserResourceResponseError());
+
         final result = await httpService.gotoResourceFolder(event.folderID);
+
+        if (result is UserResourceResponseFailure) {
+          userStateBloc.add(AddError(errors: [result]));
+        }
 
         if (result is ResourcesFolderIdResponse) {
           bloc.add(
@@ -71,7 +73,7 @@ class ActionListenerBloc extends Bloc<BaseAction, BaseAction> {
                 target: event.target),
           );
           userStateBloc.add(SetResourceFolder(
-            rr: result,
+            resourceFolderIdResponse: result,
           ));
         }
 

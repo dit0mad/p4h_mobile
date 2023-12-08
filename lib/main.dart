@@ -37,11 +37,12 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
-    return const MaterialApp(
+    return MaterialApp(
+      theme: ThemeData(
+        useMaterial3: false,
+      ),
       debugShowCheckedModeBanner: false,
-      home: Mediator(),
-
+      home: const Mediator(),
     );
   }
 }
@@ -54,6 +55,8 @@ class Mediator extends StatelessWidget {
     return Scaffold(
       body: BlocListener<UserStateBloc, UserState>(
         listener: (context, state) {
+//@yasantha
+          //pushes when login is success. can be moved to an action listener
           if (state is UserStatePush) {
             BlocProvider.of<NavigationBloc>(context).add(
               const PopToRootPushPageRoute(
@@ -77,9 +80,9 @@ class NavigationBuilder extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return WillPopScope(
-      onWillPop: () async {
-        //here we can check if the current route is what i want if not go back.
+    return PopScope(
+      canPop: true,
+      onPopInvoked: (didPop) async {
         final bloc = BlocProvider.of<NavigationBloc>(context);
 
         final stack = bloc.state.mainStack.length;
@@ -91,16 +94,20 @@ class NavigationBuilder extends StatelessWidget {
         }
 
         bloc.add(PopRoute(target: Target.mainStack));
-
-        return false;
       },
       child: Scaffold(
         body: BlocBuilder<ActionListenerBloc, BaseAction>(
             builder: (context, state) {
-          if (state is Loading) {
+          if (state is LoadingAction) {
             return const Scaffold(
               body: Center(
-                child: CircularProgressIndicator(),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text("Loading"),
+                    CircularProgressIndicator(),
+                  ],
+                ),
               ),
             );
           }

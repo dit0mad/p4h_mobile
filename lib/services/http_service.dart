@@ -4,8 +4,8 @@ import 'dart:math';
 
 import 'package:dio/dio.dart';
 import 'package:http/http.dart' as http;
-import 'package:open_file_plus/open_file_plus.dart';
-import 'package:p4h_mobile/appstate/user/user_state.dart';
+//import 'package:open_file_plus/open_file_plus.dart';
+import 'package:p4h_mobile/appstate/user/user_state_old.dart';
 import 'package:p4h_mobile/models/progress_model.dart';
 import 'package:p4h_mobile/models/resource.dart';
 import 'package:p4h_mobile/models/user.dart';
@@ -134,8 +134,6 @@ class HttpService {
     }
   }
 
-  void getUser() {}
-
   Future<UserPostResponse> getPosts(int userID) async {
     final resolveUri = Uri.parse('https://p4hteach.org/api/posts/$userID');
 
@@ -199,7 +197,7 @@ class HttpService {
 
       return resolved;
     } catch (e) {
-      throw const UserResourceResponseFailure();
+      return const UserResourceResponseFailure();
     }
   }
 
@@ -208,8 +206,8 @@ class HttpService {
 
     Map<String, dynamic> map = {};
 
-    map['username'] = 'lcundiff';
-    map['password'] = 'password2';
+    map['username'] = username;
+    map['password'] = password;
 
     http.Response response = await http.post(
       headers: {'Content-Type': 'application/x-www-form-urlencoded'},
@@ -219,25 +217,38 @@ class HttpService {
 
     try {
       if (response.statusCode == 200) {
+        final resp = response.body;
+
+        if (resp is! Map) {
+          switch (resp) {
+            case 'Username not found':
+              return LoginErrorType.invalidUserName(resp);
+            case 'Password not correct':
+              return LoginErrorType.invalidPassword(resp);
+
+            default:
+          }
+        }
+
         final decodedResponse = jsonDecode(response.body);
 
-        //i need to store the cookie and check if it has expired or not. store seprate maybe?
+        //if decodedresponse is not a map then username or password wrong.
 
         cookie = StoreCookie(cookie: response.headers['set-cookie']!);
 
-        final resolvedUser = UserSuccess.fromJson(
+        final decodedUser = UserSuccess.fromJson(
           decodedResponse,
         );
 
-        final s = resolvedUser.copyWith(cookie: cookie);
+        final resolvedUser = decodedUser.copyWith(cookie: cookie);
 
-        return s;
+        return resolvedUser;
       }
     } catch (e) {
-      return InvalidLoginInfo();
+      throw '';
     }
 
-    return EmptyUser(e: e.toString());
+    throw '';
   }
 
   Future<UserStatus> logOut() async {
@@ -289,7 +300,7 @@ class HttpService {
 
     final file = File(path);
 
-    await OpenFile.open(file.path);
+    //await OpenFile.open(file.path);
 
     return file.path;
   }
@@ -361,15 +372,19 @@ class HttpRepo {
   }
 
   Future<UserResourceResponse> gotoResourceFolder(int folderID) async {
-    return await _httpService.getResourceFolder(folderID);
+    return await _httpService.getResourceFolder(folderID).catchError((e) => e);
   }
 
-  Future downloadFile({required int fileId, required String fileName}) async {
+  Future downloadFile({
+    required int fileId,
+    required String fileName,
+    required DownloadType type,
+  }) async {
     return _httpService.downloadFile(fileId, fileName);
   }
 
-  Future<Iterable<MyProgress>> getProgress() async {
-    final result = await _httpService.getProgress(1);
+  Future<Iterable<MyProgress>> getProgress(int userID) async {
+    final result = await _httpService.getProgress(userID);
 
     if (result is MyProgressSuccess) {
       return result.myProgress;
@@ -381,23 +396,20 @@ class HttpRepo {
 
 abstract class DownloadType {}
 
-class Notes {}
+class Notes extends DownloadType {}
 
-class Picture {}
+class Picture extends DownloadType {}
+
+class Other extends DownloadType {}
 
 abstract class DownloadService<DownloadType> {
-  bool shouldMiddlewareApply(
-    final DownloadType type,
-  ) =>
-      true;
+  bool shouldMiddlewareApply() => true;
 }
 
 class DownloadLesson<DownloadType> extends DownloadService {
-  download() {}
-
   @override
-  bool shouldMiddlewareApply(type) {
-    if (type is Notes) return true;
+  bool shouldMiddlewareApply() {
+    if (DownloadType is Notes) return true;
     return false;
   }
 
