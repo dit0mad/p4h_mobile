@@ -49,22 +49,33 @@ class ProfileHeader extends StatelessWidget {
               ),
             ],
           ),
-          Column(
-            children: [
-              const SizedBox(
-                height: 22,
-              ),
-              ButtonBuild(
-                color: mainAppColor1,
-                buttonText: 'pwogre mwen',
-                onPress: () {
-                  context.read<ActionListenerBloc>().add(GoToMyProgress());
-                },
-              ),
-            ],
-          ),
+          const MyProgressWidget(),
         ],
       ),
+    );
+  }
+}
+
+class MyProgressWidget extends StatelessWidget {
+  const MyProgressWidget({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        const SizedBox(
+          height: 22,
+        ),
+        ButtonBuild(
+          color: mainAppColor1,
+          buttonText: 'pwogre mwen',
+          onPress: () {
+            context.read<ActionListenerBloc>().add(GoToMyProgress());
+          },
+        ),
+      ],
     );
   }
 }

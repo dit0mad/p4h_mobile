@@ -176,8 +176,7 @@ class CommentWidget extends StatelessWidget {
                   backgroundImage: const NetworkImage(
                       'https://lh3.googleusercontent.com/a-/AAuE7mChgTiAe-N8ibcM3fB_qvGdl2vQ9jvjYv0iOOjB=s96-c'),
                 ),
-              ), //C
-
+              ),
               Expanded(
                 child: Padding(
                   padding: const EdgeInsets.only(left: 8.0, top: 5),
