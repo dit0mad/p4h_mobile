@@ -43,20 +43,7 @@ class _LoginFormState extends State<LoginForm> {
 
   @override
   Widget build(BuildContext context) {
-    final width = MediaQuery.of(context).size.width;
     final height = MediaQuery.of(context).size.height;
-
-    void validateUserInfo() {
-      if (userNameController.text.isNotEmpty &&
-          passWordController.text.isNotEmpty) {
-        context.read<UserStateBloc>().add(
-              UserLoginEvent(
-                password: passWordController.text,
-                username: userNameController.text,
-              ),
-            );
-      }
-    }
 
     return BlocBuilder<UserStateBloc, UserState>(
       builder: (BuildContext context, UserState state) {
@@ -122,7 +109,9 @@ class _LoginFormState extends State<LoginForm> {
               child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Text('Fetching Information', style: subtitle2),
+              Padding(
+                  padding: EdgeInsets.all(8),
+                  child: Text('Fetching Information', style: subtitle2)),
               const CircularProgressIndicator(),
             ],
           ));
