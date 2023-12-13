@@ -111,8 +111,8 @@ class NavigationBuilder extends StatelessWidget {
               ),
             );
           }
-          return BlocBuilder<NavigationBloc, MainStackState>(
-            builder: (BuildContext context, MainStackState state) {
+          return BlocBuilder<NavigationBloc, NavigationStackState>(
+            builder: (BuildContext context, NavigationStackState state) {
               return Navigator(
                 key: mainNavigatorKey,
                 onPopPage: (final Route<dynamic> route, final dynamic result) {
@@ -120,6 +120,7 @@ class NavigationBuilder extends StatelessWidget {
                 },
                 pages: [
                   ...state.mainStack,
+                  ...state.modalStack.nonNulls,
                 ],
               );
             },

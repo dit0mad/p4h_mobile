@@ -11,26 +11,27 @@ class Target {
   static const Target mainStack = Target._string('mainStack');
   static const Target loggedIn = Target._string('loggedIn');
   static const Target resourceStack = Target._string('resource');
+  static const Target modalStack = Target._string('modal');
 }
 
 sealed class NavigationEvent {
   final Target target;
   // final MaterialPage? page;
 
-  MaterialPage get pages;
+  Page get pages;
   BaseAction? get sideEffect;
   const NavigationEvent({required this.target});
 }
 
 class PushPageRoute extends NavigationEvent {
-  final MaterialPage page;
+  final Page page;
   const PushPageRoute({
     required this.page,
     required super.target,
   });
 
   @override
-  MaterialPage get pages => page;
+  Page get pages => page;
 
   @override
   BaseAction? get sideEffect => throw UnimplementedError();

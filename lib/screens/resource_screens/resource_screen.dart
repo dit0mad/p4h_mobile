@@ -31,7 +31,7 @@ class ResourceScreenMediator extends StatelessWidget {
   Widget build(final BuildContext context) {
     return Scaffold(
       appBar: null,
-      body: BlocBuilder<NavigationBloc, MainStackState>(
+      body: BlocBuilder<NavigationBloc, NavigationStackState>(
         builder: (context, state) => Navigator(
           key: resourceNavigatorKey,
           onPopPage: (final Route<dynamic> route, final dynamic result) {
@@ -91,11 +91,13 @@ class ResourceScreen extends StatelessWidget {
 
     return BlocListener<UserStateBloc, UserState>(
       listener: (context, state) {
-        final nextState = state as UserStateSuccess;
+        if (state is! UserStateSuccess) {
+          return;
+        }
         final errorForThisSpecificScreen =
-            nextState.errors.whereType<UserResourceResponseFailure>().toList();
+            state.errors.whereType<UserResourceResponseFailure>().isNotEmpty;
 
-        if (errorForThisSpecificScreen.isNotEmpty) {
+        if (errorForThisSpecificScreen) {
           ScaffoldMessenger.of(context)
               .showSnackBar(
                 const SnackBar(

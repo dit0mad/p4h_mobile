@@ -17,6 +17,8 @@ class UserResourceFolderResponse {
       required this.updatedAt});
 
   factory UserResourceFolderResponse.fromJson(Map<String, dynamic> data) {
+    if (data.isEmpty) {}
+
     final id = data['id'];
     final display = data['display_name'];
     final updatedAt = data['updated_at'];

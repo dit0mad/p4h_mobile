@@ -15,7 +15,14 @@ const initStack = [
     ),
   ),
 ];
-
+const modalStackInit = [
+  MaterialPage(
+    name: 'modal',
+    child: Material(
+      child: EmptyPage(),
+    ),
+  ),
+];
 const resourceInit = [
   MaterialPage(
     name: 'resource',
@@ -23,10 +30,10 @@ const resourceInit = [
   ),
 ];
 
-class NavigationBloc extends Bloc<NavigationEvent, MainStackState> {
+class NavigationBloc extends Bloc<NavigationEvent, NavigationStackState> {
   NavigationBloc()
       : super(
-          const MainStackState(),
+          const NavigationStackState(),
         ) {
     on<PopRoute>((event, emit) {
       final target = event.target;
@@ -36,8 +43,6 @@ class NavigationBloc extends Bloc<NavigationEvent, MainStackState> {
     });
     on<PushPageRoute>((event, emit) {
       final target = event.target;
-
-      // final sideEffect = event.sideEffect;
 
       if (event.page is LessonPlanScreen) {
         print('yeah');
@@ -58,22 +63,26 @@ class NavigationBloc extends Bloc<NavigationEvent, MainStackState> {
   }
 }
 
-class MainStackState {
-  final List<MaterialPage> mainStack;
-  final List<MaterialPage> resourceStack;
+class NavigationStackState {
+  final List<Page> mainStack;
+  final List<Page> resourceStack;
+  final List<Page> modalStack;
 
-  const MainStackState({
+  const NavigationStackState({
     this.mainStack = initStack,
     this.resourceStack = resourceInit,
+    this.modalStack = const [],
   });
 
-  MainStackState copyWith({
-    final List<MaterialPage>? mainStack,
-    final List<MaterialPage>? resourceStack,
+  NavigationStackState copyWith({
+    final List<Page>? mainStack,
+    final List<Page>? resourceStack,
+    final List<Page>? modalStack,
   }) =>
-      MainStackState(
+      NavigationStackState(
         mainStack: mainStack ?? this.mainStack,
         resourceStack: resourceStack ?? this.resourceStack,
+        modalStack: modalStack ?? this.modalStack,
       );
 }
 
@@ -82,14 +91,14 @@ class EmptyPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Material();
+    return const Material();
   }
 }
 
-MainStackState navReducer(
+NavigationStackState navReducer(
   final NavigationEvent event,
   final Target target,
-  final MainStackState state,
+  final NavigationStackState state,
 ) {
   if (target == Target.mainStack) {
     final nextStack = reduce(event, state.mainStack);
@@ -110,16 +119,25 @@ MainStackState navReducer(
 
     return nextState;
   }
+  if (target == Target.modalStack) {
+    final nextStack = reduce(event, state.modalStack);
+
+    final nextState = state.copyWith(
+      modalStack: nextStack,
+    );
+
+    return nextState;
+  }
 
   return state;
 }
 
-List<MaterialPage<dynamic>> reduce(
+List<Page<dynamic>> reduce(
   final NavigationEvent event,
-  final List<MaterialPage> stack,
+  final List<Page> stack,
 ) {
   if (event is PopRoute) {
-    final next = stack.sublist(0, max(1, stack.length - 1));
+    final next = stack.sublist(0, stack.length - 1);
 
     return next;
   }
