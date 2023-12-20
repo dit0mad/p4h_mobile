@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 class LoadingScreen extends StatelessWidget {
   final String? text;
@@ -17,7 +18,12 @@ class LoadingScreen extends StatelessWidget {
           text ?? optional,
           style: Theme.of(context).textTheme.bodySmall,
         ),
-        const CircularProgressIndicator(),
+        const Center(
+          child: SpinKitDoubleBounce(
+            duration: Duration(milliseconds: 3),
+            color: Colors.white,
+          ),
+        ),
       ],
     ));
   }
