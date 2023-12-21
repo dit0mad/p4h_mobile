@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:get/get.dart';
 import 'package:p4h_mobile/appstate/user_bloc/user__state_bloc.dart';
+import 'package:p4h_mobile/appstate/user_bloc/user_state_events.dart';
 import 'package:p4h_mobile/constants.dart';
 import 'package:p4h_mobile/models/comment.dart';
 import 'package:p4h_mobile/models/user_post.dart';
@@ -21,6 +23,7 @@ class ProfileState extends StatefulWidget {
 class _ProfileStateState extends State<ProfileState> {
   late final TextEditingController postController = TextEditingController();
   late final TextEditingController searchController = TextEditingController();
+  final ScrollController _mainController = ScrollController();
 
   @override
   void dispose() {
@@ -37,26 +40,57 @@ class _ProfileStateState extends State<ProfileState> {
     ) {
       if (state is UserStateSuccess) {
         final userState = state;
-        return Scrollbar(
-          child: SingleChildScrollView(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(vertical: 5.0),
-              child: Column(
-                children: [
-                  ProfileHeader(
-                    state: userState,
-                  ),
-                  const MyResources(),
-                  const SearchProfile(),
-                  const WritePostHereWidget(),
-                  const Divider(
-                    height: 15,
-                    thickness: 3,
-                  ),
-                  ...state.userPost.map((final post) => PostWidget(
-                        userPost: post,
-                      )),
-                ],
+
+        Future<void> pullRefresh() async {
+          context.read<UserStateBloc>().add(GetPosts());
+        }
+
+        return Material(
+          type: MaterialType.canvas,
+          child: RefreshIndicator(
+            onRefresh: () {
+              return pullRefresh();
+            },
+            child: SingleChildScrollView(
+              controller: _mainController,
+              child: Padding(
+                padding: const EdgeInsets.symmetric(vertical: 5.0),
+                child: Column(
+                  children: [
+                    ProfileHeader(
+                      state: userState,
+                    ),
+                    const MyResources(),
+                    const SearchProfile(),
+                    const WritePostHereWidget(),
+                    const Divider(
+                      height: 15,
+                      thickness: 3,
+                    ),
+                    ...state.userPost.map((final post) => Dismissible(
+                          background: Container(
+                            color: Colors.red,
+                            alignment: Alignment.centerRight,
+                            padding: const EdgeInsets.only(right: 20.0),
+                            child: const Icon(
+                              Icons.delete,
+                              color: Colors.white,
+                            ),
+                          ),
+                          onDismissed: (direction) =>
+                              context.read<UserStateBloc>().add(
+                                    DeletePost(
+                                      id: post.id!,
+                                    ),
+                                  ),
+                          key: Key(post.id.toString()),
+                          child: PostWidget(
+                            userPost: post,
+                            mainScrollController: _mainController,
+                          ),
+                        )),
+                  ],
+                ),
               ),
             ),
           ),
@@ -73,24 +107,45 @@ class _ProfileStateState extends State<ProfileState> {
   }
 }
 
-class CommentSection extends StatelessWidget {
+class CommentSection extends StatefulWidget {
   final UserPost userPost;
+  final ScrollController commentsScrollController;
+  final VoidCallback onExpand;
+
   const CommentSection({
     super.key,
     required this.userPost,
+    required this.commentsScrollController,
+    required this.onExpand,
   });
 
   @override
+  State<CommentSection> createState() => _CommentSectionState();
+}
+
+class _CommentSectionState extends State<CommentSection> {
+  final ScrollController _scrollController = ScrollController();
+
+  @override
+  void initState() {
+    super.initState();
+    widget.onExpand();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        const PostCommentField(),
-        if (userPost.comments!.isNotEmpty)
-          ...userPost.comments!.map((e) => CommentWidget(
-                comment: e,
-              )),
-      ],
+    return SingleChildScrollView(
+      controller: _scrollController,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const PostCommentField(),
+          if (widget.userPost.comments!.isNotEmpty)
+            ...widget.userPost.comments!.map((e) => CommentWidget(
+                  comment: e,
+                )),
+        ],
+      ),
     );
   }
 }

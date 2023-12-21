@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:typed_data';
 
 import 'package:p4h_mobile/models/comment.dart';
 import 'package:p4h_mobile/models/user.dart';

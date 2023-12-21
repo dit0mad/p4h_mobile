@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:p4h_mobile/constants.dart';
 
 class MessageCardWidget extends StatelessWidget {
-  const MessageCardWidget({Key? key}) : super(key: key);
+  const MessageCardWidget({super.key});
 
   @override
   Widget build(BuildContext context) {

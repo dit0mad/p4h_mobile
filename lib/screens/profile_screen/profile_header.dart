@@ -1,10 +1,12 @@
+import 'dart:convert';
+import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:p4h_mobile/appstate/actions_bloc/action_bloc.dart';
 import 'package:p4h_mobile/appstate/actions_bloc/actions.dart';
 import 'package:p4h_mobile/appstate/user_bloc/user__state_bloc.dart';
 import 'package:p4h_mobile/constants.dart';
-import 'package:p4h_mobile/services/http_service.dart';
 import 'package:p4h_mobile/widgets/build_button.dart';
 
 class ProfileHeader extends StatelessWidget {
@@ -16,6 +18,16 @@ class ProfileHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final state = context.read<UserStateBloc>().state as UserStateSuccess;
+
+    Uint8List? decodedImg;
+
+    final profilePic = state.userState.profilePic;
+
+    if (profilePic != null) {
+      decodedImg = base64.decode(state.userState.profilePic!);
+    }
+
     return Container(
       margin: const EdgeInsets.only(
         top: 5,
@@ -28,8 +40,7 @@ class ProfileHeader extends StatelessWidget {
             child: CircleAvatar(
               backgroundColor: Colors.greenAccent[400],
               radius: 40,
-              backgroundImage: const NetworkImage(
-                  'https://lh3.googleusercontent.com/a-/AAuE7mChgTiAe-N8ibcM3fB_qvGdl2vQ9jvjYv0iOOjB=s96-c'),
+              backgroundImage: MemoryImage(decodedImg!),
             ),
           ),
           Column(
@@ -44,7 +55,7 @@ class ProfileHeader extends StatelessWidget {
                 style: subtitle7,
               ),
               Text(
-                'I work for P4H Global',
+                state.userState.bio ?? 'I work for P4H Global',
                 style: subtitle8,
               ),
             ],

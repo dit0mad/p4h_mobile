@@ -94,15 +94,16 @@ class ResourceScreen extends StatelessWidget {
         if (state is! UserStateSuccess) {
           return;
         }
-        final errorForThisSpecificScreen =
+        final errorCheck =
             state.errors.whereType<UserResourceResponseFailure>().isNotEmpty;
 
-        if (errorForThisSpecificScreen) {
+        if (errorCheck) {
+          final error =
+              state.errors.whereType<UserResourceResponseFailure>().first;
           ScaffoldMessenger.of(context)
               .showSnackBar(
-                const SnackBar(
-                  content:
-                      Text('Sorry, our servers failed to get this resource'),
+                SnackBar(
+                  content: Text(error.toString()),
                 ),
               )
               .close;

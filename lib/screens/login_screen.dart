@@ -104,24 +104,19 @@ class _LoginFormState extends State<LoginForm> {
           );
         }
 
-        if (state is UserStateLoading) {
-          return Center(
-              child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Padding(
-                  padding: EdgeInsets.all(8),
-                  child: Text('Fetching Information', style: subtitle2)),
-              const CircularProgressIndicator(),
-            ],
-          ));
-        }
-
         // if (state is UserStateError) {
         //   return Center(child: const Text('Invalid Password'));
         // }
 
-        return const CircularProgressIndicator();
+        return Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Padding(
+                padding: EdgeInsets.all(8),
+                child: Text('Fetching Information', style: subtitle2)),
+            const CircularProgressIndicator(),
+          ],
+        );
       },
     );
   }

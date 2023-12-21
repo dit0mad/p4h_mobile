@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:p4h_mobile/appstate/user/user_state_old.dart';
 import 'package:p4h_mobile/appstate/user_bloc/reducer.dart';
@@ -18,6 +20,33 @@ class UserStateBloc extends Bloc<UserStateEvents, UserState> {
         super(
           UserInitial(),
         ) {
+    on<GetPosts>((event, emit) async {
+      final prevState = state as UserStateSuccess;
+
+      final getPostRes = await http.getPosts(prevState._user.id);
+
+      if (getPostRes is UserPostSuccess) {
+        emit(UserStatePush());
+        emit(UserStateSuccess(
+          user: prevState._user,
+          userPost: getPostRes.userPosts,
+        ));
+      }
+
+      if (getPostRes is UserPostFailedResponse) {
+        emit(
+          const UserStateError(error: 'Fetching User Post Failed'),
+        );
+      }
+    });
+    on<AddComment>((event, emit) {
+      final prevState = state as UserStateSuccess;
+
+      final nextState = userStateReducer(event, prevState);
+
+      emit(nextState);
+    });
+
     on<AddError>((event, emit) {
       final prevState = state as UserStateSuccess;
 
@@ -71,7 +100,6 @@ class UserStateBloc extends Bloc<UserStateEvents, UserState> {
         );
 
         final nextState = state as UserStateSuccess;
-//TODO @yasantha
         emit(nextState.copyWith(filePath: resp));
       },
     );
@@ -92,23 +120,13 @@ class UserStateBloc extends Bloc<UserStateEvents, UserState> {
       }
 
       if (loginRes is UserSuccess) {
+        emit(UserStateSuccess(
+          user: loginRes,
+          userPost: [],
+        ));
+
         ///this is ugly break it down
-        final getPostRes = await http.getPosts(loginRes.id);
-
-        if (getPostRes is UserPostSuccess) {
-          emit(UserStatePush());
-
-          emit(UserStateSuccess(
-            user: loginRes,
-            userPost: getPostRes.userPosts,
-          ));
-        }
-
-        if (getPostRes is UserPostFailedResponse) {
-          emit(
-            const UserStateError(error: 'Fetching User Post Failed'),
-          );
-        }
+        add(GetPosts());
       }
     });
 
@@ -119,25 +137,28 @@ class UserStateBloc extends Bloc<UserStateEvents, UserState> {
         message: event.post,
         user: currentState._user,
         comments: [],
-        id: 69,
+        id: currentState._user.id,
       );
 
-      final nextState = currentState.copyWith(userPost: [
-        ...currentState.userPost,
-        userPost,
-      ]);
+      final apiResult = await http.addPost(userPost);
+
+      final nextState = currentState.copyWith(
+        userPost: [
+          ...currentState.userPost,
+          userPost,
+        ],
+      );
 
       emit(nextState);
     });
 
     on<DeletePost>(
-      (event, emit) {
+      (event, emit) async {
         final currentState = state as UserStateSuccess;
 
-        final nextState = currentState.copyWith(userPost: [
-          ...currentState.userPost.where((element) => element.id != event.id)
-        ]);
+        await http.deletePost(event.id);
 
+        final nextState = userStateReducer(event, currentState);
         emit(nextState);
       },
     );
@@ -147,7 +168,7 @@ class UserStateBloc extends Bloc<UserStateEvents, UserState> {
 abstract class UserState {
   const UserState();
 
-  String errorMessage() => ("");
+  String errorMessage() => '';
 }
 
 class UserInitial extends UserState {

@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:p4h_mobile/appstate/user/user_state_old.dart';
 import 'package:p4h_mobile/models/resource.dart';
 import 'package:p4h_mobile/models/user_post.dart';
@@ -17,6 +19,7 @@ class UserSuccess extends UserStatus {
       location: json['location'],
       school: json['school'],
       phone: json['phone'],
+      profilePic: json['profilePic'],
     );
   }
 
@@ -31,6 +34,7 @@ class UserSuccess extends UserStatus {
   final String? phone;
   final String? school;
   final String username;
+  final String? profilePic;
 
   final bool loggedIn;
 
@@ -52,6 +56,7 @@ class UserSuccess extends UserStatus {
     this.loggedIn = false,
     this.userPost = const [],
     this.resources = const [],
+    this.profilePic,
   });
 
   UserSuccess get userState => this;
@@ -70,20 +75,23 @@ class UserSuccess extends UserStatus {
     final StoreCookie? cookie,
     final List<UserPost>? userPost,
     final List<UserResourceResponseSuccess>? resources,
+    final String? profilePic,
   }) {
     return UserSuccess(
-        cookie: cookie ?? this.cookie,
-        canvasID: canvasID ?? this.canvasID,
-        email: email ?? this.email,
-        id: id ?? this.id,
-        name: name ?? this.name,
-        location: location ?? this.location,
-        phone: phone ?? this.phone,
-        school: school ?? this.school,
-        bio: bio ?? this.bio,
-        username: username ?? this.username,
-        loggedIn: loggedIn ?? this.loggedIn,
-        userPost: userPost ?? this.userPost,
-        resources: resources ?? this.resources);
+      cookie: cookie ?? this.cookie,
+      canvasID: canvasID ?? this.canvasID,
+      email: email ?? this.email,
+      id: id ?? this.id,
+      name: name ?? this.name,
+      location: location ?? this.location,
+      phone: phone ?? this.phone,
+      school: school ?? this.school,
+      bio: bio ?? this.bio,
+      username: username ?? this.username,
+      loggedIn: loggedIn ?? this.loggedIn,
+      userPost: userPost ?? this.userPost,
+      resources: resources ?? this.resources,
+      profilePic: profilePic ?? this.profilePic,
+    );
   }
 }

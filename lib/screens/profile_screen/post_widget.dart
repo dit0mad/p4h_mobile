@@ -5,10 +5,12 @@ import 'package:p4h_mobile/screens/profile_screen/profile_main.dart';
 
 class PostWidget extends StatefulWidget {
   final UserPost userPost;
+  final ScrollController mainScrollController;
 
   const PostWidget({
     super.key,
     required this.userPost,
+    required this.mainScrollController,
   });
 
   @override
@@ -16,6 +18,7 @@ class PostWidget extends StatefulWidget {
 }
 
 class _PostWidgetState extends State<PostWidget> {
+  final ScrollController _commentsScrollController = ScrollController();
   bool showComments = false;
 
   @override
@@ -110,6 +113,17 @@ class _PostWidgetState extends State<PostWidget> {
           ),
           if (showComments)
             CommentSection(
+              onExpand: () {
+                // Scroll the main scroll when the comments section is expanded
+                WidgetsBinding.instance.addPostFrameCallback((_) {
+                  widget.mainScrollController.animateTo(
+                    widget.mainScrollController.position.maxScrollExtent,
+                    duration: const Duration(milliseconds: 300),
+                    curve: Curves.easeOut,
+                  );
+                });
+              },
+              commentsScrollController: _commentsScrollController,
               userPost: widget.userPost,
             ),
           const Divider(

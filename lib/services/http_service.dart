@@ -76,8 +76,6 @@ class HttpService {
   Future deletePost(int postID) async {
     final resolveUri = Uri.parse('https://p4hteach.org/api/post/$postID');
 
-    //final response = Dio().deleteUri(resolveUri);
-
     try {
       final response = await http.delete(
         headers: {
@@ -112,13 +110,12 @@ class HttpService {
     }
   }
 
-  Future<UserPostResponse> createPost(String id) async {
-    //TODO@ proper return types.
-    final resolveUri = Uri.parse('https://p4hteach.org/api/post/1');
+  Future<UserPostResponse> createPost(UserPost post) async {
+    final resolveUri = Uri.parse('https://p4hteach.org/api/post/${post.id}');
 
     try {
       final response = await Dio().postUri(resolveUri,
-          data: {'text': 'Test post from p4hMobile'},
+          data: {'text': post.message},
           options: Options(
             headers: {
               'Content-Type': 'application/x-www-form-urlencoded',
@@ -180,11 +177,14 @@ class HttpService {
   }
 
   Future<UserResourceResponse> getResourceFolder(int folderID) async {
-    final resolveUri = '$url' 'resources/$folderID';
+    final resolveUri = 'https://p4hteach.org/api/resources/$folderID';
 
     try {
       final response = await http.get(
-        headers: {'Content-Type': 'application/json', 'Cookie': cookie!.cookie},
+        headers: {
+          'Content-Type': 'application/json',
+          'Cookie': cookie!.cookie,
+        },
         Uri.parse(resolveUri),
       );
 
@@ -219,33 +219,28 @@ class HttpService {
       if (response.statusCode == 200) {
         final resp = response.body;
 
-        if (resp is! Map) {
-          switch (resp) {
-            case 'Username not found':
-              return LoginErrorType.invalidUserName(resp);
-            case 'Password not correct':
-              return LoginErrorType.invalidPassword(resp);
+        switch (resp) {
+          case 'Username not found':
+            return LoginErrorType.invalidUserName();
+          case 'Password not correct':
+            return LoginErrorType.invalidPassword();
 
-            default:
-          }
+          default:
+            final decodedResponse = jsonDecode(response.body);
+
+            cookie = StoreCookie(cookie: response.headers['set-cookie']!);
+
+            final decodedUser = UserSuccess.fromJson(
+              decodedResponse,
+            );
+
+            final resolvedUser = decodedUser.copyWith(cookie: cookie);
+
+            return resolvedUser;
         }
-
-        final decodedResponse = jsonDecode(response.body);
-
-        //if decodedresponse is not a map then username or password wrong.
-
-        cookie = StoreCookie(cookie: response.headers['set-cookie']!);
-
-        final decodedUser = UserSuccess.fromJson(
-          decodedResponse,
-        );
-
-        final resolvedUser = decodedUser.copyWith(cookie: cookie);
-
-        return resolvedUser;
       }
     } catch (e) {
-      throw '';
+      throw 'Unknown error';
     }
 
     throw '';
@@ -317,15 +312,15 @@ class HttpService {
         Uri.parse(url),
       );
 
-      if (response.statusCode == 200) {
-        final List<dynamic> decode = jsonDecode(response.body);
-
-        final resolved = decode.map((e) => MyProgress.fromJson(e));
-
-        return MyProgressSuccess(myProgress: resolved);
+      if (response.statusCode != 200) {
+        return MyProgresError();
       }
 
-      return MyProgresError();
+      final List<dynamic> decode = jsonDecode(response.body);
+
+      final resolved = decode.map((e) => MyProgress.fromJson(e));
+
+      return MyProgressSuccess(myProgress: resolved);
     } catch (e) {
       rethrow;
     }
@@ -391,6 +386,14 @@ class HttpRepo {
     }
 
     throw e;
+  }
+
+  Future<UserPostResponse> addPost(UserPost post) async {
+    return _httpService.createPost(post);
+  }
+
+  Future<void> deletePost(int id) async {
+    return await _httpService.deletePost(id);
   }
 }
 

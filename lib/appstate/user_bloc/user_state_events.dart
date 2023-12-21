@@ -46,9 +46,11 @@ class Download extends UserStateEvents {
 
 class AddPost extends UserStateEvents {
   final String post;
+  final int userID;
 
   AddPost({
     required this.post,
+    required this.userID,
   });
 }
 
@@ -62,4 +64,11 @@ class DownloadFile extends UserStateEvents {
   const DownloadFile({required this.fileId});
 }
 
-class AddComment extends UserStateEvents {}
+class AddComment extends UserStateEvents {
+  final String comment;
+  final int id;
+
+  AddComment({required this.comment, required this.id});
+}
+
+class GetPosts extends UserStateEvents {}

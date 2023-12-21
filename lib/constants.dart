@@ -34,7 +34,7 @@ TextStyle get bodyText1 {
 }
 
 TextStyle get bodyText2 {
-  return GoogleFonts.sourceSansPro(
+  return GoogleFonts.sourceSans3(
     color: Colors.black,
     fontSize: 20,
     fontWeight: FontWeight.w500,

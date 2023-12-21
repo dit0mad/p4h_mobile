@@ -28,8 +28,33 @@ void main() {
           userStateBloc: _.read<UserStateBloc>(),
         ),
       ),
-    ], child: const MyApp()),
+    ], child: const ConnectionState()),
   );
+}
+
+class ConnectionState extends StatefulWidget {
+  const ConnectionState({super.key});
+
+  @override
+  State<ConnectionState> createState() => _ConnectionStateState();
+}
+
+class _ConnectionStateState extends State<ConnectionState> {
+  @override
+  void initState() {
+    super.initState();
+    context.read<ActionListenerBloc>().add(InitConnectivity());
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return const MyApp();
+  }
 }
 
 class MyApp extends StatelessWidget {
@@ -42,20 +67,19 @@ class MyApp extends StatelessWidget {
         useMaterial3: false,
       ),
       debugShowCheckedModeBanner: false,
-      home: const Mediator(),
+      home: const BlocListenerForRouting(),
     );
   }
 }
 
-class Mediator extends StatelessWidget {
-  const Mediator({Key? key}) : super(key: key);
+class BlocListenerForRouting extends StatelessWidget {
+  const BlocListenerForRouting({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: BlocListener<UserStateBloc, UserState>(
         listener: (context, state) {
-//@yasantha
           //pushes when login is success. can be moved to an action listener
           if (state is UserStatePush) {
             BlocProvider.of<NavigationBloc>(context).add(
@@ -88,8 +112,7 @@ class NavigationBuilder extends StatelessWidget {
         final stack = bloc.state.mainStack.length;
 
         if (stack.isEqual(1)) {
-          //TODO @yasantha:     // terminate all peacefully;
-
+          //bad?
           exit(0);
         }
 
@@ -120,7 +143,7 @@ class NavigationBuilder extends StatelessWidget {
                 },
                 pages: [
                   ...state.mainStack,
-                  ...state.modalStack.nonNulls,
+                  LoggedInModalPage(),
                 ],
               );
             },
@@ -131,6 +154,41 @@ class NavigationBuilder extends StatelessWidget {
   }
 }
 
+class ModalMediator extends StatelessWidget {
+  const ModalMediator({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<NavigationBloc, NavigationStackState>(
+      builder: (BuildContext context, NavigationStackState state) {
+        return Navigator(
+          key: modalKey,
+          onPopPage: (final Route<dynamic> route, final dynamic result) {
+            return route.didPop(result);
+          },
+          pages: [
+            MaterialPage(child: EmptyPage()),
+            ...state.modalStack.nonNulls.skip(1),
+          ],
+        );
+      },
+    );
+  }
+}
+
+final GlobalKey<NavigatorState> modalKey = GlobalKey<NavigatorState>();
 final GlobalKey<NavigatorState> mainNavigatorKey = GlobalKey<NavigatorState>();
 final GlobalKey<NavigatorState> resourceNavigatorKey =
     GlobalKey<NavigatorState>();
+
+class LoggedInModalPage extends Page {
+  const LoggedInModalPage() : super();
+
+  @override
+  Route createRoute(BuildContext context) {
+    return MaterialPageRoute(
+      settings: this,
+      builder: (final BuildContext context) => const ModalMediator(),
+    );
+  }
+}

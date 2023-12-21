@@ -1,3 +1,4 @@
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:p4h_mobile/appstate/nav_bloc/nav_events.dart';
 
@@ -40,3 +41,11 @@ class NavigateToLessenPlanScreenSuccess extends BaseActionSuccess {
 class GoToMyProgress extends BaseAction {}
 
 class GoToMyProgress200 extends BaseAction {}
+
+class InitConnectivity extends BaseAction {}
+
+class UpdateConnectionState extends BaseAction {
+  final ConnectivityResult result;
+
+  const UpdateConnectionState({required this.result});
+}

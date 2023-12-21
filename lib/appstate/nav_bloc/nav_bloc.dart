@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:p4h_mobile/appstate/nav_bloc/nav_events.dart';
@@ -71,7 +69,7 @@ class NavigationStackState {
   const NavigationStackState({
     this.mainStack = initStack,
     this.resourceStack = resourceInit,
-    this.modalStack = const [],
+    this.modalStack = modalStackInit,
   });
 
   NavigationStackState copyWith({

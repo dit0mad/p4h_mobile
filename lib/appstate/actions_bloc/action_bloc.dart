@@ -1,6 +1,8 @@
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:p4h_mobile/appstate/actions_bloc/actions.dart';
+import 'package:p4h_mobile/appstate/connectivity/p4h_connectivity.dart';
 import 'package:p4h_mobile/appstate/nav_bloc/nav_bloc.dart';
 import 'package:p4h_mobile/appstate/nav_bloc/nav_events.dart';
 import 'package:p4h_mobile/appstate/user_bloc/user__state_bloc.dart';
@@ -8,6 +10,8 @@ import 'package:p4h_mobile/appstate/user_bloc/user_state_events.dart';
 import 'package:p4h_mobile/models/resource.dart';
 import 'package:p4h_mobile/screens/progress_screen.dart';
 import 'package:p4h_mobile/services/http_service.dart';
+
+import 'dart:developer' as developer;
 
 //this class is implemented to purely listen for actions and perform side effects.
 //specially in the case of routing or http service.
@@ -27,6 +31,12 @@ class ActionListenerBloc extends Bloc<BaseAction, BaseAction> {
     required this.userStateBloc,
   })  : httpService = userStateBloc.http,
         super(const InitialAction()) {
+    on<UpdateConnectionState>((event, emit) {
+      developer.log(event.result.name);
+    });
+    on<InitConnectivity>((event, emit) async {
+      final result = await P4HConnectivity(actionBloc: this).initConnectivity();
+    });
     on<GoToMyProgress>((event, emit) async {
       emit(const LoadingAction());
 

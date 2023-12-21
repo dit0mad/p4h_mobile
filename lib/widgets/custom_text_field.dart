@@ -7,11 +7,11 @@ class CustomTextField extends StatelessWidget {
   final TextEditingController controller;
 
   const CustomTextField({
-    Key? key,
+    super.key,
     required this.hintText,
     required this.fieldSize,
     required this.controller,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -28,6 +28,12 @@ class CustomTextField extends StatelessWidget {
                 controller: controller,
                 textInputAction: TextInputAction.search,
                 decoration: InputDecoration(
+                  focusedBorder: const OutlineInputBorder(
+                    borderSide: BorderSide(
+                      color: Colors.red, // Set your desired focus border color
+                      width: 2.0, // Set your desired border width
+                    ),
+                  ),
                   prefixIcon: IconButton(
                     icon: const Icon(Icons.search),
                     iconSize: 20,

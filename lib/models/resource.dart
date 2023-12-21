@@ -75,5 +75,12 @@ class UserResourceResponseSuccess extends UserResourceResponse {
 }
 
 class UserResourceResponseFailure extends UserResourceResponse {
+  static const message = 'Sorry our servers failed to get this resource';
+
+  @override
+  String toString() {
+    return message;
+  }
+
   const UserResourceResponseFailure();
 }
